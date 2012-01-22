@@ -1,0 +1,1 @@
+require 'vkontakte_api'
