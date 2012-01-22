@@ -33,4 +33,28 @@ describe VkontakteApi::Client do
       end
     end
   end
+  
+  describe "API methods" do
+    before(:each) do
+      @client = VkontakteApi::Client.new
+      VkontakteApi::Client.stub(:vk_method_name).and_return('apiMethod')
+      @client.stub(:api_call)
+    end
+    
+    it "call #vk_method_name" do
+      VkontakteApi::Client.should_receive(:vk_method_name)
+      @client.api_method
+    end
+    
+    it "call #api_call with VK method name" do
+      @client.should_receive(:api_call).with('apiMethod')
+      @client.api_method
+    end
+  end
+  
+  describe ".vk_method_name" do
+    it "converts it's argument to camelCase string" do
+      VkontakteApi::Client.vk_method_name(:api_method).should == 'apiMethod'
+    end
+  end
 end
