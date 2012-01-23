@@ -34,27 +34,15 @@ describe VkontakteApi::Client do
     end
   end
   
-  describe "API methods" do
+  describe "#method_missing" do
     before(:each) do
-      @client = VkontakteApi::Client.new
-      VkontakteApi::Client.stub(:vk_method_name).and_return('apiMethod')
-      @client.stub(:api_call)
+      @resolver = stub("Resolver")
+      VkontakteApi::Resolver.stub(:new).and_return(@resolver)
     end
     
-    it "call #vk_method_name" do
-      VkontakteApi::Client.should_receive(:vk_method_name)
-      @client.api_method
-    end
-    
-    it "call #api_call with VK method name" do
-      @client.should_receive(:api_call).with('apiMethod')
-      @client.api_method
-    end
-  end
-  
-  describe ".vk_method_name" do
-    it "converts it's argument to camelCase string" do
-      VkontakteApi::Client.vk_method_name(:api_method).should == 'apiMethod'
+    it "delegates to VkontakteApi::Resolver" do
+      @resolver.should_receive(:api_method).with(:args)
+      VkontakteApi::Client.new.api_method(:args)
     end
   end
 end

@@ -11,14 +11,7 @@ module VkontakteApi
     end
     
     def method_missing(method_name, *args, &block)
-      name = self.class.vk_method_name(method_name)
-      api_call(name)
-    end
-    
-    class << self
-      def vk_method_name(method_name)
-        method_name.to_s.camelize(:lower)
-      end
+      VkontakteApi::Resolver.new.send(method_name, *args, &block)
     end
   end
 end
