@@ -38,11 +38,12 @@ describe VkontakteApi::Client do
     before(:each) do
       @resolver = stub("Resolver")
       VkontakteApi::Resolver.stub(:new).and_return(@resolver)
+      @args = {field: 'value'}
     end
     
     it "delegates to VkontakteApi::Resolver" do
-      @resolver.should_receive(:api_method).with(:args)
-      VkontakteApi::Client.new.api_method(:args)
+      @resolver.should_receive(:api_method).with(@args.merge access_token: @token)
+      VkontakteApi::Client.new(@token).api_method(@args)
     end
   end
 end

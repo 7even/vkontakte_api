@@ -39,6 +39,13 @@ end
     "last_name":  "Rogozov"
   }
 ]
+
+# if the response is an array, you can pass a block
+# that will yield each successive element
+@app.friends.get(fields: 'first_name') do |friend|
+  p "#{friend.first_name} #{friend.last_name}"
+end
+# => "Павел Дуров", "Andrew Rogozov"
 ```
 
 All method names are underscore_cased as opposed to the official documentation where they are camelCased. All parameters are named and passed to methods in symbol-indexed hashes (see example above).

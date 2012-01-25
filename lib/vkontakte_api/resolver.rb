@@ -1,5 +1,6 @@
 module VkontakteApi
   class Resolver
+    # this array needs to be stored in YAML
     NAMESPACES = %w(friends groups photos wall newsfeed notifications audio video docs places secure storage notes pages activity offers questions subscriptions messages likes status polls)
     
     attr_reader :namespace

@@ -1,3 +1,5 @@
+require 'faraday'
+require 'json'
 require 'active_support/core_ext/string/inflections'
 
 require 'vkontakte_api/version'

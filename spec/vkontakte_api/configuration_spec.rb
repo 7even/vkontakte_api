@@ -17,4 +17,13 @@ describe VkontakteApi::Configuration do
       Configurable.configure.should == Configurable
     end
   end
+  
+  describe "#reset" do
+    it "sets all options to their default values" do
+      Configurable.reset
+      Configurable.app_id.should be_nil
+      Configurable.app_secret.should be_nil
+      Configurable.adapter.should == VkontakteApi::Configuration::DEFAULT_ADAPTER
+    end
+  end
 end

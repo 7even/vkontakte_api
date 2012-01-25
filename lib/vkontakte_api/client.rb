@@ -11,7 +11,8 @@ module VkontakteApi
     end
     
     def method_missing(method_name, *args, &block)
-      VkontakteApi::Resolver.new.send(method_name, *args, &block)
+      args = (args.first || {}).merge(:access_token => @access_token)
+      VkontakteApi::Resolver.new.send(method_name, args, &block)
     end
   end
 end
