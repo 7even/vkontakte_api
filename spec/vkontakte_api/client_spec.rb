@@ -36,13 +36,18 @@ describe VkontakteApi::Client do
   
   describe "#method_missing" do
     before(:each) do
-      @resolver = stub("Resolver")
+      @resolver = stub("Resolver").as_null_object
       VkontakteApi::Resolver.stub(:new).and_return(@resolver)
-      @args = {field: 'value'}
+      @args = {:field => 'value'}
+    end
+    
+    it "creates a resolver, passing it the access_token" do
+      VkontakteApi::Resolver.should_receive(:new).with(:access_token => @token)
+      VkontakteApi::Client.new(@token).api_method(@args)
     end
     
     it "delegates to VkontakteApi::Resolver" do
-      @resolver.should_receive(:api_method).with(@args.merge access_token: @token)
+      @resolver.should_receive(:api_method).with(@args)
       VkontakteApi::Client.new(@token).api_method(@args)
     end
   end

@@ -11,7 +11,7 @@ module VkontakteApi
         
         url = url_for(method_name, args)
         body = connection.get(url).body
-        JSON.load(body)
+        JSON.load(body)['response']
       end
     private
       def url_for(method_name, args)

@@ -21,7 +21,8 @@ describe VkontakteApi::API do
       response = stub("Response", :body => body)
       @connection.stub(:get).and_return(response)
       
-      @result = stub("Result")
+      @result_response = stub("Result[response]")
+      @result = stub("Result", :[] => @result_response)
       JSON.stub(:load).and_return(@result)
     end
     
@@ -31,7 +32,7 @@ describe VkontakteApi::API do
     end
     
     it "returns the response body" do
-      VkontakteApi::API.call('apiMethod').should == @result
+      VkontakteApi::API.call('apiMethod').should == @result_response
     end
   end
   

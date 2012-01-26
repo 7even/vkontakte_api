@@ -5,8 +5,9 @@ module VkontakteApi
     
     attr_reader :namespace
     
-    def initialize(namespace = nil)
-      @namespace = namespace
+    def initialize(options = {})
+      @namespace    = options.delete(:namespace)
+      @access_token = options.delete(:access_token)
     end
     
     def method_missing(method_name, *args, &block)
@@ -14,21 +15,30 @@ module VkontakteApi
       
       if NAMESPACES.include?(method_name)
         # method with a two-level name called
-        Resolver.new(method_name)
+        Resolver.new(:namespace => method_name, :access_token => @access_token)
       else
         # method with a one-level name called
         name = Resolver.vk_method_name(method_name, @namespace)
-        API.call(name, *args, &block)
+        
+        # adding access_token to the args hash
+        args = args.first || {}
+        args.update(:access_token => @access_token)
+        
+        API.call(name, args, &block)
       end
     end
     
     class << self
+      # vk_method_name('get_country_by_id', 'places')
+      # => 'places.getCountryById'
       def vk_method_name(method_name, namespace = nil)
         full_name = ''
         full_name << "#{convert(namespace)}." unless namespace.nil?
         full_name << convert(method_name)
       end
     private
+      # convert('get_profiles')
+      # => 'getProfiles'
       def convert(name)
         name.to_s.camelize(:lower)
       end

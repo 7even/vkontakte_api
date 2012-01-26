@@ -4,12 +4,13 @@ describe VkontakteApi::Resolver do
   describe "#method_missing" do
     before(:each) do
       VkontakteApi::API.stub(:call)
-      @args = {arg_name: 'arg_value'}
+      @args = {:arg_name => 'arg_value'}
+      @token = stub("Access token")
     end
     
     context "with a nil @namespace" do
       before(:each) do
-        @resolver = VkontakteApi::Resolver.new
+        @resolver = VkontakteApi::Resolver.new(:access_token => @token)
       end
       
       context "with method_name not from NAMESPACES" do
@@ -23,7 +24,8 @@ describe VkontakteApi::Resolver do
         end
         
         it "calls #api_call with full VK method name" do
-          VkontakteApi::API.should_receive(:call).with('apiMethod', @args)
+          full_args = @args.merge(:access_token => @token)
+          VkontakteApi::API.should_receive(:call).with('apiMethod', full_args)
           @resolver.api_method(@args)
         end
       end
@@ -39,7 +41,7 @@ describe VkontakteApi::Resolver do
     
     context "with a non-nil @namespace" do
       before(:each) do
-        @resolver = VkontakteApi::Resolver.new('friends')
+        @resolver = VkontakteApi::Resolver.new(:namespace => 'friends')
         VkontakteApi::Resolver.stub(:vk_method_name).and_return('friends.apiMethod')
       end
       
