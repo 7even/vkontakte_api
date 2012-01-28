@@ -1,8 +1,5 @@
 module VkontakteApi
   class Resolver
-    # this array needs to be stored in YAML
-    NAMESPACES = %w(friends groups photos wall newsfeed notifications audio video docs places secure storage notes pages activity offers questions subscriptions messages likes status polls)
-    
     attr_reader :namespace
     
     def initialize(options = {})
@@ -13,7 +10,7 @@ module VkontakteApi
     def method_missing(method_name, *args, &block)
       method_name = method_name.to_s
       
-      if NAMESPACES.include?(method_name)
+      if Resolver.namespaces.include?(method_name)
         # method with a two-level name called
         Resolver.new(:namespace => method_name, :access_token => @access_token)
       else
@@ -29,6 +26,15 @@ module VkontakteApi
     end
     
     class << self
+      attr_reader :namespaces
+      
+      # load namespaces array from namespaces.yml
+      def load_namespaces
+        filename    = File.expand_path('../namespaces.yml', __FILE__)
+        file        = File.read(filename)
+        @namespaces = YAML.load(file)
+      end
+      
       # vk_method_name('get_country_by_id', 'places')
       # => 'places.getCountryById'
       def vk_method_name(method_name, namespace = nil)
@@ -45,3 +51,5 @@ module VkontakteApi
     end
   end
 end
+
+VkontakteApi::Resolver.load_namespaces
