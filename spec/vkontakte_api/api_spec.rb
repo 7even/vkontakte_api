@@ -21,8 +21,26 @@ describe VkontakteApi::API do
       response = stub("Response", :body => body)
       @connection.stub(:get).and_return(response)
       
-      @result_response = stub("Result[response]")
-      @result = stub("Result", :[] => @result_response)
+      @result = stub("Result")
+      @result.stub(:has_key?) do |key|
+        if key == 'response'
+          true
+        else
+          false
+        end
+      end
+      
+      @result_response  = stub("Result[response]")
+      @result_error     = stub("Result[error]").as_null_object
+      
+      @result.stub(:[]) do |key|
+        if key == 'response'
+          @result_response
+        else
+          @result_error
+        end
+      end
+      
       JSON.stub(:load).and_return(@result)
     end
     
@@ -31,8 +49,28 @@ describe VkontakteApi::API do
       VkontakteApi::API.call('apiMethod')
     end
     
-    it "returns the response body" do
-      VkontakteApi::API.call('apiMethod').should == @result_response
+    context "with a successful response" do
+      it "returns the response body" do
+        VkontakteApi::API.call('apiMethod').should == @result_response
+      end
+    end
+    
+    context "with an error response" do
+      before(:each) do
+        @result.stub(:has_key?) do |key|
+          if key == 'response'
+            false
+          else
+            true
+          end
+        end
+      end
+      
+      it "raises a VkontakteApi::Error" do
+        expect {
+          VkontakteApi::API.call('apiMethod')
+        }.to raise_error(VkontakteApi::Error)
+      end
     end
   end
   

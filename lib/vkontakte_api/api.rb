@@ -11,7 +11,13 @@ module VkontakteApi
         
         url = url_for(method_name, args)
         body = connection.get(url).body
-        JSON.load(body)['response']
+        response = JSON.load(body)
+        
+        if response.has_key?('error')
+          raise VkontakteApi::Error.new(response['error'])
+        else
+          response['response']
+        end
       end
     private
       def url_for(method_name, args)
