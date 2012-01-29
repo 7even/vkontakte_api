@@ -1,5 +1,7 @@
 module VkontakteApi
   class Resolver
+    PREDICATE_NAMES = /^(is.*)\?$/
+    
     attr_reader :namespace
     
     def initialize(options = {})
@@ -15,13 +17,22 @@ module VkontakteApi
         Resolver.new(:namespace => method_name, :access_token => @access_token)
       else
         # method with a one-level name called
-        name = Resolver.vk_method_name(method_name, @namespace)
+        name, type = Resolver.vk_method_name(method_name, @namespace)
         
         # adding access_token to the args hash
         args = args.first || {}
         args.update(:access_token => @access_token)
         
-        API.call(name, args, &block)
+        typecast API.call(name, args, &block), type
+      end
+    end
+  private
+    def typecast(parameter, type)
+      case type
+      when :boolean
+        !parameter.to_i.zero?
+      else
+        parameter
       end
     end
     
@@ -38,15 +49,28 @@ module VkontakteApi
       # vk_method_name('get_country_by_id', 'places')
       # => 'places.getCountryById'
       def vk_method_name(method_name, namespace = nil)
+        method_name = method_name.to_s
+        
+        if method_name =~ PREDICATE_NAMES
+          # predicate methods should return true or false
+          method_name.sub!(PREDICATE_NAMES, '\1')
+          type = :boolean
+        else
+          # other methods can return anything they want
+          type = :anything
+        end
+        
         full_name = ''
-        full_name << "#{convert(namespace)}." unless namespace.nil?
+        full_name << convert(namespace) + '.' unless namespace.nil?
         full_name << convert(method_name)
+        
+        [full_name, type]
       end
     private
       # convert('get_profiles')
       # => 'getProfiles'
       def convert(name)
-        name.to_s.camelize(:lower)
+        name.camelize(:lower)
       end
     end
   end
