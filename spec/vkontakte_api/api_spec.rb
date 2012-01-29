@@ -4,8 +4,8 @@ describe VkontakteApi::API do
   before(:each) do
     @method_name =  'apiMethod'
     @args = {
-      field:        'value',
-      access_token: 'some_token'
+      :field        => 'value',
+      :access_token => 'some_token'
     }
   end
   
@@ -34,14 +34,14 @@ describe VkontakteApi::API do
       @result_error     = stub("Result[error]").as_null_object
       
       @result.stub(:[]) do |key|
-        if key == 'response'
+        if key == :response
           @result_response
         else
           @result_error
         end
       end
       
-      JSON.stub(:load).and_return(@result)
+      Yajl::Parser.stub(:parse).and_return(@result)
     end
     
     it "calls the url from .url_for" do
@@ -77,7 +77,7 @@ describe VkontakteApi::API do
   describe ".url_for" do
     it "constructs a valid VK API url" do
       url = VkontakteApi::API.send(:url_for, @method_name, @args)
-      url.should == '/method/apiMethod?field=value&access_token=some_token'
+      url.should == '/method/apiMethod?access_token=some_token&field=value'
     end
   end
 end

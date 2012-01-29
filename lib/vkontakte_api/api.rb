@@ -11,18 +11,17 @@ module VkontakteApi
         
         url = url_for(method_name, args)
         body = connection.get(url).body
-        response = JSON.load(body)
+        response = Yajl::Parser.parse(body, :symbolize_keys => true)
         
-        if response.has_key?('error')
-          raise VkontakteApi::Error.new(response['error'])
+        if response.has_key?(:error)
+          raise VkontakteApi::Error.new(response[:error])
         else
-          response['response']
+          response[:response]
         end
       end
     private
       def url_for(method_name, args)
-        arg_pairs = args.map { |(k, v)| "#{CGI.escape(k.to_s)}=#{CGI.escape(v.to_s)}" }.join('&')
-        "#{BASE_URL}#{CGI.escape(method_name)}?#{arg_pairs}"
+        "#{BASE_URL}#{method_name}?#{args.to_param}"
       end
     end
   end
