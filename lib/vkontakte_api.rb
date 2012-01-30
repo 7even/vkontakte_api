@@ -15,4 +15,4 @@ module VkontakteApi
 end
 
 # short alias
-VK = VkontakteApi
+VK = VkontakteApi unless defined?(VK)

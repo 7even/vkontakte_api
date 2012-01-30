@@ -2,7 +2,7 @@ require 'bundler/gem_tasks'
 
 desc 'Fires up the console with preloaded vkontakte_api'
 task :console do
-  sh 'pry -I ./lib/ -r ./lib/vkontakte_api.rb' #  -r ./support/console_config.rb
+  sh 'pry -I ./lib/ -r ./lib/vkontakte_api.rb'
 end
 
 require 'rspec/core/rake_task'
