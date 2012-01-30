@@ -4,6 +4,8 @@ describe VkontakteApi::Resolver do
   describe "#method_missing" do
     before(:each) do
       @result = stub("API result")
+      @result.stub(:respond_to?).and_return(false)
+      
       VkontakteApi::API.stub(:call).and_return(@result)
       @args = {:arg_name => 'arg_value'}
       @token = stub("Access token")
@@ -52,21 +54,60 @@ describe VkontakteApi::Resolver do
       end
     end
     
-    it "calls #typecast with the API result and method type" do
-      resolver = VkontakteApi::Resolver.new
-      type = stub("Type")
-      VkontakteApi::Resolver.stub(:vk_method_name).and_return([:method_name, type])
+    context "with a non-enumerable result" do
+      before(:each) do
+        @resolver = VkontakteApi::Resolver.new
+        
+        @type = stub("Type")
+        VkontakteApi::Resolver.stub(:vk_method_name).and_return([:method_name, @type])
+        
+        @typecasted_value = stub("Typecasted value")
+        @resolver.stub(:typecast).and_return(@typecasted_value)
+      end
       
-      resolver.should_receive(:typecast).with(@result, type)
-      resolver.method_name
+      it "returns #typecast-ed value" do
+        @resolver.should_receive(:typecast).with(@result, @type).and_return(@typecasted_value)
+        @resolver.method_name.should == @typecasted_value
+      end
+      
+      context "when block_given?" do
+        it "yields the #typecast-ed value and returns the result of the block" do
+          block_result = stub("Block result")
+          @typecasted_value.should_receive(:result_method).and_return(block_result)
+          
+          @resolver.api_method do |result|
+            result.result_method
+          end.should == block_result
+        end
+      end
     end
     
-    it "returns #typecast-ed value" do
-      resolver = VkontakteApi::Resolver.new
-      typecasted_value = stub("Typecasted value")
-      resolver.stub(:typecast).and_return(typecasted_value)
+    context "with an enumerable result" do
+      before(:each) do
+        @resolver = VkontakteApi::Resolver.new
+        
+        @element1 = stub("First element")
+        @element2 = stub("Second element")
+        @enumerable_result = [@element1, @element2]
+        VkontakteApi::API.stub(:call).and_return(@enumerable_result)
+      end
       
-      resolver.method_name.should == typecasted_value
+      it "returns the untouched value" do
+        @resolver.method_name.should == @enumerable_result
+      end
+      
+      context "when block_given?" do
+        it "yields each element untouched to the block" do
+          result1 = stub("First element after result_method")
+          result2 = stub("Second element after result_method")
+          @element1.should_receive(:result_method).and_return(result1)
+          @element2.should_receive(:result_method).and_return(result2)
+          
+          @resolver.api_method do |result|
+            result.result_method
+          end.should == [result1, result2]
+        end
+      end
     end
   end
   

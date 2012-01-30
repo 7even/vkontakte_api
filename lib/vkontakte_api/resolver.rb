@@ -23,13 +23,25 @@ module VkontakteApi
         args = args.first || {}
         args.update(:access_token => @access_token)
         
-        typecast API.call(name, args, &block), type
+        result = API.call(name, args, &block)
+        
+        if result.respond_to?(:each)
+          # enumerable result receives :map with a block when called with a block
+          # or is returned untouched otherwise
+          block_given? ? result.map(&block) : result
+        else
+          # non-enumerable result is typecasted
+          # (and yielded if block_given?)
+          result = typecast(result, type)
+          block_given? ? yield(result) : result
+        end
       end
     end
   private
     def typecast(parameter, type)
       case type
       when :boolean
+        # '1' becomes true, '0' becomes false
         !parameter.to_i.zero?
       else
         parameter
