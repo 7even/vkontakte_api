@@ -1,4 +1,4 @@
-# vkontakte_api
+# vkontakte_api [![Build Status](https://secure.travis-ci.org/7even/vkontakte_api.png)](http://travis-ci.org/7even/vkontakte_api)
 
 `vkontakte_api` is a Ruby wrapper for VKontakte API. It allows you to call all API methods in the simplest possible way.
 

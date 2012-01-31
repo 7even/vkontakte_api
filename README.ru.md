@@ -1,4 +1,4 @@
-# vkontakte_api
+# vkontakte_api [![Build Status](https://secure.travis-ci.org/7even/vkontakte_api.png)](http://travis-ci.org/7even/vkontakte_api)
 
 `vkontakte_api` - ruby-обертка для API ВКонтакте. Она позволяет вызывать методы API настолько просто, насколько это возможно.
 
