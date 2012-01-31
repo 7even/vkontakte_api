@@ -47,18 +47,18 @@ Now for parameters. All method parameters are named, and you can pass them in a 
 
 ``` ruby
 @app.friends.get(fields: 'uid,first_name,last_name')
-# => [
-  {
-    :uid          => "1",
-    :first_name   => "Павел",
-    :last_name    => "Дуров"
-  },
-  {
-    :uid          => "6492",
-    :first_name   => "Andrew",
-    :last_name    => "Rogozov"
-  }
-]
+# =>  [
+#       {
+#         :uid          => "1",
+#         :first_name   => "Павел",
+#         :last_name    => "Дуров"
+#       },
+#       {
+#         :uid          => "6492",
+#         :first_name   => "Andrew",
+#         :last_name    => "Rogozov"
+#       }
+#     ]
 ```
 
 It's also worth noting that all returned hashes have symbolized keys.

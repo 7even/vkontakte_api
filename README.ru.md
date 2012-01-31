@@ -47,18 +47,18 @@ end
 
 ``` ruby
 @app.friends.get(fields: 'uid,first_name,last_name')
-# => [
-  {
-    :uid          => "1",
-    :first_name   => "Павел",
-    :last_name    => "Дуров"
-  },
-  {
-    :uid          => "6492",
-    :first_name   => "Andrew",
-    :last_name    => "Rogozov"
-  }
-]
+# =>  [
+#       {
+#         :uid          => "1",
+#         :first_name   => "Павел",
+#         :last_name    => "Дуров"
+#       },
+#       {
+#         :uid          => "6492",
+#         :first_name   => "Andrew",
+#         :last_name    => "Rogozov"
+#       }
+#     ]
 ```
 
 Также следует заметить, что все возвращаемые хэши имеют символьные ключи.
