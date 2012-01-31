@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ['Vsevolod Romashov']
   s.email       = ['7@7vn.ru']
   s.homepage    = ''
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{Ruby-way wrapper for VKontakte API}
+  s.description = %q{A transparent wrapper for API of vk.com social network called VKontakte. Supports ruby-way method naming (without any method lists inside), result typecasting and any faraday-supported http adapter of your choice (no hardcoded Net::HTTP).}
   
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
