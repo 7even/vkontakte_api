@@ -28,7 +28,7 @@ All requests are sent via `VkontakteApi::Client` instance. To create one you jus
 
 Probably the easiest way to get an access token in a web-app is using [OmniAuth](https://github.com/intridea/omniauth), but you can roll your own authentication if for some reason `OmniAuth` isn't acceptable. Currently `vkontakte_api` doesn't offer authentication functionality.
 
-Now you can call the API methods. All method names are underscore_cased as opposed to the [official documentation](http://vk.com/developers.php?o=-1&p=%D0%9E%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D0%BE%D0%B2_API) where they are camelCased, so `getGroups` becomes `get_groups`. You can still call them in a camelCased manner, but that is not a Ruby-way practice.
+Now you can call the API methods. All method names are underscore_cased as opposed to the [official documentation](http://vk.com/developers.php?oid=-17680044&p=API_Method_Description) where they are camelCased, so `getGroups` becomes `get_groups`. You can still call them in a camelCased manner, but that is not a Ruby-way practice.
 
 ``` ruby
 @app.get_user_settings  # => 327710
