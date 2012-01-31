@@ -2,7 +2,7 @@
 
 `vkontakte_api` is a Ruby wrapper for VKontakte API. It allows you to call all API methods in the simplest possible way.
 
-Below is the English version of the readme. Russian version is located [here](http://github.com/7even/vkontakte_api/README.ru.md).
+Below is the English version of the readme. Russian version is located [here](https://github.com/7even/vkontakte_api/blob/master/README.ru.md).
 
 ## Installation
 

@@ -2,7 +2,7 @@
 
 `vkontakte_api` - ruby-обертка для API ВКонтакте. Она позволяет вызывать методы API настолько просто, насколько это возможно.
 
-Это русская версия readme. Английская версия лежит [здесь](http://github.com/7even/vkontakte_api/README.md).
+Это русская версия readme. Английская версия лежит [здесь](https://github.com/7even/vkontakte_api/blob/master/README.md).
 
 ## Установка
 
