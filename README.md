@@ -86,7 +86,9 @@ If VKontakte returns an error in response, you get a `VkontakteApi::Error` excep
 ## Roadmap
 
 * Authentication (getting the access_token from VK)
-* RDoc coverage
+* Array arguments (instead of comma-separated lists in Strings)
+* Maybe Struct-like objects in result (instead of Hashes)
+* RDoc/YARD coverage
 
 ## Contributing
 
