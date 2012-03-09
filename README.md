@@ -61,6 +61,13 @@ Now for parameters. All method parameters are named, and you can pass them in a 
 #     ]
 ```
 
+If the parameter value is a comma-separated list, you can pass it as an array - it will be properly handled before the request:
+
+``` ruby
+users_ids = [1, 6492]
+@app.users.get(uids: users_ids) # => same output as above
+```
+
 It's also worth noting that all returned hashes have symbolized keys.
 
 If the response is an Enumerable, you can pass a block that will yield each successive element and put the result in the returned array (like `Enumerable#map` does):
@@ -86,7 +93,6 @@ If VKontakte returns an error in response, you get a `VkontakteApi::Error` excep
 ## Roadmap
 
 * Authentication (getting the access_token from VK)
-* Array arguments (instead of comma-separated lists in Strings)
 * Maybe Struct-like objects in result (instead of Hashes)
 * RDoc/YARD coverage
 
