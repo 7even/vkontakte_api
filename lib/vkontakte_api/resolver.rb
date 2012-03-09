@@ -37,6 +37,7 @@ module VkontakteApi
         end
       end
     end
+    
   private
     def typecast(parameter, type)
       case type
@@ -78,6 +79,7 @@ module VkontakteApi
         
         [full_name, type]
       end
+      
     private
       # convert('get_profiles')
       # => 'getProfiles'

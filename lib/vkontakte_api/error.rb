@@ -16,6 +16,7 @@ module VkontakteApi
     def message
       "VKontakte returned an error #{@error_code}: \'#{@error_msg}\' after calling method \'#{@method_name}\' with parameters #{@params.inspect}."
     end
+    
   private
     def parse_params(params)
       params.inject({}) do |memo, pair|

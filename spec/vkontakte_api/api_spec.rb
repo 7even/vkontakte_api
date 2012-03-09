@@ -22,13 +22,7 @@ describe VkontakteApi::API do
       @connection.stub(:get).and_return(response)
       
       @result = stub("Result")
-      @result.stub(:has_key?) do |key|
-        if key == 'response'
-          true
-        else
-          false
-        end
-      end
+      @result.stub(:has_key?) { |key| key == 'response' }
       
       @result_response  = stub("Result[response]")
       @result_error     = stub("Result[error]").as_null_object
@@ -57,13 +51,7 @@ describe VkontakteApi::API do
     
     context "with an error response" do
       before(:each) do
-        @result.stub(:has_key?) do |key|
-          if key == 'response'
-            false
-          else
-            true
-          end
-        end
+        @result.stub(:has_key?) { |key| key != 'response' }
       end
       
       it "raises a VkontakteApi::Error" do
@@ -78,6 +66,17 @@ describe VkontakteApi::API do
     it "constructs a valid VK API url" do
       url = VkontakteApi::API.send(:url_for, @method_name, @args)
       url.should == '/method/apiMethod?access_token=some_token&field=value'
+    end
+    
+    context "with an array argument" do
+      before(:each) do
+        @args_with_array = @args.merge(:array_arg => [1, 2, 3])
+      end
+      
+      it "concats it with a comma" do
+        url = VkontakteApi::API.send(:url_for, @method_name, @args_with_array)
+        url.should == "/method/apiMethod?access_token=some_token&array_arg=#{CGI.escape('1,2,3')}&field=value"
+      end
     end
   end
 end
