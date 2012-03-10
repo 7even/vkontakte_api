@@ -11,6 +11,7 @@ require 'vkontakte_api/api'
 require 'vkontakte_api/resolver'
 require 'vkontakte_api/client'
 
+# Main module.
 module VkontakteApi
   extend VkontakteApi::Configuration
 end

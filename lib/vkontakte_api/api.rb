@@ -1,9 +1,17 @@
 module VkontakteApi
+  # A low-level module which handles the requests to VKontakte and returns their results as hashes with symbolized keys.
+  # 
+  # It uses Faraday underneath the hood.
   module API
     BASE_HOST = 'https://api.vkontakte.ru'
     BASE_URL  = '/method/'
     
     class << self
+      # Main interface method.
+      # @param [String] method_name A full name of the method.
+      # @param [Hash] args Method arguments including the access token.
+      # @return [Hash] The result of the method call.
+      # @raise [VkontakteApi::Error] raised when VKontakte returns an error.
       def call(method_name, args = {}, &block)
         connection = Faraday.new(:url => BASE_HOST) do |builder|
           builder.adapter(VkontakteApi.adapter)

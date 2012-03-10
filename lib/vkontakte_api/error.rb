@@ -1,5 +1,12 @@
 module VkontakteApi
+  # An exception raised by `VkontakteApi::API` when VKontakte returns an error.
   class Error < StandardError
+    # An error code.
+    # @return [Fixnum]
+    attr_reader :error_code
+    
+    # An exception is initialized by the data from response hash.
+    # @param [Hash] data Error data.
     def initialize(data)
       @error_code = data.delete(:error_code)
       @error_msg  = data.delete(:error_msg)
@@ -13,8 +20,10 @@ module VkontakteApi
       @params       = request_params
     end
     
+    # A full description of the error.
+    # @return [String]
     def message
-      "VKontakte returned an error #{@error_code}: \'#{@error_msg}\' after calling method \'#{@method_name}\' with parameters #{@params.inspect}."
+      "VKontakte returned an error #{@error_code}: '#{@error_msg}' after calling method '#{@method_name}' with parameters #{@params.inspect}."
     end
     
   private
