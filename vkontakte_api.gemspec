@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = VkontakteApi::VERSION
   s.authors     = ['Vsevolod Romashov']
   s.email       = ['7@7vn.ru']
-  s.homepage    = ''
+  s.homepage    = 'https://github.com/7even/vkontakte_api'
   s.summary     = %q{Ruby-way wrapper for VKontakte API}
   s.description = %q{A transparent wrapper for API of vk.com social network called VKontakte. Supports ruby-way method naming (without any method lists inside), result typecasting and any faraday-supported http adapter of your choice (no hardcoded Net::HTTP).}
   
