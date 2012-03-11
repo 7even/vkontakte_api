@@ -96,11 +96,15 @@ If VKontakte returns an error in response, you get a `VkontakteApi::Error` excep
 # => VkontakteApi::Error: VKontakte returned an error 1: 'Unknown error occured' after calling method 'audio.getById' with parameters {}.
 ```
 
+## Changelog
+
+* 0.1 Initial stable version
+* 0.2 Array arguments support, cleaned up non-authorized requests, updated namespaces list, code documentation
+
 ## Roadmap
 
 * Authentication (getting the access_token from VK)
 * Maybe Struct-like objects in result (instead of Hashes)
-* RDoc/YARD coverage
 
 ## Contributing
 
