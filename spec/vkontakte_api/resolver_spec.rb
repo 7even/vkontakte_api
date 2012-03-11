@@ -13,31 +13,40 @@ describe VkontakteApi::Resolver do
     
     context "with a nil @namespace" do
       before(:each) do
+        VkontakteApi::Resolver.stub(:vk_method_name).and_return(['apiMethod', :anything])
         @resolver = VkontakteApi::Resolver.new(:access_token => @token)
       end
       
-      context "with method_name not from NAMESPACES" do
-        before(:each) do
-          VkontakteApi::Resolver.stub(:vk_method_name).and_return(['apiMethod', :anything])
-        end
-        
+      context "with method_name not from namespaces" do
         it "calls #vk_method_name with method name and nil namespace" do
           VkontakteApi::Resolver.should_receive(:vk_method_name).with('api_method', nil)
           @resolver.api_method
         end
         
-        it "calls #api_call with full VK method name" do
-          full_args = @args.merge(:access_token => @token)
-          VkontakteApi::API.should_receive(:call).with('apiMethod', full_args)
+        it "calls #api_call with full VK method name and access_token" do
+          @args.should_receive(:[]=).with(:access_token, @token)
+          VkontakteApi::API.should_receive(:call).with('apiMethod', @args)
           @resolver.api_method(@args).should == @result
         end
       end
       
-      context "with method_name from NAMESPACES" do
+      context "with method_name from namespaces" do
         it "return a new resolver with the corresponding @namespace" do
           new_resolver = @resolver.friends
           new_resolver.should be_a(VkontakteApi::Resolver)
           new_resolver.namespace.should == 'friends'
+        end
+      end
+      
+      context "without a token" do
+        before(:each) do
+          @resolver = VkontakteApi::Resolver.new
+        end
+        
+        it "calls #api_call with full VK method name but without a token" do
+          @args.should_not_receive(:[]=).with(:access_token, anything)
+          VkontakteApi::API.should_receive(:call).with('apiMethod', @args)
+          @resolver.api_method(@args).should == @result
         end
       end
     end

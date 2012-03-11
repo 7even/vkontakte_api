@@ -20,7 +20,13 @@ VkontakteApi.configure do |config|
 end
 ```
 
-All requests are sent via `VkontakteApi::Client` instance. To create one you just pass an access token.
+All requests are sent via `VkontakteApi::Client` instance.
+
+``` ruby
+@app = VkontakteApi::Client.new
+```
+
+To create a client able to perform authorized requests you need to pass an access token.
 
 ``` ruby
 @app = VkontakteApi::Client.new('my_access_token')

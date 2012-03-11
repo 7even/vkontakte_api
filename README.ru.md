@@ -20,7 +20,13 @@ VkontakteApi.configure do |config|
 end
 ```
 
-Все запросы к API отправляются через объект класса `VkontakteApi::Client`. Чтобы создать его, нужно просто передать в конструктор токен доступа.
+Все запросы к API отправляются через объект класса `VkontakteApi::Client`.
+
+``` ruby
+@app = VkontakteApi::Client.new
+```
+
+Чтобы создать клиент для отправки авторизованных запросов, нужно просто передать в конструктор токен доступа.
 
 ``` ruby
 @app = VkontakteApi::Client.new('my_access_token')

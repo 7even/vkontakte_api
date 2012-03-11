@@ -31,6 +31,7 @@ module VkontakteApi
     # Non-enumerable results are typecasted (and yielded if the block is present).
     # 
     # Called with a block, it returns the result of the block; called without a block it returns just the result.
+    # @todo Break this crap into several small methods.
     def method_missing(method_name, *args, &block)
       method_name = method_name.to_s
       
@@ -41,9 +42,8 @@ module VkontakteApi
         # method with a one-level name called (or second level of a two-level method)
         name, type = Resolver.vk_method_name(method_name, @namespace)
         
-        # adding access_token to the args hash
         args = args.first || {}
-        args.update(:access_token => @access_token)
+        args[:access_token] = @access_token unless @access_token.nil?
         
         result = API.call(name, args, &block)
         
