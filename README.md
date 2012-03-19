@@ -103,6 +103,7 @@ If VKontakte returns an error in response, you get a `VkontakteApi::Error` excep
 
 ## Roadmap
 
+* Logging requests
 * Authentication (getting the access_token from VK)
 * Maybe Struct-like objects in result (instead of Hashes)
 
