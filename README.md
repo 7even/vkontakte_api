@@ -100,6 +100,7 @@ If VKontakte returns an error in response, you get a `VkontakteApi::Error` excep
 
 * 0.1 Initial stable version
 * 0.2 Array arguments support, cleaned up non-authorized requests, updated namespaces list, code documentation
+* 0.2.1 `stats` namespace
 
 ## Roadmap
 
