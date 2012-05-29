@@ -106,6 +106,7 @@ If VKontakte returns an error in response, you get a `VkontakteApi::Error` excep
 
 * Logging requests
 * Authentication (getting the access_token from VK)
+* Uploading files to vk.com servers
 * Maybe Struct-like objects in result (instead of Hashes)
 
 ## Contributing
