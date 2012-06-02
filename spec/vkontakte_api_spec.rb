@@ -10,5 +10,9 @@ describe VkontakteApi do
         end
       end
     end
+    
+    after(:each) do
+      VkontakteApi.reset
+    end
   end
 end

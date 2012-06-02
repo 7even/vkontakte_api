@@ -7,6 +7,9 @@ describe VkontakteApi::API do
       :field        => 'value',
       :access_token => 'some_token'
     }
+    
+    @logger   = stub("Logger").as_null_object
+    VK.logger = @logger
   end
   
   describe ".call" do
@@ -17,8 +20,8 @@ describe VkontakteApi::API do
       @connection = stub("Faraday connection")
       Faraday.stub(:new).and_return(@connection)
       
-      body = stub("Response body")
-      response = stub("Response", :body => body)
+      @body = stub("Response body")
+      response = stub("Response", :body => @body)
       @connection.stub(:get).and_return(response)
       
       @result = stub("Result")
@@ -44,6 +47,28 @@ describe VkontakteApi::API do
     end
     
     context "with a successful response" do
+      context "with VkontakteApi.log_responses?" do
+        before(:each) do
+          VkontakteApi.log_responses = true
+        end
+        
+        it "calls VkontakteApi.logger.debug with the response body" do
+          @logger.should_receive(:debug).with(@body)
+          VkontakteApi::API.call('apiMethod')
+        end
+      end
+      
+      context "without VkontakteApi.log_responses?" do
+        before(:each) do
+          VkontakteApi.log_responses = false
+        end
+        
+        it "calls VkontakteApi.logger.debug with the response body" do
+          @logger.should_not_receive(:debug)
+          VkontakteApi::API.call('apiMethod')
+        end
+      end
+      
       it "returns the response body" do
         VkontakteApi::API.call('apiMethod').should == @result_response
       end
@@ -52,6 +77,28 @@ describe VkontakteApi::API do
     context "with an error response" do
       before(:each) do
         @result.stub(:has_key?) { |key| key != 'response' }
+      end
+      
+      context "with VkontakteApi.log_errors?" do
+        before(:each) do
+          VkontakteApi.log_errors = true
+        end
+        
+        it "calls VkontakteApi.logger.warn with the response body" do
+          @logger.should_receive(:warn).with(@body)
+          VkontakteApi::API.call('apiMethod') rescue VkontakteApi::Error
+        end
+      end
+      
+      context "without VkontakteApi.log_errors?" do
+        before(:each) do
+          VkontakteApi.log_errors = false
+        end
+        
+        it "calls VkontakteApi.logger.warn with the response body" do
+          @logger.should_not_receive(:warn)
+          VkontakteApi::API.call('apiMethod') rescue VkontakteApi::Error
+        end
       end
       
       it "raises a VkontakteApi::Error" do

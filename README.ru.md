@@ -12,14 +12,6 @@ gem install vkontakte_api
 
 ## Использование
 
-По умолчанию для HTTP-запросов используется `Net::HTTP`. Можно выбрать любой другой адаптер, поддерживаемый `faraday`, в блоке `VkontakteApi.configure` следующим образом:
-
-``` ruby
-VkontakteApi.configure do |config|
-  config.adapter = :net_http
-end
-```
-
 Все запросы к API отправляются через объект класса `VkontakteApi::Client`.
 
 ``` ruby
@@ -96,11 +88,29 @@ end
 # => VkontakteApi::Error: VKontakte returned an error 1: 'Unknown error occured' after calling method 'audio.getById' with parameters {}.
 ```
 
+## Настройка
+
+Глобальные параметры библиотеки можно указать в блоке `VkontakteApi.configure`:
+
+``` ruby
+VkontakteApi.configure do |config|
+  config.adapter       = :net_http
+  config.logger        = Rails.logger
+  config.log_errors    = true
+  config.log_responses = false
+end
+```
+
+* по умолчанию для HTTP-запросов используется `Net::HTTP`; можно выбрать любой другой адаптер, поддерживаемый `faraday`
+* стандартный логгер выводит все в `STDOUT`; в rails-приложении имеет смысл назначить логгером `Rails.logger`
+* по умолчанию в лог пишется только JSON в ситуациях, когда ВКонтакте возвращает ошибку; при желании можно также выводить JSON при удачном запросе (ошибки логгируются с уровнем `warn`, удачные ответы - с уровнем `debug`)
+
 ## Changelog
 
 * 0.1 Первая стабильная версия
 * 0.2 Поддержка аргументов-массивов, подчищенные неавторизованные запросы, обновленный список пространств имен, документация кода
 * 0.2.1 Пространство имен `stats`
+* 1.0 Настраиваемый логгер
 
 ## Планы
 

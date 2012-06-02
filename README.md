@@ -12,14 +12,6 @@ gem install vkontakte_api
 
 ## Usage
 
-Default HTTP request library is `Net::HTTP`. You can set any other adapter supported by `faraday` in the configure block like so:
-
-``` ruby
-VkontakteApi.configure do |config|
-  config.adapter = :net_http
-end
-```
-
 All requests are sent via `VkontakteApi::Client` instance.
 
 ``` ruby
@@ -96,11 +88,29 @@ If VKontakte returns an error in response, you get a `VkontakteApi::Error` excep
 # => VkontakteApi::Error: VKontakte returned an error 1: 'Unknown error occured' after calling method 'audio.getById' with parameters {}.
 ```
 
+## Customization
+
+Global library settings can be specified in `VkontakteApi.configure` block:
+
+``` ruby
+VkontakteApi.configure do |config|
+  config.adapter       = :net_http
+  config.logger        = Rails.logger
+  config.log_errors    = true
+  config.log_responses = false
+end
+```
+
+* default HTTP request library is `Net::HTTP`; you can set any other adapter supported by `faraday`
+* standard logger outputs everything to `STDOUT`; it makes sense to set `Rails.logger` as a logger if you are in a rails app
+* by default only error JSON is logged; you can also log successful responses if you wish (errors are logged with a `warn` level, successful responses - with `debug`)
+
 ## Changelog
 
 * 0.1 Initial stable version
 * 0.2 Array arguments support, cleaned up non-authorized requests, updated namespaces list, code documentation
 * 0.2.1 `stats` namespace
+* 1.0 Customizable logger
 
 ## Roadmap
 

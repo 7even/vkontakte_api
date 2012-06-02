@@ -1,3 +1,4 @@
 module VkontakteApi
-  VERSION = '0.2.1'
+  # Library version.
+  VERSION = '1.0'
 end
