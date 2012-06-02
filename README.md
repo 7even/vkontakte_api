@@ -114,10 +114,10 @@ end
 
 ## Roadmap
 
-* Logging requests
 * Authentication (getting the access_token from VK)
 * Uploading files to vk.com servers
 * Maybe Struct-like objects in result (instead of Hashes)
+* Rails generator for initializer
 
 ## Contributing
 
