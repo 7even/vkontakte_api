@@ -66,13 +66,22 @@ users_ids = [1, 6492]
 @app.users.get(uids: users_ids) # => same output as above
 ```
 
-It's also worth noting that all returned hashes have symbolized keys.
+All hashes in method results are wrapped in `Hashie::Mash` so you can access their attributes by string keys, symbol keys or accessor methods. So, continuing the example above:
+
+``` ruby
+users = @app.users.get(uids: users_ids)
+users.first[:uid]        # => "1"
+users.last['first_name'] # => "Andrew"
+users.last.last_name     # => "Rogozov"
+# let's check if the first user has a uid
+users.first.uid?         # => true
+```
 
 If the response is an Enumerable, you can pass a block that will yield each successive element and put the result in the returned array (like `Enumerable#map` does):
 
 ``` ruby
 @app.friends.get(fields: 'first_name,last_name') do |friend|
-  "#{friend[:first_name]} #{friend[:last_name]}"
+  "#{friend.first_name} #{friend.last_name}"
 end
 # => ["Павел Дуров", "Andrew Rogozov"]
 ```
@@ -85,7 +94,7 @@ If VKontakte returns an error in response, you get a `VkontakteApi::Error` excep
 
 ``` ruby
 @app.audio.get_by_id
-# => VkontakteApi::Error: VKontakte returned an error 1: 'Unknown error occured' after calling method 'audio.getById' with parameters {}.
+# => VkontakteApi::Error: VKontakte returned an error 1: 'Unknown error occured' after calling method 'audio.getById' without parameters.
 ```
 
 ## Customization

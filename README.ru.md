@@ -67,12 +67,22 @@ users_ids = [1, 6492]
 ```
 
 Также следует заметить, что все возвращаемые хэши имеют символьные ключи.
+Все хэши в результатах методов оборачиваются в `Hashie::Mash`, поэтому к их атрибутам можно обращаться как по строковым ключам, так и по символьным, а также через методы-аксессоры. Продолжая пример выше:
+
+``` ruby
+users = @app.users.get(uids: users_ids)
+users.first[:uid]        # => "1"
+users.last['first_name'] # => "Andrew"
+users.last.last_name     # => "Rogozov"
+# проверим, есть ли у первого юзера uid
+users.first.uid?         # => true
+```
 
 Если результат метода - Enumerable, то методу можно передать блок, который будет вызван для каждого элемента результата. В этом случае метод вернет массив из результатов выполнения блока с каждым элементом (аналогично `Enumerable#map`):
 
 ``` ruby
 @app.friends.get(fields: 'first_name,last_name') do |friend|
-  "#{friend[:first_name]} #{friend[:last_name]}"
+  "#{friend.first_name} #{friend.last_name}"
 end
 # => ["Павел Дуров", "Andrew Rogozov"]
 ```
@@ -85,7 +95,7 @@ end
 
 ``` ruby
 @app.audio.get_by_id
-# => VkontakteApi::Error: VKontakte returned an error 1: 'Unknown error occured' after calling method 'audio.getById' with parameters {}.
+# => VkontakteApi::Error: VKontakte returned an error 1: 'Unknown error occured' after calling method 'audio.getById' without parameters.
 ```
 
 ## Настройка
