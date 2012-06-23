@@ -1,6 +1,7 @@
 require 'faraday'
 require 'yajl'
 require 'yaml'
+require 'hashie'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/core_ext/object/to_query'
 

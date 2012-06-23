@@ -24,19 +24,10 @@ describe VkontakteApi::API do
       response = stub("Response", :body => @body)
       @connection.stub(:get).and_return(response)
       
-      @result = stub("Result")
-      @result.stub(:has_key?) { |key| key == 'response' }
-      
       @result_response  = stub("Result[response]")
       @result_error     = stub("Result[error]").as_null_object
       
-      @result.stub(:[]) do |key|
-        if key == :response
-          @result_response
-        else
-          @result_error
-        end
-      end
+      @result = {'response' => @result_response}
       
       Yajl::Parser.stub(:parse).and_return(@result)
     end
@@ -76,7 +67,7 @@ describe VkontakteApi::API do
     
     context "with an error response" do
       before(:each) do
-        @result.stub(:has_key?) { |key| key != 'response' }
+        @result['error'] = @result_error
       end
       
       context "with VkontakteApi.log_errors?" do

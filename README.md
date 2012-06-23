@@ -110,13 +110,12 @@ end
 * 0.1 Initial stable version
 * 0.2 Array arguments support, cleaned up non-authorized requests, updated namespaces list, code documentation
 * 0.2.1 `stats` namespace
-* 1.0 Customizable logger
+* 1.0 Customizable logger, `Hashie::Mash` method results
 
 ## Roadmap
 
 * Authentication (getting the access_token from VK)
 * Uploading files to vk.com servers
-* Maybe Struct-like objects in result (instead of Hashes)
 * Rails generator for initializer
 
 ## Contributing

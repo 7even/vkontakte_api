@@ -19,14 +19,15 @@ module VkontakteApi
         
         url = url_for(method_name, args)
         body = connection.get(url).body
-        response = Yajl::Parser.parse(body, :symbolize_keys => true)
+        response = Yajl::Parser.parse(body)
+        response = Hashie::Mash.new(response)
         
-        if response.has_key?(:error)
+        if response.error?
           VkontakteApi.logger.warn(body) if VkontakteApi.log_errors?
-          raise VkontakteApi::Error.new(response[:error])
+          raise VkontakteApi::Error.new(response.error)
         else
           VkontakteApi.logger.debug(body) if VkontakteApi.log_responses?
-          response[:response]
+          response.response
         end
       end
       
