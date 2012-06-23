@@ -8,11 +8,11 @@ module VkontakteApi
     # An exception is initialized by the data from response hash.
     # @param [Hash] data Error data.
     def initialize(data)
-      @error_code = data.delete(:error_code)
-      @error_msg  = data.delete(:error_msg)
+      @error_code = data.error_code
+      @error_msg  = data.error_msg
       @params     = {}
       
-      request_params = parse_params(data.delete :request_params)
+      request_params = parse_params(data.request_params)
       
       @method_name  = request_params.delete('method')
       @access_token = request_params.delete('access_token')
@@ -23,7 +23,16 @@ module VkontakteApi
     # A full description of the error.
     # @return [String]
     def message
-      "VKontakte returned an error #{@error_code}: '#{@error_msg}' after calling method '#{@method_name}' with parameters #{@params.inspect}."
+      message = "VKontakte returned an error #{@error_code}: '#{@error_msg}'"
+      message << " after calling method '#{@method_name}'"
+      
+      if @params.empty?
+        message << " without parameters."
+      else
+        message << " with parameters #{@params.inspect}."
+      end
+      
+      message
     end
     
   private
