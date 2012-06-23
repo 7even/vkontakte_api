@@ -7,7 +7,7 @@ Below is the English version of the readme. Russian version is located [here](ht
 ## Installation
 
 ``` bash
-gem install vkontakte_api
+$ gem install vkontakte_api
 ```
 
 ## Usage

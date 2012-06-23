@@ -7,7 +7,7 @@
 ## Установка
 
 ``` bash
-gem install vkontakte_api
+$ gem install vkontakte_api
 ```
 
 ## Использование
