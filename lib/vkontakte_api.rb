@@ -1,5 +1,8 @@
+require 'oj'
+Oj.mimic_JSON
+
 require 'faraday'
-require 'yajl'
+require 'faraday_middleware'
 require 'yaml'
 require 'hashie'
 require 'active_support/core_ext/string/inflections'

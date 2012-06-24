@@ -14,26 +14,26 @@ describe VkontakteApi::API do
   
   describe ".call" do
     before(:each) do
-      @url = stub("URL")
-      VkontakteApi::API.stub(:url_for).and_return(@url)
-      
-      @connection = stub("Faraday connection")
-      Faraday.stub(:new).and_return(@connection)
-      
-      @body = stub("Response body")
-      response = stub("Response", :body => @body)
-      @connection.stub(:get).and_return(response)
-      
-      @result_response  = stub("Result[response]")
-      @result_error     = stub("Result[error]").as_null_object
+      @result_response  = {'key' => 'value'}
+      @result_error     = {'request_params' => [{'key' => 'error', 'value' => 'description'}]}
       
       @result = {'response' => @result_response}
       
-      Yajl::Parser.stub(:parse).and_return(@result)
+      @connection = Faraday.new do |builder|
+        builder.response :json, :preserve_raw => true
+        builder.adapter  :test do |stub|
+          stub.get('/url') do
+            [200, {}, Oj.dump(@result)]
+          end
+        end
+      end
+      VkontakteApi::API.stub(:connection).and_return(@connection)
+      
+      VkontakteApi::API.stub(:url_for).and_return('/url')
     end
     
     it "calls the url from .url_for" do
-      @connection.should_receive(:get).with(@url)
+      @connection.should_receive(:get).with('/url').and_return(stub.as_null_object)
       VkontakteApi::API.call('apiMethod')
     end
     
@@ -44,7 +44,7 @@ describe VkontakteApi::API do
         end
         
         it "calls VkontakteApi.logger.debug with the response body" do
-          @logger.should_receive(:debug).with(@body)
+          @logger.should_receive(:debug).with(@result)
           VkontakteApi::API.call('apiMethod')
         end
       end
@@ -76,7 +76,7 @@ describe VkontakteApi::API do
         end
         
         it "calls VkontakteApi.logger.warn with the response body" do
-          @logger.should_receive(:warn).with(@body)
+          @logger.should_receive(:warn).with(@result)
           VkontakteApi::API.call('apiMethod') rescue VkontakteApi::Error
         end
       end

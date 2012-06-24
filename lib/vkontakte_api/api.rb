@@ -13,25 +13,27 @@ module VkontakteApi
       # @return [Hash] The result of the method call.
       # @raise [VkontakteApi::Error] raised when VKontakte returns an error.
       def call(method_name, args = {}, &block)
-        connection = Faraday.new(:url => BASE_HOST) do |builder|
-          builder.adapter(VkontakteApi.adapter)
-        end
-        
         url = url_for(method_name, args)
-        body = connection.get(url).body
-        response = Yajl::Parser.parse(body)
+        response = connection.get(url).body
         response = Hashie::Mash.new(response)
         
         if response.error?
-          VkontakteApi.logger.warn(body) if VkontakteApi.log_errors?
+          VkontakteApi.logger.warn(response) if VkontakteApi.log_errors?
           raise VkontakteApi::Error.new(response.error)
         else
-          VkontakteApi.logger.debug(body) if VkontakteApi.log_responses?
+          VkontakteApi.logger.debug(response) if VkontakteApi.log_responses?
           response.response
         end
       end
       
     private
+      def connection
+        Faraday.new(:url => BASE_HOST) do |builder|
+          builder.response :json
+          builder.adapter  VkontakteApi.adapter
+        end
+      end
+      
       def url_for(method_name, arguments)
         flat_arguments = flatten_arguments(arguments)
         "#{BASE_URL}#{method_name}?#{flat_arguments.to_param}"
