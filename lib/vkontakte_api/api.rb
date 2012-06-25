@@ -17,10 +17,8 @@ module VkontakteApi
         response = Hashie::Mash.new(response)
         
         if response.error?
-          VkontakteApi.logger.warn(response) if VkontakteApi.log_errors?
           raise VkontakteApi::Error.new(response.error)
         else
-          VkontakteApi.logger.debug(response) if VkontakteApi.log_responses?
           response.response
         end
       end
@@ -28,7 +26,8 @@ module VkontakteApi
     private
       def connection
         Faraday.new(:url => URL_PREFIX) do |builder|
-          builder.response :json
+          builder.response :vk_logger
+          builder.response :json, :preserve_raw => true
           builder.adapter  VkontakteApi.adapter
         end
       end

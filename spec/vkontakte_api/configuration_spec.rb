@@ -26,6 +26,7 @@ describe VkontakteApi::Configuration do
       Configurable.adapter.should == VkontakteApi::Configuration::DEFAULT_ADAPTER
       
       Configurable.logger.should be_a(Logger)
+      Configurable.should log_requests
       Configurable.should log_errors
       Configurable.should_not log_responses
     end

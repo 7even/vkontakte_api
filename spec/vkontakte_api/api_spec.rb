@@ -34,28 +34,6 @@ describe VkontakteApi::API do
     end
     
     context "with a successful response" do
-      context "with VkontakteApi.log_responses?" do
-        before(:each) do
-          VkontakteApi.log_responses = true
-        end
-        
-        it "calls VkontakteApi.logger.debug with the response body" do
-          @logger.should_receive(:debug).with(@result)
-          VkontakteApi::API.call('apiMethod')
-        end
-      end
-      
-      context "without VkontakteApi.log_responses?" do
-        before(:each) do
-          VkontakteApi.log_responses = false
-        end
-        
-        it "calls VkontakteApi.logger.debug with the response body" do
-          @logger.should_not_receive(:debug)
-          VkontakteApi::API.call('apiMethod')
-        end
-      end
-      
       it "returns the response body" do
         VkontakteApi::API.call('apiMethod').should == @result_response
       end
@@ -64,28 +42,6 @@ describe VkontakteApi::API do
     context "with an error response" do
       before(:each) do
         @result['error'] = @result_error
-      end
-      
-      context "with VkontakteApi.log_errors?" do
-        before(:each) do
-          VkontakteApi.log_errors = true
-        end
-        
-        it "calls VkontakteApi.logger.warn with the response body" do
-          @logger.should_receive(:warn).with(@result)
-          VkontakteApi::API.call('apiMethod') rescue VkontakteApi::Error
-        end
-      end
-      
-      context "without VkontakteApi.log_errors?" do
-        before(:each) do
-          VkontakteApi.log_errors = false
-        end
-        
-        it "calls VkontakteApi.logger.warn with the response body" do
-          @logger.should_not_receive(:warn)
-          VkontakteApi::API.call('apiMethod') rescue VkontakteApi::Error
-        end
       end
       
       it "raises a VkontakteApi::Error" do

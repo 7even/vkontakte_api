@@ -1,6 +1,12 @@
 require 'vkontakte_api'
 require 'pry'
 
+RSpec::Matchers.define :log_requests do
+  match do |logger|
+    logger.log_requests?
+  end
+end
+
 RSpec::Matchers.define :log_errors do
   match do |logger|
     logger.log_errors?
