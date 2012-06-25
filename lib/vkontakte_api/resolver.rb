@@ -106,17 +106,20 @@ module VkontakteApi
         end
         
         full_name = ''
-        full_name << convert(namespace) + '.' unless namespace.nil?
-        full_name << convert(method_name)
+        full_name << camelize(namespace) + '.' unless namespace.nil?
+        full_name << camelize(method_name)
         
         [full_name, type]
       end
       
     private
-      # convert('get_profiles')
+      # camelize('get_profiles')
       # => 'getProfiles'
-      def convert(name)
-        name.camelize(:lower)
+      def camelize(name)
+        words = name.split('_')
+        first_word = words.shift
+        
+        words.map(&:capitalize).unshift(first_word).join
       end
     end
   end

@@ -5,8 +5,6 @@ require 'faraday'
 require 'faraday_middleware'
 require 'yaml'
 require 'hashie'
-require 'active_support/core_ext/string/inflections'
-require 'active_support/core_ext/object/to_query'
 
 require 'vkontakte_api/version'
 require 'vkontakte_api/error'
