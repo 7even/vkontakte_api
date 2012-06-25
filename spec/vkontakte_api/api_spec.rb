@@ -3,10 +3,6 @@ require 'spec_helper'
 describe VkontakteApi::API do
   before(:each) do
     @method_name =  'apiMethod'
-    @args = {
-      :field        => 'value',
-      :access_token => 'some_token'
-    }
     
     @logger   = stub("Logger").as_null_object
     VK.logger = @logger
@@ -100,20 +96,28 @@ describe VkontakteApi::API do
     end
   end
   
-  describe ".url_for" do
-    it "constructs a valid VK API url" do
-      url = VkontakteApi::API.send(:url_for, @method_name, @args)
-      url.should == '/method/apiMethod?access_token=some_token&field=value'
+  describe ".flatten_arguments" do
+    before(:each) do
+      @args = {
+        :field        => 'value',
+        :access_token => 'some_token'
+      }
     end
     
-    context "with an array argument" do
+    context "with flat arguments" do
+      it "leaves them untouched" do
+        VkontakteApi::API.send(:flatten_arguments, @args).should == @args
+      end
+    end
+    
+    context "with array arguments" do
       before(:each) do
         @args_with_array = @args.merge(:array_arg => [1, 2, 3])
       end
       
-      it "concats it with a comma" do
-        url = VkontakteApi::API.send(:url_for, @method_name, @args_with_array)
-        url.should == "/method/apiMethod?access_token=some_token&array_arg=#{CGI.escape('1,2,3')}&field=value"
+      it "joins them with a comma" do
+        flat_arguments = VkontakteApi::API.send(:flatten_arguments, @args_with_array)
+        flat_arguments.should == @args.merge(:array_arg => '1,2,3')
       end
     end
   end

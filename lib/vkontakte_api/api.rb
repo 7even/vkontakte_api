@@ -3,8 +3,7 @@ module VkontakteApi
   # 
   # It uses Faraday underneath the hood.
   module API
-    BASE_HOST = 'https://api.vkontakte.ru'
-    BASE_URL  = '/method/'
+    URL_PREFIX = 'https://api.vkontakte.ru/method'
     
     class << self
       # Main interface method.
@@ -28,7 +27,7 @@ module VkontakteApi
       
     private
       def connection
-        Faraday.new(:url => BASE_HOST) do |builder|
+        Faraday.new(:url => URL_PREFIX) do |builder|
           builder.response :json
           builder.adapter  VkontakteApi.adapter
         end
@@ -36,7 +35,7 @@ module VkontakteApi
       
       def url_for(method_name, arguments)
         flat_arguments = flatten_arguments(arguments)
-        "#{BASE_URL}#{method_name}?#{flat_arguments.to_param}"
+        connection.build_url(method_name, flat_arguments)
       end
       
       def flatten_arguments(arguments)
