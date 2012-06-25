@@ -125,6 +125,7 @@ end
 
 * Authentication (getting the access_token from VK)
 * Uploading files to vk.com servers
+* Getting rid of the namespaces list
 * Rails generator for initializer
 
 ## Contributing
