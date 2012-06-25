@@ -1,13 +1,6 @@
 require 'spec_helper'
 
 describe VkontakteApi::API do
-  before(:each) do
-    @method_name =  'apiMethod'
-    
-    @logger   = stub("Logger").as_null_object
-    VK.logger = @logger
-  end
-  
   describe ".call" do
     before(:each) do
       @result_response  = {'key' => 'value'}
@@ -16,6 +9,7 @@ describe VkontakteApi::API do
       @result = {'response' => @result_response}
       
       @connection = Faraday.new do |builder|
+        builder.response :mashify
         builder.response :json, :preserve_raw => true
         builder.adapter  :test do |stub|
           stub.get('/url') do
@@ -26,11 +20,6 @@ describe VkontakteApi::API do
       VkontakteApi::API.stub(:connection).and_return(@connection)
       
       VkontakteApi::API.stub(:url_for).and_return('/url')
-    end
-    
-    it "calls the url from .url_for" do
-      @connection.should_receive(:get).with('/url').and_return(stub.as_null_object)
-      VkontakteApi::API.call('apiMethod')
     end
     
     context "with a successful response" do
