@@ -36,10 +36,10 @@ module VkontakteApi
       method_name = method_name.to_s
       
       if Resolver.namespaces.include?(method_name)
-        # first level of method with a two-level name called
+        # method_name is a name of some namespace
         Resolver.new(:namespace => method_name, :access_token => @access_token)
       else
-        # method with a one-level name called (or second level of a two-level method)
+        # method_name is a name of some method
         name, type = Resolver.vk_method_name(method_name, @namespace)
         
         args = args.first || {}
@@ -78,7 +78,7 @@ module VkontakteApi
       
       # Loading namespaces array from `namespaces.yml`.
       # This method is called automatically at startup time.
-      def load_namespaces
+      def load_namespaces!
         filename    = File.expand_path('../namespaces.yml', __FILE__)
         file        = File.read(filename)
         @namespaces = YAML.load(file)
@@ -129,4 +129,4 @@ module VkontakteApi
   end
 end
 
-VkontakteApi::Resolver.load_namespaces
+VkontakteApi::Resolver.load_namespaces!
