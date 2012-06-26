@@ -134,6 +134,12 @@ describe VkontakteApi::Resolver do
         end
       end
       
+      context "with several upcase letters in row" do
+        it "just upcases the first letter of each word" do
+          VkontakteApi::Resolver.vk_method_name(:get_SMS_prefix).first.should == 'getSMSPrefix'
+        end
+      end
+      
       it "returns :anything as a type" do
         VkontakteApi::Resolver.vk_method_name(:api_method).last.should == :anything
       end

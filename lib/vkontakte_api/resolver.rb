@@ -119,7 +119,11 @@ module VkontakteApi
         words = name.split('_')
         first_word = words.shift
         
-        words.map(&:capitalize).unshift(first_word).join
+        words.each do |word|
+          word.sub!(/^[a-z]/, &:upcase)
+        end
+        
+        words.unshift(first_word).join
       end
     end
   end
