@@ -9,7 +9,7 @@ module VkontakteApi
   # 4. the result is typecasted and/or yielded (mapped) to a block depending on it's type
   class Resolver
     # A pattern for names of methods with a boolean result.
-    PREDICATE_NAMES = /^(is.*)\?$/
+    PREDICATE_NAMES = /^is.*\?$/
     
     # A namespace of the current instance (if present).
     attr_reader :namespace
@@ -40,27 +40,31 @@ module VkontakteApi
         Resolver.new(:namespace => method_name, :access_token => @access_token)
       else
         # method_name is a name of some method
-        name, type = Resolver.vk_method_name(method_name, @namespace)
+        name = Resolver.vk_method_name(method_name, @namespace)
+        type = Resolver.type(method_name)
         
         args = args.first || {}
         args[:access_token] = @access_token unless @access_token.nil?
         
-        result = API.call(name, args, &block)
-        
-        if result.respond_to?(:each)
-          # enumerable result receives :map with a block when called with a block
-          # or is returned untouched otherwise
-          block_given? ? result.map(&block) : result
-        else
-          # non-enumerable result is typecasted
-          # (and yielded if block_given?)
-          result = typecast(result, type)
-          block_given? ? yield(result) : result
-        end
+        result = API.call(name, args)
+        yield_result(result, type, block)
       end
     end
     
   private
+    def yield_result(result, type, block)
+      if result.respond_to?(:each)
+        # enumerable result receives :map with a block when called with a block
+        # or is returned untouched otherwise
+        block.nil? ? result : result.map(&block)
+      else
+        # non-enumerable result is typecasted
+        # (and yielded if block_given?)
+        result = typecast(result, type)
+        block.nil? ? result : block.call(result)
+      end
+    end
+    
     def typecast(parameter, type)
       case type
       when :boolean
@@ -94,22 +98,13 @@ module VkontakteApi
       #   # => 'places.getCountryById'
       # @return [Array] full method name and type
       def vk_method_name(method_name, namespace = nil)
-        method_name = method_name.to_s
-        
-        if method_name =~ PREDICATE_NAMES
-          # predicate methods should return true or false
-          method_name.sub!(PREDICATE_NAMES, '\1')
-          type = :boolean
-        else
-          # other methods can return anything they want
-          type = :anything
-        end
-        
-        full_name = ''
-        full_name << camelize(namespace) + '.' unless namespace.nil?
-        full_name << camelize(method_name)
-        
-        [full_name, type]
+        full_name = [namespace, method_name].compact.map { |part| camelize(part) }.join('.')
+        # remove everything except letters and dots
+        full_name.gsub(/[^A-Za-z.]/, '')
+      end
+      
+      def type(method_name)
+        method_name =~ PREDICATE_NAMES ? :boolean : :anything
       end
       
     private
