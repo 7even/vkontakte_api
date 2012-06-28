@@ -15,6 +15,7 @@ require 'vkontakte_api/resolvable'
 require 'vkontakte_api/client'
 require 'vkontakte_api/namespace'
 require 'vkontakte_api/method'
+require 'vkontakte_api/result'
 require 'vkontakte_api/logger'
 
 # Main module.
