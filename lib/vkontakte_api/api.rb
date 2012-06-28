@@ -11,7 +11,10 @@ module VkontakteApi
       # @param [Hash] args Method arguments including the access token.
       # @return [Hash] The result of the method call.
       # @raise [VkontakteApi::Error] raised when VKontakte returns an error.
-      def call(method_name, args = {}, &block)
+      def call(method_name, args = {}, token = nil)
+        # temporary compatibility fix
+        args = {:access_token => token}.merge(args) unless token.nil?
+        
         url = url_for(method_name, args)
         response = connection.get(url).body
         

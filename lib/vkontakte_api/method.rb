@@ -5,6 +5,11 @@ module VkontakteApi
     # A pattern for names of methods with a boolean result.
     PREDICATE_NAMES = /^is.*\?$/
     
+    def call(args = {}, &block)
+      response = API.call(full_name, args, token)
+      Result.process(response, type, block)
+    end
+    
   private
     def full_name
       parts = [@resolver.name, @name].compact.map { |part| camelize(part) }

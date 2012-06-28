@@ -17,14 +17,21 @@ describe VkontakteApi::API do
           end
         end
       end
-      VkontakteApi::API.stub(:connection).and_return(@connection)
+      subject.stub(:connection).and_return(@connection)
       
-      VkontakteApi::API.stub(:url_for).and_return('/url')
+      subject.stub(:url_for).and_return('/url')
+    end
+    
+    context "called with a token parameter" do
+      it "puts it into args" do
+        subject.should_receive(:url_for).with('apiMethod', :some => :params, :access_token => 'token')
+        subject.call('apiMethod', {:some => :params}, 'token')
+      end
     end
     
     context "with a successful response" do
       it "returns the response body" do
-        VkontakteApi::API.call('apiMethod').should == @result_response
+        subject.call('apiMethod').should == @result_response
       end
     end
     
@@ -35,7 +42,7 @@ describe VkontakteApi::API do
       
       it "raises a VkontakteApi::Error" do
         expect {
-          VkontakteApi::API.call('apiMethod')
+          subject.call('apiMethod')
         }.to raise_error(VkontakteApi::Error)
       end
     end
@@ -51,7 +58,7 @@ describe VkontakteApi::API do
     
     context "with flat arguments" do
       it "leaves them untouched" do
-        VkontakteApi::API.send(:flatten_arguments, @args).should == @args
+        subject.send(:flatten_arguments, @args).should == @args
       end
     end
     
@@ -61,7 +68,7 @@ describe VkontakteApi::API do
       end
       
       it "joins them with a comma" do
-        flat_arguments = VkontakteApi::API.send(:flatten_arguments, @args_with_array)
+        flat_arguments = subject.send(:flatten_arguments, @args_with_array)
         flat_arguments.should == @args.merge(:array_arg => '1,2,3')
       end
     end
