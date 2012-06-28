@@ -1,6 +1,8 @@
 module VkontakteApi
   # A class representing a connection to VK. It holds an access token.
   class Client
+    # include Resolver
+    
     # An access token needed by authorized requests.
     attr_reader :access_token
     
