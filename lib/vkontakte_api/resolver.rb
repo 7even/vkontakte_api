@@ -77,15 +77,16 @@ module VkontakteApi
     
     class << self
       # An array of method namespaces.
+      # Loads the list from `namespaces.yml` on first demand
+      # and caches it for subsequent calls.
       # @return [Array]
-      attr_reader :namespaces
-      
-      # Loading namespaces array from `namespaces.yml`.
-      # This method is called automatically at startup time.
-      def load_namespaces!
-        filename    = File.expand_path('../namespaces.yml', __FILE__)
-        file        = File.read(filename)
-        @namespaces = YAML.load(file)
+      def namespaces
+        if @namespaces.nil?
+          filename    = File.expand_path('../namespaces.yml', __FILE__)
+          @namespaces = YAML.load_file(filename)
+        end
+        
+        @namespaces
       end
       
       # A complete method name needed by VKontakte.
@@ -123,5 +124,3 @@ module VkontakteApi
     end
   end
 end
-
-VkontakteApi::Resolver.load_namespaces!
