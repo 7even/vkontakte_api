@@ -45,6 +45,18 @@ describe VkontakteApi::Authentication do
         @auth.authentication_url(@options)
       end
     end
+    
+    context "given a scope" do
+      it "sends it to VkontakteApi::Utils.flatten_argument" do
+        scope = stub("Scope")
+        @options[:scope] = scope
+        flat_scope = stub("Flat scope")
+        
+        VkontakteApi::Utils.should_receive(:flatten_argument).with(scope).and_return(flat_scope)
+        @auth_code.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri, :scope => flat_scope)
+        @auth.authentication_url(@options)
+      end
+    end
   end
   
   describe "#authenticate" do

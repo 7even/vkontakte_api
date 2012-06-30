@@ -8,6 +8,7 @@ module VkontakteApi
       strategy = options.delete(:strategy) || :auth_code
       # redirect_uri passed in options overrides the global setting
       options[:redirect_uri] ||= VkontakteApi.redirect_uri
+      options[:scope] = VkontakteApi::Utils.flatten_argument(options[:scope]) if options[:scope]
       
       client.auth_code.authorize_url(options)
     end
