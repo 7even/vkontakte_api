@@ -12,16 +12,14 @@ module VkontakteApi
       # @return [Hash] The result of the method call.
       # @raise [VkontakteApi::Error] raised when VKontakte returns an error.
       def call(method_name, args = {}, token = nil)
-        # temporary compatibility fix
-        args = {:access_token => token}.merge(args) unless token.nil?
-        
         url = url_for(method_name, args)
-        connection.get(url).body
+        connection(token).get(url).body
       end
       
     private
-      def connection
+      def connection(token = nil)
         Faraday.new(:url => URL_PREFIX) do |builder|
+          builder.request  :oauth2, token unless token.nil?
           builder.response :vk_logger
           builder.response :mashify
           builder.response :json, :preserve_raw => true

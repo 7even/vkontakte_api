@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe VkontakteApi::API do
-  before(:each) do
+  def create_connection
     @result = {'response' => {'key' => 'value'}}
     
     @connection = Faraday.new do |builder|
@@ -18,12 +18,13 @@ describe VkontakteApi::API do
   
   describe ".call" do
     before(:each) do
+      create_connection
       subject.stub(:url_for).and_return('/url')
     end
     
     context "called with a token parameter" do
-      it "puts it into args" do
-        subject.should_receive(:url_for).with('apiMethod', :some => :params, :access_token => 'token')
+      it "sends it to .connection" do
+        subject.should_receive(:connection).with('token')
         subject.call('apiMethod', {:some => :params}, 'token')
       end
     end
@@ -33,7 +34,29 @@ describe VkontakteApi::API do
     end
   end
   
+  describe ".connection" do
+    context "without a token" do
+      it "creates a connection without an oauth2 middleware" do
+        connection = subject.send(:connection)
+        connection.builder.handlers.map(&:name).should_not include('FaradayMiddleware::OAuth2')
+      end
+    end
+    
+    context "with a token" do
+      it "creates a connection with an oauth2 middleware" do
+        connection = subject.send(:connection, :token)
+        handler = connection.builder.handlers.first
+        handler.name.should == 'FaradayMiddleware::OAuth2'
+        handler.instance_variable_get(:@args).should == [:token]
+      end
+    end
+  end
+  
   describe ".url_for" do
+    before(:each) do
+      create_connection
+    end
+    
     it "converts the arguments and sends them to connection.build_url" do
       args = stub("Arguments")
       flat_args = stub("Flat arguments")
