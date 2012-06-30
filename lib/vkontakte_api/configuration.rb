@@ -6,7 +6,7 @@ module VkontakteApi
   # It extends `VkontakteApi` so it's methods should be called from there.
   module Configuration
     # Available options.
-    OPTION_NAMES = [:app_id, :app_secret, :adapter, :logger, :log_requests, :log_errors, :log_responses]
+    OPTION_NAMES = [:app_id, :app_secret, :redirect_uri, :adapter, :logger, :log_requests, :log_errors, :log_responses]
     
     attr_accessor *OPTION_NAMES
     
@@ -29,6 +29,7 @@ module VkontakteApi
     #   VkontakteApi.configure do |config|
     #     config.adapter       = :net_http
     #     config.logger        = Rails.logger
+    #     config.log_requests  = true
     #     config.log_errors    = true
     #     config.log_responses = false
     #   end

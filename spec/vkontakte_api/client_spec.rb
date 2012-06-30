@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe VkontakteApi::Client do
   before(:each) do
-    @token = stub("Access token")
+    @string_token = stub("Access token as a String")
+    @oauth2_token = stub("Access token as an OAuth2::AccessToken", :token => @string_token)
   end
   
   describe "#initialize" do
@@ -14,9 +15,18 @@ describe VkontakteApi::Client do
     end
     
     context "with a token argument" do
-      it "creates a client with a given access_token" do
-        client = VkontakteApi::Client.new(@token)
-        client.token.should == @token
+      context "with a string value" do
+        it "creates a client with a given access_token" do
+          client = VkontakteApi::Client.new(@string_token)
+          client.token.should == @string_token
+        end
+      end
+      
+      context "with an OAuth2::AccessToken value" do
+        it "extracts the string token and uses it" do
+          client = VkontakteApi::Client.new(@oauth2_token)
+          client.token.should == @string_token
+        end
       end
     end
   end
@@ -30,7 +40,7 @@ describe VkontakteApi::Client do
     
     context "with an authorized client" do
       it "returns true" do
-        VkontakteApi::Client.new(@token).should be_authorized
+        VkontakteApi::Client.new(@string_token).should be_authorized
       end
     end
   end

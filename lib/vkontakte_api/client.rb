@@ -7,9 +7,15 @@ module VkontakteApi
     attr_reader :token
     
     # A new API client.
-    # @param [String] token An access token.
+    # @param [String, OAuth2::AccessToken] token An access token.
     def initialize(token = nil)
-      @token = token
+      if token.respond_to?(:token)
+        # token is an OAuth2::AccessToken
+        @token = token.token
+      else
+        # token is a String
+        @token = token
+      end
     end
     
     # Is a `VkontakteApi::Client` instance authorized.
