@@ -13,7 +13,7 @@ module VkontakteApi
         # token is an OAuth2::AccessToken
         @token = token.token
       else
-        # token is a String
+        # token is a String or nil
         @token = token
       end
     end

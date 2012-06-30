@@ -45,6 +45,17 @@ describe "Integration" do
     end
   end if ENV['TOKEN']
   
+  describe "requests with array arguments" do
+    before(:each) do
+      @vk = VkontakteApi::Client.new
+    end
+    
+    it "join arrays with a comma" do
+      users = @vk.users.get(:uids => [1, 2, 3], :fields => %w[first_name last_name screen_name])
+      users.first.screen_name.should == 'durov'
+    end
+  end
+  
   describe "requests with blocks" do
     before(:each) do
       @vk = VK::Client.new

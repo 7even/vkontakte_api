@@ -30,22 +30,8 @@ module VkontakteApi
       end
       
       def url_for(method_name, arguments)
-        flat_arguments = flatten_arguments(arguments)
+        flat_arguments = Utils.flatten_arguments(arguments)
         connection.build_url(method_name, flat_arguments)
-      end
-      
-      def flatten_arguments(arguments)
-        arguments.inject({}) do |flat_args, (arg_name, arg_value)|
-          flat_args[arg_name] = if arg_value.respond_to?(:join)
-            # if value is an array, we join it with a comma
-            arg_value.join(',')
-          else
-            # otherwise leave it untouched
-            arg_value
-          end
-          
-          flat_args
-        end
       end
     end
   end
