@@ -73,7 +73,7 @@ describe "Integration" do
   describe "authentication" do
     context "with a scope" do
       it "returns a correct url" do
-        VkontakteApi.authentication_url(scope: %w[friends groups]).should include('scope=friends%2Cgroups')
+        VkontakteApi.authentication_url(:scope => %w[friends groups]).should include('scope=friends%2Cgroups')
       end
     end
   end
