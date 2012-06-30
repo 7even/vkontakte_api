@@ -3,10 +3,7 @@ require 'spec_helper'
 describe VkontakteApi::API do
   describe ".call" do
     before(:each) do
-      @result_response  = {'key' => 'value'}
-      @result_error     = {'request_params' => [{'key' => 'error', 'value' => 'description'}]}
-      
-      @result = {'response' => @result_response}
+      @result = {'response' => {'key' => 'value'}}
       
       @connection = Faraday.new do |builder|
         builder.response :mashify
@@ -29,22 +26,8 @@ describe VkontakteApi::API do
       end
     end
     
-    context "with a successful response" do
-      it "returns the response body" do
-        subject.call('apiMethod').should == @result_response
-      end
-    end
-    
-    context "with an error response" do
-      before(:each) do
-        @result['error'] = @result_error
-      end
-      
-      it "raises a VkontakteApi::Error" do
-        expect {
-          subject.call('apiMethod')
-        }.to raise_error(VkontakteApi::Error)
-      end
+    it "returns the response body" do
+      subject.call('apiMethod').should == @result
     end
   end
   

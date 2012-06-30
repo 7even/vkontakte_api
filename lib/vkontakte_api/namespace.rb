@@ -1,6 +1,6 @@
 module VkontakteApi
   class Namespace
     include Resolvable
-    # include Resolver
+    include Resolver
   end
 end

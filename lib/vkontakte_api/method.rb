@@ -12,7 +12,7 @@ module VkontakteApi
     
   private
     def full_name
-      parts = [@resolver.name, @name].compact.map { |part| camelize(part) }
+      parts = [@previous_resolver.name, @name].compact.map { |part| camelize(part) }
       parts.join('.').gsub(/[^A-Za-z.]/, '')
     end
     

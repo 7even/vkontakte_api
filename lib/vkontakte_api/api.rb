@@ -16,13 +16,7 @@ module VkontakteApi
         args = {:access_token => token}.merge(args) unless token.nil?
         
         url = url_for(method_name, args)
-        response = connection.get(url).body
-        
-        if response.error?
-          raise VkontakteApi::Error.new(response.error)
-        else
-          response.response
-        end
+        connection.get(url).body
       end
       
     private
