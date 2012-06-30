@@ -110,7 +110,7 @@ VkontakteApi.configure do |config|
 end
 ```
 
-* default HTTP request library is `Net::HTTP`; you can set any other adapter supported by `faraday`
+* default HTTP request library is `Net::HTTP`; you can set [any other adapter](https://github.com/technoweenie/faraday/blob/master/lib/faraday/adapter.rb) supported by `faraday`
 * standard logger outputs everything to `STDOUT`; it makes sense to set `Rails.logger` as a logger if you are in a rails app
 * by default only error JSON is logged; you can also log successful responses if you wish (errors are logged with a `warn` level, successful responses - with `debug`)
 
@@ -125,11 +125,10 @@ end
 
 * Authentication (getting the access_token from VK)
 * Uploading files to vk.com servers
-* Getting rid of the namespaces list
 * Rails generator for initializer
 
 ## Contributing
 
 If you want to contribute to the project, fork the repository, push your changes to a topic branch and send me a pull request.
 
-`vkontakte_api` is tested under MRI `1.8.7`, `1.9.2` and `1.9.3`. If something is working incorrectly or not working at all in one of these environments, this should be considered a bug. Any bug reports are welcome at Github issues.
+`vkontakte_api` is tested under MRI `1.8.7`, `1.9.2` and `1.9.3`. If something is working incorrectly or not working at all in one of these environments, this should be considered a bug. Any bug reports are welcome at [Github issues](https://github.com/7even/vkontakte_api/issues).
