@@ -9,12 +9,14 @@ describe VkontakteApi::Authentication do
     @redirect_uri = stub("Redirect uri")
     VkontakteApi.stub(:redirect_uri).and_return(@redirect_uri)
     
+    @url   = stub("Authorization url")
     @token = stub("Token")
     
-    @auth_code          = stub("Authentication code strategy", :get_token => @token)
-    @client_credentials = stub("Client credentials strategy", :get_token => @token)
+    @auth_code          = stub("Authentication code strategy", :get_token => @token, :authorize_url => @url)
+    @implicit           = stub("Implicit strategy",            :authorize_url => @url)
+    @client_credentials = stub("Client credentials strategy",  :get_token => @token)
     
-    @client = stub("OAuth2::Client instance", :auth_code => @auth_code, :client_credentials => @client_credentials)
+    @client = stub("OAuth2::Client instance", :auth_code => @auth_code, :implicit => @implicit, :client_credentials => @client_credentials)
     OAuth2::Client.stub(:new).and_return(@client)
     
     @auth = Object.new
@@ -23,51 +25,44 @@ describe VkontakteApi::Authentication do
   
   describe "#authentication_url" do
     before(:each) do
-      @options = {:strategy => :auth_code}
-      @url = stub("Authorization url")
-      @auth_code.stub(:authorize_url).and_return(@url)
       @auth.stub(:client).and_return(@client)
     end
     
-    it "calls #client" do
-      @auth.should_receive(:client)
-      @auth.authentication_url
+    context "with auth_code strategy" do
+      it "returns a valid authorization url" do
+        @auth_code.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri)
+        @auth.authentication_url(:strategy => :auth_code).should == @url
+      end
     end
     
-    it "returns a valid authorization url" do
-      @auth_code.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri)
-      @auth.authentication_url(@options).should == @url
+    context "with an implicit strategy" do
+      it "returns a valid authorization url" do
+        @implicit.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri)
+        @auth.authentication_url(:strategy => :implicit).should == @url
+      end
     end
     
     context "given a redirect_uri" do
-      before(:each) do
-        @options[:redirect_uri] = 'http://example.com/oauth/callback'
-      end
-      
       it "prefers the given uri over VkontakteApi.redirect_uri" do
-        @auth_code.should_receive(:authorize_url).with(:redirect_uri => @options[:redirect_uri])
-        @auth.authentication_url(@options)
+        redirect_uri = 'http://example.com/oauth/callback'
+        @auth_code.should_receive(:authorize_url).with(:redirect_uri => redirect_uri)
+        @auth.authentication_url(:redirect_uri => redirect_uri)
       end
     end
     
     context "given a scope" do
       it "sends it to VkontakteApi::Utils.flatten_argument" do
         scope = stub("Scope")
-        @options[:scope] = scope
         flat_scope = stub("Flat scope")
         
         VkontakteApi::Utils.should_receive(:flatten_argument).with(scope).and_return(flat_scope)
         @auth_code.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri, :scope => flat_scope)
-        @auth.authentication_url(@options)
+        @auth.authentication_url(:scope => scope)
       end
     end
   end
   
   describe "#authenticate" do
-    before(:each) do
-      @options = {}
-    end
-    
     context "with auth_code strategy" do
       before(:each) do
         @code = stub("Authentication code")
@@ -98,7 +93,7 @@ describe VkontakteApi::Authentication do
     it "builds a VkontakteApi::Client instance with the received token" do
       client = stub("VkontakteApi::Client instance")
       VkontakteApi::Client.should_receive(:new).with(@token).and_return(client)
-      @auth.authenticate(@options).should == client
+      @auth.authenticate.should == client
     end
   end
   

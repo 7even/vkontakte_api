@@ -17,15 +17,22 @@ module VkontakteApi
       options[:redirect_uri] ||= VkontakteApi.redirect_uri
       options[:scope] = VkontakteApi::Utils.flatten_argument(options[:scope]) if options[:scope]
       
-      client.auth_code.authorize_url(options)
+      case strategy
+      when :auth_code
+        client.auth_code.authorize_url(options)
+      when :implicit
+        client.implicit.authorize_url(options)
+      else
+        raise ArgumentError, "Unknown strategy #{strategy.inspect}"
+      end
     end
     
     def authenticate(options = {})
       strategy = options.delete(:strategy) || :auth_code
-      code     = options.delete(:code)
       
       case strategy
       when :auth_code
+        code  = options.delete(:code)
         token = client.auth_code.get_token(code)
       when :client_credentials
         token = client.client_credentials.get_token({}, OPTIONS[:client_credentials])
