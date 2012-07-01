@@ -1,7 +1,14 @@
 module VkontakteApi
   module Authentication
-    URLS = {
-      :authorize_url => 'https://oauth.vk.com/authorize'
+    OPTIONS = {
+      :client => {
+        :site          => 'https://oauth.vk.com',
+        :authorize_url => '/authorize',
+        :token_url     => '/access_token'
+      },
+      :client_credentials => {
+        'auth_scheme' => 'request_body'
+      }
     }
     
     def authentication_url(options = {})
@@ -17,13 +24,21 @@ module VkontakteApi
       strategy = options.delete(:strategy) || :auth_code
       code     = options.delete(:code)
       
-      token = client.auth_code.get_token(code)
+      case strategy
+      when :auth_code
+        token = client.auth_code.get_token(code)
+      when :client_credentials
+        token = client.client_credentials.get_token({}, OPTIONS[:client_credentials])
+      else
+        raise ArgumentError, "Unknown strategy #{strategy.inspect}"
+      end
+      
       Client.new(token)
     end
     
   private
     def client
-      @client ||= OAuth2::Client.new(VkontakteApi.app_id, VkontakteApi.app_secret, :site => URLS[:authorize_url])
+      @client ||= OAuth2::Client.new(VkontakteApi.app_id, VkontakteApi.app_secret, OPTIONS[:client])
     end
   end
 end

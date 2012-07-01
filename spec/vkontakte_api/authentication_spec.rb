@@ -9,8 +9,12 @@ describe VkontakteApi::Authentication do
     @redirect_uri = stub("Redirect uri")
     VkontakteApi.stub(:redirect_uri).and_return(@redirect_uri)
     
-    @auth_code = stub("Authentication code strategy")
-    @client = stub("OAuth2::Client instance", :auth_code => @auth_code)
+    @token = stub("Token")
+    
+    @auth_code          = stub("Authentication code strategy", :get_token => @token)
+    @client_credentials = stub("Client credentials strategy", :get_token => @token)
+    
+    @client = stub("OAuth2::Client instance", :auth_code => @auth_code, :client_credentials => @client_credentials)
     OAuth2::Client.stub(:new).and_return(@client)
     
     @auth = Object.new
@@ -61,15 +65,34 @@ describe VkontakteApi::Authentication do
   
   describe "#authenticate" do
     before(:each) do
-      @code = stub("Authentication code")
-      @options = {:strategy => :auth_code, :code => @code}
-      @token = stub("Token")
-      @auth_code.stub(:get_token).and_return(@token)
+      @options = {}
     end
     
-    it "gets the token" do
-      @auth_code.should_receive(:get_token).with(@code)
-      @auth.authenticate(@options)
+    context "with auth_code strategy" do
+      before(:each) do
+        @code = stub("Authentication code")
+        @auth_code.stub(:get_token).and_return(@token)
+      end
+      
+      it "gets the token" do
+        @auth_code.should_receive(:get_token).with(@code)
+        @auth.authenticate(:strategy => :auth_code, :code => @code)
+      end
+    end
+    
+    context "with client_credentials strategy" do
+      it "gets the token" do
+        @client_credentials.should_receive(:get_token).with({}, subject::OPTIONS[:client_credentials])
+        @auth.authenticate(:strategy => :client_credentials)
+      end
+    end
+    
+    context "with unknown strategy" do
+      it "raises an ArgumentError" do
+        expect {
+          @auth.authenticate(:strategy => :starcraft)
+        }.to raise_error(ArgumentError)
+      end
     end
     
     it "builds a VkontakteApi::Client instance with the received token" do
@@ -81,7 +104,7 @@ describe VkontakteApi::Authentication do
   
   describe "#client" do
     it "creates and returns an OAuth2::Client instance" do
-      OAuth2::Client.should_receive(:new).with(@app_id, @app_secret, :site => VkontakteApi::Authentication::URLS[:authorize_url])
+      OAuth2::Client.should_receive(:new).with(@app_id, @app_secret, subject::OPTIONS[:client])
       @auth.send(:client).should == @client
     end
     
