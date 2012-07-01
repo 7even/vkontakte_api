@@ -114,12 +114,47 @@ end
 * стандартный логгер выводит все в `STDOUT`; в rails-приложении имеет смысл назначить логгером `Rails.logger`
 * по умолчанию в лог пишется только JSON в ситуациях, когда ВКонтакте возвращает ошибку; при желании можно также выводить JSON при удачном запросе (ошибки логгируются с уровнем `warn`, удачные ответы - с уровнем `debug`)
 
+## Y U NO USE MULTI_JSON?
+
+Единственный парсер, у которого получается парсить весь JSON от ВКонтакте - это `Oj`. Вот пример с использованием `multi_json`:
+
+``` bash
+$ pry -r faraday -r multi_json
+```
+
+``` ruby
+response = Faraday.get('https://api.vkontakte.ru/method/groups.getById?gids=23201%2C23202%2C23203&fields=country%2Ccity')
+# => #<Faraday::Response:0x7f846b829dc0 ...>
+MultiJson.adapter
+# => MultiJson::Adapters::Oj < Object
+MultiJson.decode(response.body)
+# success
+
+MultiJson.use :yajl
+MultiJson.decode(response.body)
+# => MultiJson::DecodeError: lexical error: invalid character inside string.
+
+MultiJson.use :json_gem
+MultiJson.decode(response.body)
+# => MultiJson::DecodeError: 387: unexpected token at ...
+
+MultiJson.use :json_pure
+MultiJson.decode(response.body)
+# => MultiJson::DecodeError: 387: unexpected token at ...
+
+MultiJson.use :ok_json
+MultiJson.decode(response.body)
+# => Encoding::CompatibilityError: incompatible character encodings: UTF-8 and ASCII-8BIT
+```
+
+Пример актуален на момент написания, но данные динамические, и со временем эти ошибки могут исчезнуть.
+
 ## Changelog
 
 * 0.1 Первая стабильная версия
 * 0.2 Поддержка аргументов-массивов, подчищенные неавторизованные запросы, обновленный список пространств имен, документация кода
 * 0.2.1 Пространство имен `stats`
-* 1.0 Настраиваемый логгер, результаты методов в виде `Hashie::Mash`
+* 1.0 Настраиваемый логгер, результаты методов в виде `Hashie::Mash`, JSON парсится Oj
 
 ## Планы
 

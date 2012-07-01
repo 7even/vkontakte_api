@@ -114,12 +114,47 @@ end
 * standard logger outputs everything to `STDOUT`; it makes sense to set `Rails.logger` as a logger if you are in a rails app
 * by default only error JSON is logged; you can also log successful responses if you wish (errors are logged with a `warn` level, successful responses - with `debug`)
 
+## Y U NO USE MULTI_JSON?
+
+The only parser that appears to successfully process VKontakte JSON is `Oj`. Here's the example with `multi_json`:
+
+``` bash
+$ pry -r faraday -r multi_json
+```
+
+``` ruby
+response = Faraday.get('https://api.vkontakte.ru/method/groups.getById?gids=23201%2C23202%2C23203&fields=country%2Ccity')
+# => #<Faraday::Response:0x7f846b829dc0 ...>
+MultiJson.adapter
+# => MultiJson::Adapters::Oj < Object
+MultiJson.decode(response.body)
+# success
+
+MultiJson.use :yajl
+MultiJson.decode(response.body)
+# => MultiJson::DecodeError: lexical error: invalid character inside string.
+
+MultiJson.use :json_gem
+MultiJson.decode(response.body)
+# => MultiJson::DecodeError: 387: unexpected token at ...
+
+MultiJson.use :json_pure
+MultiJson.decode(response.body)
+# => MultiJson::DecodeError: 387: unexpected token at ...
+
+MultiJson.use :ok_json
+MultiJson.decode(response.body)
+# => Encoding::CompatibilityError: incompatible character encodings: UTF-8 and ASCII-8BIT
+```
+
+This example is actual for the moment of writing, but the data is dynamic so these errors may disappear over time.
+
 ## Changelog
 
 * 0.1 Initial stable version
 * 0.2 Array arguments support, cleaned up non-authorized requests, updated namespaces list, code documentation
 * 0.2.1 `stats` namespace
-* 1.0 Customizable logger, `Hashie::Mash` method results
+* 1.0 Customizable logger, `Hashie::Mash` method results, json parsed by Oj
 
 ## Roadmap
 
