@@ -16,11 +16,11 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_paths = ['lib']
   
-  s.add_runtime_dependency 'faraday',             '~> 0.8'
-  s.add_runtime_dependency 'faraday_middleware',  '~> 0.8'
-  s.add_runtime_dependency 'oauth2',              '~> 0.7.1'
-  s.add_runtime_dependency 'oj',                  '~> 1.2'
-  s.add_runtime_dependency 'hashie',              '~> 1.2'
+  s.add_runtime_dependency 'faraday',                     '~> 0.8'
+  s.add_runtime_dependency 'faraday_middleware',          '~> 0.8'
+  s.add_runtime_dependency 'faraday_middleware-parse_oj', '~> 0.1'
+  s.add_runtime_dependency 'oauth2',                      '~> 0.8'
+  s.add_runtime_dependency 'hashie',                      '~> 1.2'
   
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'

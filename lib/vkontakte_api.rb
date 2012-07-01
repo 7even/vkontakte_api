@@ -1,8 +1,6 @@
-require 'oj'
-Oj.mimic_JSON
-
 require 'faraday'
 require 'faraday_middleware'
+require 'faraday_middleware/parse_oj'
 require 'oauth2'
 require 'yaml'
 require 'hashie'

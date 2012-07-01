@@ -22,7 +22,7 @@ module VkontakteApi
           builder.request  :oauth2, token unless token.nil?
           builder.response :vk_logger
           builder.response :mashify
-          builder.response :json, :preserve_raw => true
+          builder.response :oj, :preserve_raw => true
           builder.adapter  VkontakteApi.adapter
         end
       end

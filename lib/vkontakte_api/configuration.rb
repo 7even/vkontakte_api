@@ -15,7 +15,7 @@ module VkontakteApi
     alias_method :log_responses?, :log_responses
     
     # Default HTTP adapter.
-    DEFAULT_ADAPTER = :net_http
+    DEFAULT_ADAPTER = Faraday.default_adapter
     
     # Logger default options.
     DEFAULT_LOGGER_OPTIONS = {
