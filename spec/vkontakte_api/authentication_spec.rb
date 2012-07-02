@@ -28,17 +28,17 @@ describe VkontakteApi::Authentication do
       @auth.stub(:client).and_return(@client)
     end
     
-    context "with auth_code strategy" do
+    context "with a site type" do
       it "returns a valid authorization url" do
         @auth_code.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri)
-        @auth.authentication_url(:strategy => :auth_code).should == @url
+        @auth.authentication_url(:type => :site).should == @url
       end
     end
     
-    context "with an implicit strategy" do
+    context "with a client type" do
       it "returns a valid authorization url" do
         @implicit.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri)
-        @auth.authentication_url(:strategy => :implicit).should == @url
+        @auth.authentication_url(:type => :client).should == @url
       end
     end
     
@@ -63,7 +63,7 @@ describe VkontakteApi::Authentication do
   end
   
   describe "#authenticate" do
-    context "with auth_code strategy" do
+    context "with a site type" do
       before(:each) do
         @code = stub("Authentication code")
         @auth_code.stub(:get_token).and_return(@token)
@@ -71,21 +71,21 @@ describe VkontakteApi::Authentication do
       
       it "gets the token" do
         @auth_code.should_receive(:get_token).with(@code)
-        @auth.authenticate(:strategy => :auth_code, :code => @code)
+        @auth.authenticate(:type => :site, :code => @code)
       end
     end
     
-    context "with client_credentials strategy" do
+    context "with an app_server type" do
       it "gets the token" do
         @client_credentials.should_receive(:get_token).with({}, subject::OPTIONS[:client_credentials])
-        @auth.authenticate(:strategy => :client_credentials)
+        @auth.authenticate(:type => :app_server)
       end
     end
     
-    context "with unknown strategy" do
+    context "with an unknown type" do
       it "raises an ArgumentError" do
         expect {
-          @auth.authenticate(:strategy => :starcraft)
+          @auth.authenticate(:type => :unknown)
         }.to raise_error(ArgumentError)
       end
     end

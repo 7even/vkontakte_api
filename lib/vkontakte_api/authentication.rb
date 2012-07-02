@@ -12,32 +12,32 @@ module VkontakteApi
     }
     
     def authentication_url(options = {})
-      strategy = options.delete(:strategy) || :auth_code
+      type = options.delete(:type) || :site
       # redirect_uri passed in options overrides the global setting
       options[:redirect_uri] ||= VkontakteApi.redirect_uri
       options[:scope] = VkontakteApi::Utils.flatten_argument(options[:scope]) if options[:scope]
       
-      case strategy
-      when :auth_code
+      case type
+      when :site
         client.auth_code.authorize_url(options)
-      when :implicit
+      when :client
         client.implicit.authorize_url(options)
       else
-        raise ArgumentError, "Unknown strategy #{strategy.inspect}"
+        raise ArgumentError, "Unknown authentication type #{type.inspect}"
       end
     end
     
     def authenticate(options = {})
-      strategy = options.delete(:strategy) || :auth_code
+      type = options.delete(:type) || :site
       
-      case strategy
-      when :auth_code
+      case type
+      when :site
         code  = options.delete(:code)
         token = client.auth_code.get_token(code)
-      when :client_credentials
+      when :app_server
         token = client.client_credentials.get_token({}, OPTIONS[:client_credentials])
       else
-        raise ArgumentError, "Unknown strategy #{strategy.inspect}"
+        raise ArgumentError, "Unknown authentication type #{type.inspect}"
       end
       
       Client.new(token)
