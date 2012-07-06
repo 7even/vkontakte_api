@@ -28,11 +28,10 @@ $ gem install vkontakte_api
 
 # если ВКонтакте ожидает получить параметр в виде списка,
 # разделенного запятыми, то его можно передать массивом
-@vk.users.get(uids: [1, 2, 3])
+users = @vk.users.get(uids: [1, 2, 3])
 
 # большинство методов возвращает структуры Hashie::Mash
 # и массивы из них
-users = @vk.users.get(uid: 1)
 users.first.uid        # => 1
 users.first.first_name # => "Павел"
 users.first.last_name  # => "Дуров"
@@ -40,7 +39,7 @@ users.first.last_name  # => "Дуров"
 # если метод, возвращающий массив, вызывается с блоком,
 # то блок будет выполнен для каждого элемента массива,
 # и метод вернет обработанный массив
-fields = ['first_name', 'last_name', 'screen_name']
+fields = [:first_name, :last_name, :screen_name]
 @vk.friends.get(fields: fields) do |friend|
   "#{friend.first_name} '#{friend.screen_name}' #{friend.last_name}"
 end
