@@ -1,6 +1,7 @@
 module VkontakteApi
   module Result
     class << self
+      # @raise [VkontakteApi::Error] raised when VKontakte returns an error.
       def process(response, type, block)
         result = extract_result(response)
         

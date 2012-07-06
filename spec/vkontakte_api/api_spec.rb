@@ -8,7 +8,7 @@ describe VkontakteApi::API do
       builder.response :mashify
       builder.response :json, :preserve_raw => true
       builder.adapter  :test do |stub|
-        stub.get('/url') do
+        stub.get('/apiMethod') do
           [200, {}, Oj.dump(@result)]
         end
       end
@@ -19,12 +19,11 @@ describe VkontakteApi::API do
   describe ".call" do
     before(:each) do
       create_connection
-      subject.stub(:url_for).and_return('/url')
     end
     
     context "called with a token parameter" do
       it "sends it to .connection" do
-        subject.should_receive(:connection).with('token')
+        subject.should_receive(:connection).with(:url => VkontakteApi::API::URL_PREFIX, :token => 'token')
         subject.call('apiMethod', {:some => :params}, 'token')
       end
     end
@@ -35,35 +34,30 @@ describe VkontakteApi::API do
   end
   
   describe ".connection" do
+    it "uses the :url parameter" do
+      url = stub("URL")
+      Faraday.should_receive(:new).with(url)
+      connection = subject.connection(:url => url)
+    end
+    
     context "without a token" do
       it "creates a connection without an oauth2 middleware" do
-        connection = subject.send(:connection)
+        connection = subject.connection
         connection.builder.handlers.map(&:name).should_not include('FaradayMiddleware::OAuth2')
       end
     end
     
     context "with a token" do
+      before(:each) do
+        @token = stub("Token")
+      end
+      
       it "creates a connection with an oauth2 middleware" do
-        connection = subject.send(:connection, :token)
+        connection = subject.connection(:token => @token)
         handler = connection.builder.handlers.first
         handler.name.should == 'FaradayMiddleware::OAuth2'
-        handler.instance_variable_get(:@args).should == [:token]
+        handler.instance_variable_get(:@args).should == [@token]
       end
-    end
-  end
-  
-  describe ".url_for" do
-    before(:each) do
-      create_connection
-    end
-    
-    it "converts the arguments and sends them to connection.build_url" do
-      args = stub("Arguments")
-      flat_args = stub("Flat arguments")
-      
-      VkontakteApi::Utils.should_receive(:flatten_arguments).with(args).and_return(flat_args)
-      @connection.should_receive(:build_url).with(:method_name, flat_args)
-      VkontakteApi::API.send(:url_for, :method_name, args)
     end
   end
 end

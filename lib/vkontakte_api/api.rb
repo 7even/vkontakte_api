@@ -1,35 +1,38 @@
 module VkontakteApi
-  # A low-level module which handles the requests to VKontakte and returns their results as hashes with symbolized keys.
+  # A low-level module which handles the requests to VKontakte and returns their results as mashes.
   # 
   # It uses Faraday underneath the hood.
   module API
+    # URL prefix for calling API methods.
     URL_PREFIX = 'https://api.vkontakte.ru/method'
     
     class << self
-      # Main interface method.
+      # API method call.
       # @param [String] method_name A full name of the method.
-      # @param [Hash] args Method arguments including the access token.
-      # @return [Hash] The result of the method call.
-      # @raise [VkontakteApi::Error] raised when VKontakte returns an error.
+      # @param [Hash] args Method arguments.
+      # @param [String] token The access token.
+      # @return [Hashie::Mash] Mashed server response.
       def call(method_name, args = {}, token = nil)
-        url = url_for(method_name, args)
-        connection(token).get(url).body
+        flat_arguments = Utils.flatten_arguments(args)
+        connection(:url => URL_PREFIX, :token => token).get(method_name, flat_arguments).body
       end
       
-    private
-      def connection(token = nil)
-        Faraday.new(:url => URL_PREFIX) do |builder|
+      # Faraday connection.
+      # @param [Hash] options Connection options.
+      # @option options [String] :url Connection URL (either full or just prefix).
+      # @option options [String] :token The access token.
+      # @return [Faraday::Connection] Created connection.
+      def connection(options = {})
+        url   = options.delete(:url)
+        token = options.delete(:token)
+        
+        Faraday.new(url) do |builder|
           builder.request  :oauth2, token unless token.nil?
           builder.response :vk_logger
           builder.response :mashify
           builder.response :oj, :preserve_raw => true
           builder.adapter  VkontakteApi.adapter
         end
-      end
-      
-      def url_for(method_name, arguments)
-        flat_arguments = Utils.flatten_arguments(arguments)
-        connection.build_url(method_name, flat_arguments)
       end
     end
   end
