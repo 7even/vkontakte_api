@@ -28,6 +28,7 @@ module VkontakteApi
         
         Faraday.new(url) do |builder|
           builder.request  :oauth2, token unless token.nil?
+          builder.request  :multipart
           builder.response :vk_logger
           builder.response :mashify
           builder.response :oj, :preserve_raw => true
