@@ -7,7 +7,8 @@ describe VkontakteApi::Logger do
     
     @connection = Faraday.new(:url => 'http://example.com') do |builder|
       builder.response :vk_logger
-      builder.response :json, :preserve_raw => true
+      builder.response :mashify
+      builder.response :oj, :preserve_raw => true
       
       builder.adapter :test do |stub|
         stub.get('/success') do

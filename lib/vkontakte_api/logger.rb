@@ -17,7 +17,7 @@ module VkontakteApi
     
     # Logs the response (successful or not) if needed.
     def on_complete(env)
-      if env[:body].has_key?('error')
+      if env[:body].error?
         @logger.warn env[:raw_body]  if VkontakteApi.log_errors?
       else
         @logger.debug env[:raw_body] if VkontakteApi.log_responses?
