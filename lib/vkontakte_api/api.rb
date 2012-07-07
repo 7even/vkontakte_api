@@ -1,7 +1,7 @@
 module VkontakteApi
-  # A low-level module which handles the requests to VKontakte and returns their results as mashes.
+  # A low-level module which handles the requests to VKontakte API and returns their results as mashes.
   # 
-  # It uses Faraday underneath the hood.
+  # It uses Faraday with middleware underneath the hood.
   module API
     # URL prefix for calling API methods.
     URL_PREFIX = 'https://api.vkontakte.ru/method'
@@ -20,7 +20,7 @@ module VkontakteApi
       # Faraday connection.
       # @param [Hash] options Connection options.
       # @option options [String] :url Connection URL (either full or just prefix).
-      # @option options [String] :token The access token.
+      # @option options [String] :token OAuth2 access token (not used if omitted).
       # @return [Faraday::Connection] Created connection.
       def connection(options = {})
         url   = options.delete(:url)

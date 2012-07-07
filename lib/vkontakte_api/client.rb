@@ -1,5 +1,5 @@
 module VkontakteApi
-  # A class representing a connection to VK. It holds an access token.
+  # A class representing a connection to VK. It holds the access token.
   class Client
     include Resolver
     
