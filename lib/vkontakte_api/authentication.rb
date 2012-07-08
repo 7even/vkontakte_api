@@ -1,7 +1,7 @@
 module VkontakteApi
   # A module containing the methods for authentication.
   # 
-  # It extends `VkontakteApi` so it's methods should be called from there.
+  # @note `VkontakteApi::Authentication` extends `VkontakteApi` so these methods should be called from the latter.
   module Authentication
     # Authentication options.
     OPTIONS = {

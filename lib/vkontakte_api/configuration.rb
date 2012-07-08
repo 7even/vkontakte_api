@@ -3,7 +3,7 @@ require 'logger'
 module VkontakteApi
   # General configuration module.
   # 
-  # It extends `VkontakteApi` so it's methods should be called from there.
+  # @note `VkontakteApi::Configuration` extends `VkontakteApi` so these methods should be called from the latter.
   module Configuration
     # Available options.
     OPTION_NAMES = [:app_id, :app_secret, :redirect_uri, :adapter, :logger, :log_requests, :log_errors, :log_responses]
