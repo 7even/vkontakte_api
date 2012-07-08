@@ -1,16 +1,15 @@
 module VkontakteApi
-  # An exception raised by `VkontakteApi::API` when VKontakte returns an error.
+  # An exception raised by `VkontakteApi::Result` when given a response with an error.
   class Error < StandardError
     # An error code.
     # @return [Fixnum]
     attr_reader :error_code
     
-    # An exception is initialized by the data from response hash.
+    # An exception is initialized by the data from response mash.
     # @param [Hash] data Error data.
     def initialize(data)
       @error_code = data.error_code
       @error_msg  = data.error_msg
-      @params     = {}
       
       request_params = parse_params(data.request_params)
       

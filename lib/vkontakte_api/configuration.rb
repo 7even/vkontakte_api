@@ -27,11 +27,8 @@ module VkontakteApi
     # A global configuration set via the block.
     # @example
     #   VkontakteApi.configure do |config|
-    #     config.adapter       = :net_http
-    #     config.logger        = Rails.logger
-    #     config.log_requests  = true
-    #     config.log_errors    = true
-    #     config.log_responses = false
+    #     config.adapter = :net_http
+    #     config.logger  = Rails.logger
     #   end
     def configure
       yield self if block_given?
