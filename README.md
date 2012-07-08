@@ -12,7 +12,7 @@ gem 'vkontakte_api', '~> 1.0.rc'
 или просто
 
 ``` sh
-$ gem install vkontakte_api
+$ gem install vkontakte_api --pre
 ```
 
 ## Использование
