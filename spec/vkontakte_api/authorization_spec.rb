@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VkontakteApi::Authentication do
+describe VkontakteApi::Authorization do
   before(:each) do
     @app_id = stub("App id")
     VkontakteApi.stub(:app_id).and_return(@app_id)
@@ -12,7 +12,7 @@ describe VkontakteApi::Authentication do
     @url   = stub("Authorization url")
     @token = stub("Token")
     
-    @auth_code          = stub("Authentication code strategy", :get_token => @token, :authorize_url => @url)
+    @auth_code          = stub("Authorization code strategy", :get_token => @token, :authorize_url => @url)
     @implicit           = stub("Implicit strategy",            :authorize_url => @url)
     @client_credentials = stub("Client credentials strategy",  :get_token => @token)
     
@@ -20,10 +20,10 @@ describe VkontakteApi::Authentication do
     OAuth2::Client.stub(:new).and_return(@client)
     
     @auth = Object.new
-    @auth.extend VkontakteApi::Authentication
+    @auth.extend VkontakteApi::Authorization
   end
   
-  describe "#authentication_url" do
+  describe "#authorization_url" do
     before(:each) do
       @auth.stub(:client).and_return(@client)
     end
@@ -31,14 +31,14 @@ describe VkontakteApi::Authentication do
     context "with a site type" do
       it "returns a valid authorization url" do
         @auth_code.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri)
-        @auth.authentication_url(:type => :site).should == @url
+        @auth.authorization_url(:type => :site).should == @url
       end
     end
     
     context "with a client type" do
       it "returns a valid authorization url" do
         @implicit.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri)
-        @auth.authentication_url(:type => :client).should == @url
+        @auth.authorization_url(:type => :client).should == @url
       end
     end
     
@@ -46,7 +46,7 @@ describe VkontakteApi::Authentication do
       it "prefers the given uri over VkontakteApi.redirect_uri" do
         redirect_uri = 'http://example.com/oauth/callback'
         @auth_code.should_receive(:authorize_url).with(:redirect_uri => redirect_uri)
-        @auth.authentication_url(:redirect_uri => redirect_uri)
+        @auth.authorization_url(:redirect_uri => redirect_uri)
       end
     end
     
@@ -57,35 +57,35 @@ describe VkontakteApi::Authentication do
         
         VkontakteApi::Utils.should_receive(:flatten_argument).with(scope).and_return(flat_scope)
         @auth_code.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri, :scope => flat_scope)
-        @auth.authentication_url(:scope => scope)
+        @auth.authorization_url(:scope => scope)
       end
     end
   end
   
-  describe "#authenticate" do
+  describe "#authorize" do
     context "with a site type" do
       before(:each) do
-        @code = stub("Authentication code")
+        @code = stub("Authorization code")
         @auth_code.stub(:get_token).and_return(@token)
       end
       
       it "gets the token" do
         @auth_code.should_receive(:get_token).with(@code)
-        @auth.authenticate(:type => :site, :code => @code)
+        @auth.authorize(:type => :site, :code => @code)
       end
     end
     
     context "with an app_server type" do
       it "gets the token" do
         @client_credentials.should_receive(:get_token).with({}, subject::OPTIONS[:client_credentials])
-        @auth.authenticate(:type => :app_server)
+        @auth.authorize(:type => :app_server)
       end
     end
     
     context "with an unknown type" do
       it "raises an ArgumentError" do
         expect {
-          @auth.authenticate(:type => :unknown)
+          @auth.authorize(:type => :unknown)
         }.to raise_error(ArgumentError)
       end
     end
@@ -93,7 +93,7 @@ describe VkontakteApi::Authentication do
     it "builds a VkontakteApi::Client instance with the received token" do
       client = stub("VkontakteApi::Client instance")
       VkontakteApi::Client.should_receive(:new).with(@token).and_return(client)
-      @auth.authenticate.should == client
+      @auth.authorize.should == client
     end
   end
   

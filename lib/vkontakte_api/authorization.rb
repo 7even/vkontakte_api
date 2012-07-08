@@ -1,9 +1,9 @@
 module VkontakteApi
-  # A module containing the methods for authentication.
+  # A module containing the methods for authorization.
   # 
-  # @note `VkontakteApi::Authentication` extends `VkontakteApi` so these methods should be called from the latter.
-  module Authentication
-    # Authentication options.
+  # @note `VkontakteApi::Authorization` extends `VkontakteApi` so these methods should be called from the latter.
+  module Authorization
+    # Authorization options.
     OPTIONS = {
       :client => {
         :site          => 'https://oauth.vk.com',
@@ -16,12 +16,12 @@ module VkontakteApi
     }
     
     # URL for redirecting the user to VK where he gives the application all the requested access rights.
-    # @option options [Symbol] :type The type of authentication being used (`:site` and `:client` supported).
+    # @option options [Symbol] :type The type of authorization being used (`:site` and `:client` supported).
     # @option options [String] :redirect_uri URL for redirecting the user back to the application (overrides the global configuration value).
     # @option options [Array] :scope An array of requested access rights (each represented by a symbol or a string).
-    # @raise [ArgumentError] raises after receiving an unknown authentication type.
+    # @raise [ArgumentError] raises after receiving an unknown authorization type.
     # @return [String] URL to redirect the user to.
-    def authentication_url(options = {})
+    def authorization_url(options = {})
       type = options.delete(:type) || :site
       # redirect_uri passed in options overrides the global setting
       options[:redirect_uri] ||= VkontakteApi.redirect_uri
@@ -33,16 +33,16 @@ module VkontakteApi
       when :client
         client.implicit.authorize_url(options)
       else
-        raise ArgumentError, "Unknown authentication type #{type.inspect}"
+        raise ArgumentError, "Unknown authorization type #{type.inspect}"
       end
     end
     
-    # Authentication (getting the access token and building a `VkontakteApi::Client` with it).
-    # @option options [Symbol] :type The type of authentication being used (`:site` and `:app_server` supported).
-    # @option options [String] :code The code to exchange for an access token (for `:site` authentication type). 
-    # @raise [ArgumentError] raises after receiving an unknown authentication type.
+    # Authorization (getting the access token and building a `VkontakteApi::Client` with it).
+    # @option options [Symbol] :type The type of authorization being used (`:site` and `:app_server` supported).
+    # @option options [String] :code The code to exchange for an access token (for `:site` authorization type). 
+    # @raise [ArgumentError] raises after receiving an unknown authorization type.
     # @return [VkontakteApi::Client] An API client.
-    def authenticate(options = {})
+    def authorize(options = {})
       type = options.delete(:type) || :site
       
       case type
@@ -52,7 +52,7 @@ module VkontakteApi
       when :app_server
         token = client.client_credentials.get_token({}, OPTIONS[:client_credentials])
       else
-        raise ArgumentError, "Unknown authentication type #{type.inspect}"
+        raise ArgumentError, "Unknown authorization type #{type.inspect}"
       end
       
       Client.new(token)
