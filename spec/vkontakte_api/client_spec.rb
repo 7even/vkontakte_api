@@ -2,8 +2,9 @@ require 'spec_helper'
 
 describe VkontakteApi::Client do
   before(:each) do
+    @user_id      = stub("User id")
     @string_token = stub("Access token as a String")
-    @oauth2_token = stub("Access token as an OAuth2::AccessToken", :token => @string_token)
+    @oauth2_token = stub("Access token as an OAuth2::AccessToken", :token => @string_token, :params => {'user_id' => @user_id})
   end
   
   describe "#initialize" do
@@ -26,6 +27,7 @@ describe VkontakteApi::Client do
         it "extracts the string token and uses it" do
           client = VkontakteApi::Client.new(@oauth2_token)
           client.token.should == @string_token
+          client.user_id.should == @user_id
         end
       end
     end

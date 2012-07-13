@@ -91,10 +91,17 @@ redirect_to VkontakteApi.authorization_url(scope: [:friends, :photos])
 @vk.is_app_user?
 ```
 
-Также в этот момент полезно сохранить полученный токен в БД либо в сессии, чтобы использовать его повторно:
+Клиент будет содержать id пользователя, авторизовавшего приложение; его можно получить с помощью метода `VkontakteApi::Client#user_id`:
+
+``` ruby
+@vk.user_id # => 123456
+```
+
+Также в этот момент полезно сохранить полученный токен (и, при необходимости, id пользователя) в БД либо в сессии, чтобы использовать их повторно:
 
 ``` ruby
 current_user.token = @vk.token
+current_user.vk_id = @vk.user_id
 current_user.save
 # позже
 @vk = VkontakteApi::Client.new(current_user.token)
