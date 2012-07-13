@@ -6,7 +6,7 @@
 
 ``` ruby
 # Gemfile
-gem 'vkontakte_api', '~> 1.0.rc'
+gem 'vkontakte_api', '~> 1.0.rc2'
 ```
 
 или просто
@@ -42,7 +42,6 @@ users = @vk.users.get(uids: [1, 2, 3])
 users.first.uid        # => 1
 users.first.first_name # => "Павел"
 users.first.last_name  # => "Дуров"
-users.first.online?    # => true
 
 # если метод, возвращающий массив, вызывается с блоком,
 # то блок будет выполнен для каждого элемента,
