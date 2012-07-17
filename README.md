@@ -165,6 +165,17 @@ VkontakteApi.configure do |config|
   
   # faraday-адаптер для сетевых запросов
   config.adapter = :net_http
+  # параметры для faraday-соединения
+  config.faraday_options = {
+    ssl: {
+      ca_path:  '/usr/lib/ssl/certs'
+    },
+    proxy: {
+      uri:      'http://proxy.example.com',
+      user:     'foo',
+      password: 'bar'
+    }
+  }
   
   # логгер
   config.logger        = Rails.logger
@@ -178,6 +189,8 @@ VkontakteApi.register_alias
 ```
 
 По умолчанию для HTTP-запросов используется `Net::HTTP`; можно выбрать [любой другой адаптер](https://github.com/technoweenie/faraday/blob/master/lib/faraday/adapter.rb), поддерживаемый `faraday`.
+
+При необходимости можно указать параметры для faraday-соединения - например, параметры прокси-сервера или путь к SSL-сертификатам.
 
 Чтобы сгенерировать файл с настройками по умолчанию в rails-приложении, можно воспользоваться генератором `vkontakte_api:install`:
 
@@ -194,6 +207,6 @@ $ rails generate vkontakte_api:install
 
 ## Участие в разработке
 
-Если вы хотите поучаствовать в разработке проекта, форкните репозиторий, положите свои изменения в отдельную ветку и отправьте мне pull request.
+Если вы хотите поучаствовать в разработке проекта, форкните репозиторий, положите свои изменения в отдельную ветку, покройте их спеками и отправьте мне pull request.
 
 `vkontakte_api` тестируется под MRI `1.8.7`, `1.9.2` и `1.9.3`. Если в одной из этих сред что-то работает неправильно, либо вообще не работает, то это следует считать багом, и написать об этом в [issues на Github](https://github.com/7even/vkontakte_api/issues).

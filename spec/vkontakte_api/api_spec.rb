@@ -34,9 +34,11 @@ describe VkontakteApi::API do
   end
   
   describe ".connection" do
-    it "uses the :url parameter" do
+    it "uses the :url parameter and VkontakteApi.faraday_options" do
+      faraday_options = stub("Faraday options")
+      VkontakteApi.stub(:faraday_options).and_return(faraday_options)
       url = stub("URL")
-      Faraday.should_receive(:new).with(url)
+      Faraday.should_receive(:new).with(url, faraday_options)
       connection = subject.connection(:url => url)
     end
     

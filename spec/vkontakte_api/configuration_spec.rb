@@ -24,6 +24,7 @@ describe VkontakteApi::Configuration do
       Configurable.app_id.should be_nil
       Configurable.app_secret.should be_nil
       Configurable.adapter.should == VkontakteApi::Configuration::DEFAULT_ADAPTER
+      Configurable.faraday_options.should == {}
       
       Configurable.logger.should be_a(Logger)
       Configurable.should log_requests

@@ -4,7 +4,7 @@ module VkontakteApi
   # It uses Faraday with middleware underneath the hood.
   module API
     # URL prefix for calling API methods.
-    URL_PREFIX = 'https://api.vkontakte.ru/method'
+    URL_PREFIX = 'https://api.vk.com/method'
     
     class << self
       # API method call.
@@ -26,7 +26,7 @@ module VkontakteApi
         url   = options.delete(:url)
         token = options.delete(:token)
         
-        Faraday.new(url) do |builder|
+        Faraday.new(url, VkontakteApi.faraday_options) do |builder|
           builder.request  :oauth2, token unless token.nil?
           builder.request  :multipart
           builder.response :vk_logger
