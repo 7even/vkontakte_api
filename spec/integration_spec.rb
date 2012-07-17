@@ -20,8 +20,8 @@ describe "Integration" do
     it "get users" do
       user = @vk.users.get(:uid => 1).first
       user.uid.should        == 1
-      user.last_name.should  == 'Дуров'
-      user.first_name.should == 'Павел'
+      user.last_name.should_not  be_empty
+      user.first_name.should_not be_empty
     end
   end
   
@@ -53,7 +53,7 @@ describe "Integration" do
     
     it "join arrays with a comma" do
       users = @vk.users.get(:uids => [1, 2, 3], :fields => %w[first_name last_name screen_name])
-      users.first.screen_name.should == 'durov'
+      users.first.screen_name.should_not be_empty
     end
   end
   
