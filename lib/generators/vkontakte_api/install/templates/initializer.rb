@@ -20,3 +20,6 @@ VkontakteApi.configure do |config|
   # log response JSON after successful responses
   # config.log_responses = false
 end
+
+# create a short alias VK for VkontakteApi module
+# VkontakteApi.register_alias

@@ -172,6 +172,9 @@ VkontakteApi.configure do |config|
   config.log_errors    = true  # ошибки
   config.log_responses = false # удачные ответы
 end
+
+# создание короткого алиаса VK для модуля VkontakteApi
+VkontakteApi.register_alias
 ```
 
 По умолчанию для HTTP-запросов используется `Net::HTTP`; можно выбрать [любой другой адаптер](https://github.com/technoweenie/faraday/blob/master/lib/faraday/adapter.rb), поддерживаемый `faraday`.

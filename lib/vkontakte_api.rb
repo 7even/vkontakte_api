@@ -25,7 +25,16 @@ module VkontakteApi
   extend VkontakteApi::Configuration
   extend VkontakteApi::Authorization
   extend VkontakteApi::Uploading
+  
+  class << self
+    # Creates a short alias `VK` for `VkontakteApi` module.
+    def register_alias
+      Object.const_set(:VK, VkontakteApi)
+    end
+    
+    # Removes the `VK` alias.
+    def unregister_alias
+      Object.send(:remove_const, :VK) if defined?(VK)
+    end
+  end
 end
-
-# short alias
-VK = VkontakteApi unless defined?(VK)

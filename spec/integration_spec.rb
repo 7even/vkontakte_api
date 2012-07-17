@@ -3,8 +3,9 @@ require 'spec_helper'
 
 describe "Integration" do
   before(:all) do
+    VkontakteApi.register_alias
     # turn off all the logging
-    VkontakteApi.configure do |config|
+    VK.configure do |config|
       config.log_requests  = false
       config.log_errors    = false
       config.log_responses = false
@@ -13,7 +14,7 @@ describe "Integration" do
   
   describe "unauthorized requests" do
     before(:each) do
-      @vk = VkontakteApi::Client.new
+      @vk = VK::Client.new
     end
     
     it "get users" do
@@ -26,7 +27,7 @@ describe "Integration" do
   
   describe "authorized requests" do
     before(:each) do
-      @vk = VkontakteApi::Client.new(ENV['TOKEN'])
+      @vk = VK::Client.new(ENV['TOKEN'])
     end
     
     it "get groups" do
@@ -37,7 +38,7 @@ describe "Integration" do
   
   describe "requests with camelCase and predicate methods" do
     before(:each) do
-      @vk = VkontakteApi::Client.new(ENV['TOKEN'])
+      @vk = VK::Client.new(ENV['TOKEN'])
     end
     
     it "convert method names to vk.com format" do
@@ -47,7 +48,7 @@ describe "Integration" do
   
   describe "requests with array arguments" do
     before(:each) do
-      @vk = VkontakteApi::Client.new
+      @vk = VK::Client.new
     end
     
     it "join arrays with a comma" do
@@ -73,12 +74,13 @@ describe "Integration" do
   describe "authorization" do
     context "with a scope" do
       it "returns a correct url" do
-        VkontakteApi.authorization_url(:scope => %w[friends groups]).should include('scope=friends%2Cgroups')
+        VK.authorization_url(:scope => %w[friends groups]).should include('scope=friends%2Cgroups')
       end
     end
   end
   
   after(:all) do
-    VkontakteApi.reset
+    VK.reset
+    VK.unregister_alias
   end
 end
