@@ -6,13 +6,13 @@
 
 ``` ruby
 # Gemfile
-gem 'vkontakte_api', '~> 1.0.rc3'
+gem 'vkontakte_api', '~> 1.0'
 ```
 
 или просто
 
 ``` sh
-$ gem install vkontakte_api --pre
+$ gem install vkontakte_api
 ```
 
 ## Использование
