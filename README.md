@@ -78,11 +78,11 @@ VkontakteApi.upload(url: url, photo: ['/path/to/file.jpg', 'image/jpeg'])
 
 Авторизация сайтов проходит в 2 шага. Сначала пользователь перенаправляется на страницу ВКонтакте для подтверждения запрошенных у него прав сайта на доступ к его данным. Со списком возможных прав можно ознакомиться [здесь](http://vk.com/developers.php?oid=-1&p=%D0%9F%D1%80%D0%B0%D0%B2%D0%B0_%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%D0%B0_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B9). Допустим, нужно получить доступ к друзьям (`friends`) и фотографиям (`photos`) пользователя.
 
-В соответствии с [рекомендациями](http://tools.ietf.org/html/draft-ietf-oauth-v2-30#section-10.12) в протоколе OAuth2 для защиты от [CSRF](http://ru.wikipedia.org/wiki/%D0%9F%D0%BE%D0%B4%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0_%D0%BC%D0%B5%D0%B6%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2%D1%8B%D1%85_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2), нужно передать параметр `state`, содержащий случайное значение.
+В соответствии с [рекомендациями](http://tools.ietf.org/html/draft-ietf-oauth-v2-30#section-10.12) в протоколе OAuth2 для защиты от [CSRF](http://ru.wikipedia.org/wiki/%D0%9F%D0%BE%D0%B4%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0_%D0%BC%D0%B5%D0%B6%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2%D1%8B%D1%85_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2), нужно передать параметр `state`, содержащий случайное значение. На данный момент по непонятным причинам ВКонтакте игнорирует этот параметр, если в `scope` не указан `notify`.
 
 ``` ruby
 session[:state] = Digest::MD5.hexdigest(rand.to_s)
-redirect_to VkontakteApi.authorization_url(scope: [:friends, :photos], state: session[:state])
+redirect_to VkontakteApi.authorization_url(scope: [:notify, :friends, :photos], state: session[:state])
 ```
 
 После подтверждения пользователь перенаправляется на указанный в настройках `redirect_uri`, причем в параметрах будет передан код, по которому можно получить токен доступа, а также переданный ранее `state`. Если `state` не совпадает с тем, который был использован при отправлении пользователя на ВКонтакте, то скорее всего это попытка CSRF-атаки - стоит отправить пользователя на повторную авторизацию.
