@@ -1,4 +1,5 @@
 - users
+- likes
 - friends
 - groups
 - photos
@@ -13,16 +14,13 @@
 - storage
 - notes
 - pages
-- activity
-- offers
-- questions
+- stats
 - subscriptions
+- leads
 - messages
-- likes
 - status
 - polls
 - account
 - board
-- auth
-- stats
 - fave
+- auth
