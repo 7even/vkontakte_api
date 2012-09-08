@@ -226,6 +226,7 @@ $ rails generate vkontakte_api:install
 
 * метод, возвращающий права текущего токена в читабельной форме (используя `getUserSettings` и кэшируя результат)
 * сохранение параметра `expires_in` токена в объекте `VkontakteApi::Client` после авторизации через `VkontakteApi.authorize`
+* `POST`-запросы по умолчанию
 
 ## Участие в разработке
 
