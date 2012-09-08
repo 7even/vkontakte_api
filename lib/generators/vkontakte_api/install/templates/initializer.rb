@@ -7,6 +7,9 @@ VkontakteApi.configure do |config|
   # Faraday adapter to make requests with:
   # config.adapter = :net_http
   
+  # HTTP verb for API methods (:get or :post)
+  # config.http_verb = :get
+  
   # Logging parameters:
   # log everything through the rails logger
   config.logger = Rails.logger

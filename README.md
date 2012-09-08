@@ -178,6 +178,8 @@ VkontakteApi.configure do |config|
   
   # faraday-адаптер для сетевых запросов
   config.adapter = :net_http
+  # HTTP-метод для вызова методов API (:get или :post)
+  config.http_verb = :get
   # параметры для faraday-соединения
   config.faraday_options = {
     ssl: {
@@ -202,6 +204,8 @@ VkontakteApi.register_alias
 ```
 
 По умолчанию для HTTP-запросов используется `Net::HTTP`; можно выбрать [любой другой адаптер](https://github.com/technoweenie/faraday/blob/master/lib/faraday/adapter.rb), поддерживаемый `faraday`.
+
+ВКонтакте [позволяет](http://vk.com/developers.php?oid=-1&p=%D0%92%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2_%D0%BA_API) использовать как `GET`-, так и `POST`-запросы при вызове методов API. По умолчанию `vkontakte_api` использует `GET`, но в настройке `http_verb` можно указать `:post`, чтобы совершать `POST`-запросы.
 
 При необходимости можно указать параметры для faraday-соединения - например, параметры прокси-сервера или путь к SSL-сертификатам.
 

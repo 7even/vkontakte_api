@@ -31,6 +31,19 @@ describe VkontakteApi::API do
     it "returns the response body" do
       subject.call('apiMethod').should == @result
     end
+    
+    it "uses an HTTP verb from VkontakteApi.http_verb" do
+      http_verb = stub("HTTP verb")
+      VkontakteApi.http_verb = http_verb
+      
+      response = stub("Response", :body => stub)
+      @connection.should_receive(:send).with(http_verb, 'apiMethod', {}).and_return(response)
+      subject.call('apiMethod')
+    end
+    
+    after(:each) do
+      VkontakteApi.reset
+    end
   end
   
   describe ".connection" do

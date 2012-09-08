@@ -6,7 +6,18 @@ module VkontakteApi
   # @note `VkontakteApi::Configuration` extends `VkontakteApi` so these methods should be called from the latter.
   module Configuration
     # Available options.
-    OPTION_NAMES = [:app_id, :app_secret, :redirect_uri, :adapter, :faraday_options, :logger, :log_requests, :log_errors, :log_responses]
+    OPTION_NAMES = [
+      :app_id,
+      :app_secret,
+      :redirect_uri,
+      :adapter,
+      :http_verb,
+      :faraday_options,
+      :logger,
+      :log_requests,
+      :log_errors,
+      :log_responses
+    ]
     
     attr_accessor *OPTION_NAMES
     
@@ -16,6 +27,9 @@ module VkontakteApi
     
     # Default HTTP adapter.
     DEFAULT_ADAPTER = Faraday.default_adapter
+    
+    # Default HTTP verb for API methods.
+    DEFAULT_HTTP_VERB = :get
     
     # Logger default options.
     DEFAULT_LOGGER_OPTIONS = {
@@ -38,6 +52,7 @@ module VkontakteApi
     # Reset all configuration options to defaults.
     def reset
       @adapter         = DEFAULT_ADAPTER
+      @http_verb       = DEFAULT_HTTP_VERB
       @faraday_options = {}
       @logger          = ::Logger.new(STDOUT)
       @log_requests    = DEFAULT_LOGGER_OPTIONS[:requests]
