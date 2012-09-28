@@ -70,14 +70,14 @@ describe VkontakteApi::Authorization do
       end
       
       it "gets the token" do
-        @auth_code.should_receive(:get_token).with(@code)
+        @auth_code.should_receive(:get_token).with(@code, {:redirect_uri => @redirect_uri})
         @auth.authorize(:type => :site, :code => @code)
       end
     end
     
     context "with an app_server type" do
       it "gets the token" do
-        @client_credentials.should_receive(:get_token).with({}, subject::OPTIONS[:client_credentials])
+        @client_credentials.should_receive(:get_token).with({:redirect_uri => @redirect_uri}, subject::OPTIONS[:client_credentials])
         @auth.authorize(:type => :app_server)
       end
     end

@@ -45,12 +45,14 @@ module VkontakteApi
     def authorize(options = {})
       type = options.delete(:type) || :site
       
+      options[:redirect_uri] ||= VkontakteApi.redirect_uri
+      
       case type
       when :site
         code  = options.delete(:code)
-        token = client.auth_code.get_token(code)
+        token = client.auth_code.get_token(code, options)
       when :app_server
-        token = client.client_credentials.get_token({}, OPTIONS[:client_credentials])
+        token = client.client_credentials.get_token(options, OPTIONS[:client_credentials])
       else
         raise ArgumentError, "Unknown authorization type #{type.inspect}"
       end
