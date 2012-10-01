@@ -13,8 +13,8 @@ describe VkontakteApi::Authorization do
     @token = stub("Token")
     
     @auth_code          = stub("Authorization code strategy", :get_token => @token, :authorize_url => @url)
-    @implicit           = stub("Implicit strategy",            :authorize_url => @url)
-    @client_credentials = stub("Client credentials strategy",  :get_token => @token)
+    @implicit           = stub("Implicit strategy",           :authorize_url => @url)
+    @client_credentials = stub("Client credentials strategy", :get_token => @token)
     
     @client = stub("OAuth2::Client instance", :auth_code => @auth_code, :implicit => @implicit, :client_credentials => @client_credentials)
     OAuth2::Client.stub(:new).and_return(@client)
