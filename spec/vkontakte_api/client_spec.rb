@@ -46,4 +46,25 @@ describe VkontakteApi::Client do
       end
     end
   end
+  
+  describe "#scope" do
+    before(:each) do
+      @client = VkontakteApi::Client.new
+      @client.stub(:get_user_settings).and_return(865310)
+    end
+    
+    it "returns an array of access rights" do
+      @client.scope.should == [
+        :friends,
+        :photos,
+        :audio,
+        :video,
+        :status,
+        :messages,
+        :wall,
+        :groups,
+        :notifications
+      ]
+    end
+  end
 end
