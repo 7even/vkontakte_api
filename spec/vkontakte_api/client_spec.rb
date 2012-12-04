@@ -54,7 +54,9 @@ describe VkontakteApi::Client do
     end
     
     it "returns an array of access rights" do
-      @client.scope.should == [
+      scopes_array = @client.scope
+      
+      [
         :friends,
         :photos,
         :audio,
@@ -64,7 +66,9 @@ describe VkontakteApi::Client do
         :wall,
         :groups,
         :notifications
-      ]
+      ].each do |access_scope|
+        scopes_array.should include(access_scope)
+      end
     end
   end
 end
