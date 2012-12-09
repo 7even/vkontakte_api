@@ -6,12 +6,16 @@ describe VkontakteApi::Logger do
     @fail_response    = Oj.dump('error' => 404)
     
     @connection = Faraday.new(:url => 'http://example.com') do |builder|
+      builder.request  :url_encoded
       builder.response :vk_logger
       builder.response :mashify
       builder.response :oj, :preserve_raw => true
       
       builder.adapter :test do |stub|
         stub.get('/success') do
+          [200, {}, @success_response]
+        end
+        stub.post('/success') do
           [200, {}, @success_response]
         end
         stub.get('/fail') do
@@ -33,9 +37,17 @@ describe VkontakteApi::Logger do
       VkontakteApi.log_requests = true
     end
     
-    it "logs the request" do
+    it "logs the request URL" do
       @logger.should_receive(:debug).with('GET http://example.com/success')
       @connection.get('/success')
+    end
+    
+    context "with a POST request" do
+      it "logs the request URL and the request body" do
+        @logger.should_receive(:debug).with('POST http://example.com/success')
+        @logger.should_receive(:debug).with('body: "param=1"')
+        @connection.post('/success', :param => 1)
+      end
     end
   end
   

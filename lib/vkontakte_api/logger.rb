@@ -15,6 +15,7 @@ module VkontakteApi
     def call(env)
       if VkontakteApi.log_requests?
         @logger.debug "#{env[:method].to_s.upcase} #{env[:url].to_s}"
+        @logger.debug "body: #{env[:body].inspect}" unless env[:method] == :get
       end
       
       super
