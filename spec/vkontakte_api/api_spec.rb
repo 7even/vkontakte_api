@@ -8,7 +8,7 @@ describe VkontakteApi::API do
       builder.response :mashify
       builder.response :oj, :preserve_raw => true
       builder.adapter  :test do |stub|
-        stub.get('/apiMethod') do
+        stub.post('/apiMethod') do
           [200, {}, Oj.dump(@result)]
         end
       end

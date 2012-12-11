@@ -29,7 +29,7 @@ module VkontakteApi
     DEFAULT_ADAPTER = Faraday.default_adapter
     
     # Default HTTP verb for API methods.
-    DEFAULT_HTTP_VERB = :get
+    DEFAULT_HTTP_VERB = :post
     
     # Logger default options.
     DEFAULT_LOGGER_OPTIONS = {
