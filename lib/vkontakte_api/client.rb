@@ -12,7 +12,6 @@ module VkontakteApi
     :notes          => 2048,
     :messages       => 4096,
     :wall           => 8192,
-    # :offline        => 16384,
     :ads            => 32768,
     :docs           => 131072,
     :groups         => 262144,
@@ -30,6 +29,9 @@ module VkontakteApi
     # Current user id.
     # @return [Integer]
     attr_reader :user_id
+    # Token expiration time
+    # @return [Time]
+    attr_reader :expires_at
     
     # A new API client.
     # If given an `OAuth2::AccessToken` instance, it extracts and keeps
@@ -38,8 +40,9 @@ module VkontakteApi
     def initialize(token = nil)
       if token.respond_to?(:token) && token.respond_to?(:params)
         # token is an OAuth2::AccessToken
-        @token   = token.token
-        @user_id = token.params['user_id']
+        @token      = token.token
+        @user_id    = token.params['user_id']
+        @expires_at = Time.at(token.expires_at)
       else
         # token is a String or nil
         @token = token

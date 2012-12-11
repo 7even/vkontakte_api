@@ -4,7 +4,12 @@ describe VkontakteApi::Client do
   before(:each) do
     @user_id      = stub("User id")
     @string_token = stub("Access token as a String")
-    @oauth2_token = stub("Access token as an OAuth2::AccessToken", :token => @string_token, :params => {'user_id' => @user_id})
+    @expires_at   = stub("Token expiration timestamp")
+    
+    @oauth2_token = stub("Access token as an OAuth2::AccessToken")
+    @oauth2_token.stub(:token).and_return(@string_token)
+    @oauth2_token.stub(:params).and_return('user_id' => @user_id)
+    @oauth2_token.stub(:expires_at).and_return(@expires_at)
   end
   
   describe "#initialize" do
@@ -25,9 +30,13 @@ describe VkontakteApi::Client do
       
       context "with an OAuth2::AccessToken value" do
         it "extracts the string token and uses it" do
+          expiration_time = stub("Some time")
+          Time.should_receive(:at).with(@expires_at).and_return(expiration_time)
+          
           client = VkontakteApi::Client.new(@oauth2_token)
           client.token.should == @string_token
           client.user_id.should == @user_id
+          client.expires_at.should == expiration_time
         end
       end
     end
