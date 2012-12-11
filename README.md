@@ -225,7 +225,8 @@ $ rails generate vkontakte_api:install
 ## Roadmap
 
 * метод, возвращающий права текущего токена в читабельной форме (используя `getUserSettings` и кэшируя результат)
-* сохранение параметра `expires_in` токена в объекте `VkontakteApi::Client` после авторизации через `VkontakteApi.authorize`
+* сохранение параметра `expires_at` токена в объекте `VkontakteApi::Client` после авторизации через `VkontakteApi.authorize`
+* метод `VkontakteApi::Client#offline?`, проверяющий, является ли токен бесконечным, используя значение `VkontakteApi::Client#expires_at`
 * `POST`-запросы по умолчанию
 * логгирование тела `POST`-запроса
 
