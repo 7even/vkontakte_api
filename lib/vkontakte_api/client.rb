@@ -44,7 +44,7 @@ module VkontakteApi
         # token is an OAuth2::AccessToken
         @token      = token.token
         @user_id    = token.params['user_id']
-        @expires_at = Time.at(token.expires_at)
+        @expires_at = Time.at(token.expires_at) unless token.expires_at.nil?
       else
         # token is a String or nil
         @token = token
@@ -56,10 +56,18 @@ module VkontakteApi
       !@token.nil?
     end
     
+    # Did the token already expire.
     def expired?
-      @expires_at < Time.now
+      @expires_at && @expires_at < Time.now
     end
     
+    # Is the token permanent.
+    def offline?
+      @expires_at.nil?
+    end
+    
+    # Access rights of this token.
+    # @return [Array] An array of symbols representing the access rights.
     def scope
       SCOPE.reject do |access_scope, mask|
         (settings & mask).zero?

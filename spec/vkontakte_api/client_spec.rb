@@ -41,6 +41,20 @@ describe VkontakteApi::Client do
     end
   end
   
+  describe "#authorized?" do
+    context "with an unauthorized client" do
+      it "returns false" do
+        VkontakteApi::Client.new.should_not be_authorized
+      end
+    end
+    
+    context "with an authorized client" do
+      it "returns true" do
+        VkontakteApi::Client.new(@string_token).should be_authorized
+      end
+    end
+  end
+  
   describe "#expired?" do
     context "with an expired token" do
       before(:each) do
@@ -62,18 +76,38 @@ describe VkontakteApi::Client do
         @client.should_not be_expired
       end
     end
+    
+    context "with a String token" do
+      before(:each) do
+        @client = VkontakteApi::Client.new(@string_token)
+      end
+      
+      it "returns false" do
+        @client.should_not be_expired
+      end
+    end
   end
   
-  describe "#authorized?" do
-    context "with an unauthorized client" do
+  describe "#offline?" do
+    context "with a usual token" do
       it "returns false" do
-        VkontakteApi::Client.new.should_not be_authorized
+        VkontakteApi::Client.new(@oauth2_token).should_not be_offline
       end
     end
     
-    context "with an authorized client" do
+    context "with an offline token" do
+      before(:each) do
+        @oauth2_token.stub(:expires_at).and_return(nil)
+      end
+      
       it "returns true" do
-        VkontakteApi::Client.new(@string_token).should be_authorized
+        VkontakteApi::Client.new(@oauth2_token).should be_offline
+      end
+    end
+    
+    context "with a String token" do
+      it "returns true" do
+        VkontakteApi::Client.new(@string_token).should be_offline
       end
     end
   end
