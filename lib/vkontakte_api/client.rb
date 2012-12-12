@@ -60,10 +60,9 @@ module VkontakteApi
     end
     
     def scope
-      SCOPE.inject([]) do |array, (access_scope, mask)|
-        array << access_scope unless (settings & mask).zero?
-        array
-      end
+      SCOPE.reject do |access_scope, mask|
+        (settings & mask).zero?
+      end.keys
     end
     
   private
