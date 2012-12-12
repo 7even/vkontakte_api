@@ -4,7 +4,7 @@ describe VkontakteApi::Client do
   before(:each) do
     @user_id      = stub("User id")
     @string_token = stub("Access token as a String")
-    @expires_at   = stub("Token expiration timestamp")
+    @expires_at   = Time.now - 2 * 60 * 60 # 2.hours.ago
     
     @oauth2_token = stub("Access token as an OAuth2::AccessToken")
     @oauth2_token.stub(:token).and_return(@string_token)
@@ -30,14 +30,36 @@ describe VkontakteApi::Client do
       
       context "with an OAuth2::AccessToken value" do
         it "extracts the string token and uses it" do
-          expiration_time = stub("Some time")
-          Time.should_receive(:at).with(@expires_at).and_return(expiration_time)
-          
           client = VkontakteApi::Client.new(@oauth2_token)
           client.token.should == @string_token
           client.user_id.should == @user_id
-          client.expires_at.should == expiration_time
+          
+          client.expires_at.should be_a(Time)
+          client.expires_at.should be < Time.now
         end
+      end
+    end
+  end
+  
+  describe "#expired?" do
+    context "with an expired token" do
+      before(:each) do
+        @client = VkontakteApi::Client.new(@oauth2_token)
+      end
+      
+      it "returns true" do
+        @client.should be_expired
+      end
+    end
+    
+    context "with an actual token" do
+      before(:each) do
+        @oauth2_token.stub(:expires_at).and_return(Time.now + 2 * 24 * 60 * 60) # 2.days.from_now
+        @client = VkontakteApi::Client.new(@oauth2_token)
+      end
+      
+      it "returns false" do
+        @client.should_not be_expired
       end
     end
   end

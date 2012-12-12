@@ -35,7 +35,8 @@ module VkontakteApi
     
     # A new API client.
     # If given an `OAuth2::AccessToken` instance, it extracts and keeps
-    # the token string and the user id; otherwise it just stores the given token.
+    # the token string, the user id and the expiration time;
+    # otherwise it just stores the given token.
     # @param [String, OAuth2::AccessToken] token An access token.
     def initialize(token = nil)
       if token.respond_to?(:token) && token.respond_to?(:params)
@@ -52,6 +53,10 @@ module VkontakteApi
     # Is a `VkontakteApi::Client` instance authorized.
     def authorized?
       !@token.nil?
+    end
+    
+    def expired?
+      @expires_at < Time.now
     end
     
     def scope
