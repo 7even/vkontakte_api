@@ -136,6 +136,41 @@ VkontakteApi.authorization_url(type: :client, scope: [:friends, :photos])
 @vk = VkontakteApi.authorize(type: :app_server)
 ```
 
+### Прочее
+
+Если клиент API (объект класса `VkontakteApi::Client`) был создан с помощью метода `VkontakteApi.authorize`, он будет содержать информацию об id текущего пользователя (`user_id`) и о времени истечения токена (`expires_at`). Получить их можно с помощью соответствующих методов:
+
+``` ruby
+vk = VkontakteApi.authorize(code: 'c1493e81f69fce1b43')
+# => #<VkontakteApi::Client:0x007fa578f00ad0>
+vk.user_id    # => 628985
+vk.expires_at # => 2012-12-18 23:22:55 +0400
+# можно проверить, истекло ли время жизни токена
+vk.expired?   # => false
+```
+
+Также можно получить список прав доступа, которые дает данный токен, в виде, аналогичном формату параметра `scope` в авторизации:
+
+``` ruby
+vk.scope # => [:friends, :groups]
+```
+
+Это работает на основе метода `getUserSettings`, причем результат запоминается после первого обращения.
+
+Чтобы создать короткий синоним `VK` для модуля `VkontakteApi`, достаточно вызвать метод `VkontakteApi.register_alias`:
+
+``` ruby
+VkontakteApi.register_alias
+VK::Client.new # => #<VkontakteApi::Client:0x007fa578d6d948>
+```
+
+При необходимости можно удалить синоним методом `VkontakteApi.unregister_alias`:
+
+``` ruby
+VK.unregister_alias
+VK # => NameError: uninitialized constant VK
+```
+
 ### Обработка ошибок
 
 Если ВКонтакте API возвращает ошибку, выбрасывается исключение класса `VkontakteApi::Error`.
@@ -179,7 +214,7 @@ VkontakteApi.configure do |config|
   # faraday-адаптер для сетевых запросов
   config.adapter = :net_http
   # HTTP-метод для вызова методов API (:get или :post)
-  config.http_verb = :get
+  config.http_verb = :post
   # параметры для faraday-соединения
   config.faraday_options = {
     ssl: {
@@ -198,14 +233,11 @@ VkontakteApi.configure do |config|
   config.log_errors    = true  # ошибки
   config.log_responses = false # удачные ответы
 end
-
-# создание короткого алиаса VK для модуля VkontakteApi
-VkontakteApi.register_alias
 ```
 
 По умолчанию для HTTP-запросов используется `Net::HTTP`; можно выбрать [любой другой адаптер](https://github.com/technoweenie/faraday/blob/master/lib/faraday/adapter.rb), поддерживаемый `faraday`.
 
-ВКонтакте [позволяет](http://vk.com/developers.php?oid=-1&p=%D0%92%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2_%D0%BA_API) использовать как `GET`-, так и `POST`-запросы при вызове методов API. По умолчанию `vkontakte_api` использует `GET`, но в настройке `http_verb` можно указать `:post`, чтобы совершать `POST`-запросы.
+ВКонтакте [позволяет](http://vk.com/developers.php?oid=-1&p=%D0%92%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2_%D0%BA_API) использовать как `GET`-, так и `POST`-запросы при вызове методов API. По умолчанию `vkontakte_api` использует `POST`, но в настройке `http_verb` можно указать `:get`, чтобы совершать `GET`-запросы.
 
 При необходимости можно указать параметры для faraday-соединения - например, параметры прокси-сервера или путь к SSL-сертификатам.
 
