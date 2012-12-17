@@ -88,30 +88,6 @@ describe VkontakteApi::Client do
     end
   end
   
-  describe "#offline?" do
-    context "with a usual token" do
-      it "returns false" do
-        VkontakteApi::Client.new(@oauth2_token).should_not be_offline
-      end
-    end
-    
-    context "with an offline token" do
-      before(:each) do
-        @oauth2_token.stub(:expires_at).and_return(nil)
-      end
-      
-      it "returns true" do
-        VkontakteApi::Client.new(@oauth2_token).should be_offline
-      end
-    end
-    
-    context "with a String token" do
-      it "returns true" do
-        VkontakteApi::Client.new(@string_token).should be_offline
-      end
-    end
-  end
-  
   describe "#scope" do
     before(:each) do
       @client = VkontakteApi::Client.new

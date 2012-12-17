@@ -61,11 +61,6 @@ module VkontakteApi
       @expires_at && @expires_at < Time.now
     end
     
-    # Is the token permanent.
-    def offline?
-      @expires_at.nil?
-    end
-    
     # Access rights of this token.
     # @return [Array] An array of symbols representing the access rights.
     def scope
