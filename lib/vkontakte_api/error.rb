@@ -4,6 +4,12 @@ module VkontakteApi
     # An error code.
     # @return [Fixnum]
     attr_reader :error_code
+    # Captcha identifier (only for "Captcha needed" errors).
+    # @return [String]
+    attr_reader :captcha_sid
+    # Captcha image URL (only for "Captcha needed" errors).
+    # @return [String]
+    attr_reader :captcha_img
     
     # An exception is initialized by the data from response mash.
     # @param [Hash] data Error data.
@@ -17,6 +23,9 @@ module VkontakteApi
       @access_token = request_params.delete('access_token')
       @oauth        = request_params.delete('oauth')
       @params       = request_params
+      
+      @captcha_sid  = data.captcha_sid
+      @captcha_img  = data.captcha_img
     end
     
     # A full description of the error.
