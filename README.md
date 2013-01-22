@@ -197,7 +197,9 @@ vk.friends.get(uid: 1, fields: [:first_name, :last_name, :photo])
 
 ### Пример использования
 
-[Здесь](http://vkontakte-on-rails.herokuapp.com/) можно посмотреть пример использования `vkontakte_api` в rails-приложении (используются только читающие методы *.get - приложение ничего не пишет на ВКонтакте, только читает). Исходный код можно посмотреть [тут](https://github.com/7even/vkontakte_on_rails).
+Пример использования `vkontakte_api` совместно с `eventmachine` можно посмотреть [здесь](https://github.com/7even/vkontakte_on_em).
+
+Также был написан [пример использования с rails](https://github.com/7even/vkontakte_on_rails), но он больше не работает из-за отсутствия прав на вызов метода `newsfeed.get`.
 
 ## Настройка
 
