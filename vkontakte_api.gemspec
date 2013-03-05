@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   
   s.add_runtime_dependency 'faraday',                     '~> 0.8'
   s.add_runtime_dependency 'faraday_middleware',          '~> 0.8'
-  s.add_runtime_dependency 'faraday_middleware-parse_oj', '~> 0.1'
+  s.add_runtime_dependency 'faraday_middleware-parse_oj', '~> 0.2'
   s.add_runtime_dependency 'oauth2',                      '~> 0.8'
   s.add_runtime_dependency 'hashie',                      '~> 2.0'
   
