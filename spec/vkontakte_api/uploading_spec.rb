@@ -12,8 +12,8 @@ describe VkontakteApi::Uploading do
       Faraday::UploadIO.stub(:new).and_return(@upload_io)
       
       @response_body = stub("Server response body")
-      response       = stub("Server response", :body => @response_body)
-      @connection    = stub("Faraday connection", :post => response)
+      response       = stub("Server response", body: @response_body)
+      @connection    = stub("Faraday connection", post: response)
       VkontakteApi::API.stub(:connection).and_return(@connection)
     end
     
@@ -29,18 +29,18 @@ describe VkontakteApi::Uploading do
       path = stub("File path")
       type = stub("File mime type")
       Faraday::UploadIO.should_receive(:new).with(path, type)
-      @uploader.upload(:url => 'http://example.com', :file1 => [path, type])
+      @uploader.upload(url: 'http://example.com', file1: [path, type])
     end
     
     it "POSTs the files through the connection to a given URL" do
       url  = stub("URL")
       file = stub("File")
-      @connection.should_receive(:post).with(url, :file1 => @upload_io)
-      @uploader.upload(:url => url, :file1 => file)
+      @connection.should_receive(:post).with(url, file1: @upload_io)
+      @uploader.upload(url: url, file1: file)
     end
     
     it "returns the server response" do
-      @uploader.upload(:url => 'http://example.com').should == @response_body
+      @uploader.upload(url: 'http://example.com').should == @response_body
     end
   end
 end

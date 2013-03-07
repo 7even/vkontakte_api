@@ -31,9 +31,9 @@ describe VkontakteApi::Method do
   
   describe "#full_name" do
     before(:each) do
-      resolver = Hashie::Mash.new(:name => 'name_space')
+      resolver = Hashie::Mash.new(name: 'name_space')
       @name = 'name'
-      @method = VkontakteApi::Method.new(@name, :resolver => resolver)
+      @method = VkontakteApi::Method.new(@name, resolver: resolver)
     end
     
     it "sends each part to #camelize" do

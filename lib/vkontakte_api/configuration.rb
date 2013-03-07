@@ -33,9 +33,9 @@ module VkontakteApi
     
     # Logger default options.
     DEFAULT_LOGGER_OPTIONS = {
-      :requests  => true,
-      :errors    => true,
-      :responses => false
+      requests:  true,
+      errors:    true,
+      responses: false
     }
     
     # A global configuration set via the block.

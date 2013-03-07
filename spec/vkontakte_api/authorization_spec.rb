@@ -12,11 +12,11 @@ describe VkontakteApi::Authorization do
     @url   = stub("Authorization url")
     @token = stub("Token")
     
-    @auth_code          = stub("Authorization code strategy", :get_token => @token, :authorize_url => @url)
-    @implicit           = stub("Implicit strategy",           :authorize_url => @url)
-    @client_credentials = stub("Client credentials strategy", :get_token => @token)
+    @auth_code          = stub("Authorization code strategy", get_token: @token, authorize_url: @url)
+    @implicit           = stub("Implicit strategy",           authorize_url: @url)
+    @client_credentials = stub("Client credentials strategy", get_token: @token)
     
-    @client = stub("OAuth2::Client instance", :auth_code => @auth_code, :implicit => @implicit, :client_credentials => @client_credentials)
+    @client = stub("OAuth2::Client instance", auth_code: @auth_code, implicit: @implicit, client_credentials: @client_credentials)
     OAuth2::Client.stub(:new).and_return(@client)
     
     @auth = Object.new
@@ -30,23 +30,23 @@ describe VkontakteApi::Authorization do
     
     context "with a site type" do
       it "returns a valid authorization url" do
-        @auth_code.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri)
-        @auth.authorization_url(:type => :site).should == @url
+        @auth_code.should_receive(:authorize_url).with(redirect_uri: @redirect_uri)
+        @auth.authorization_url(type: :site).should == @url
       end
     end
     
     context "with a client type" do
       it "returns a valid authorization url" do
-        @implicit.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri)
-        @auth.authorization_url(:type => :client).should == @url
+        @implicit.should_receive(:authorize_url).with(redirect_uri: @redirect_uri)
+        @auth.authorization_url(type: :client).should == @url
       end
     end
     
     context "given a redirect_uri" do
       it "prefers the given uri over VkontakteApi.redirect_uri" do
         redirect_uri = 'http://example.com/oauth/callback'
-        @auth_code.should_receive(:authorize_url).with(:redirect_uri => redirect_uri)
-        @auth.authorization_url(:redirect_uri => redirect_uri)
+        @auth_code.should_receive(:authorize_url).with(redirect_uri: redirect_uri)
+        @auth.authorization_url(redirect_uri: redirect_uri)
       end
     end
     
@@ -56,8 +56,8 @@ describe VkontakteApi::Authorization do
         flat_scope = stub("Flat scope")
         
         VkontakteApi::Utils.should_receive(:flatten_argument).with(scope).and_return(flat_scope)
-        @auth_code.should_receive(:authorize_url).with(:redirect_uri => @redirect_uri, :scope => flat_scope)
-        @auth.authorization_url(:scope => scope)
+        @auth_code.should_receive(:authorize_url).with(redirect_uri: @redirect_uri, scope: flat_scope)
+        @auth.authorization_url(scope: scope)
       end
     end
   end
@@ -70,22 +70,22 @@ describe VkontakteApi::Authorization do
       end
       
       it "gets the token" do
-        @auth_code.should_receive(:get_token).with(@code, {:redirect_uri => @redirect_uri})
-        @auth.authorize(:type => :site, :code => @code)
+        @auth_code.should_receive(:get_token).with(@code, redirect_uri: @redirect_uri)
+        @auth.authorize(type: :site, code: @code)
       end
     end
     
     context "with an app_server type" do
       it "gets the token" do
-        @client_credentials.should_receive(:get_token).with({:redirect_uri => @redirect_uri}, subject::OPTIONS[:client_credentials])
-        @auth.authorize(:type => :app_server)
+        @client_credentials.should_receive(:get_token).with({ redirect_uri: @redirect_uri }, subject::OPTIONS[:client_credentials])
+        @auth.authorize(type: :app_server)
       end
     end
     
     context "with an unknown type" do
       it "raises an ArgumentError" do
         expect {
-          @auth.authorize(:type => :unknown)
+          @auth.authorize(type: :unknown)
         }.to raise_error(ArgumentError)
       end
     end

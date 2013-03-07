@@ -10,17 +10,17 @@ module VkontakteApi
       
       if Resolver.namespaces.include?(method_name)
         # called from Client
-        Namespace.new(method_name, :resolver => resolver)
+        Namespace.new(method_name, resolver: resolver)
       else
         # called from Namespace or one-level method
-        Method.new(method_name, :resolver => resolver).call(args.first || {}, &block)
+        Method.new(method_name, resolver: resolver).call(args.first || {}, &block)
       end
     end
     
     # A `Hashie::Mash` structure holding the name and token of current instance.
     # @return [Hashie::Mash]
     def resolver
-      @resolver ||= Hashie::Mash.new(:name => @name, :token => token)
+      @resolver ||= Hashie::Mash.new(name: @name, token: token)
     end
     
     class << self

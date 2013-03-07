@@ -17,8 +17,8 @@ describe VkontakteApi::Utils do
     end
     
     it "sends each value to .flatten_argument" do
-      flat_arguments = VkontakteApi::Utils.flatten_arguments(:arg1 => @arg1, :arg2 => @arg2)
-      flat_arguments.should == {:arg1 => @flat_arg1, :arg2 => @flat_arg2}
+      flat_arguments = VkontakteApi::Utils.flatten_arguments(arg1: @arg1, arg2: @arg2)
+      flat_arguments.should == { arg1: @flat_arg1, arg2: @flat_arg2 }
     end
   end
   

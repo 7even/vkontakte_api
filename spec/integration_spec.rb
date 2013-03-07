@@ -18,7 +18,7 @@ describe "Integration" do
     end
     
     it "get users" do
-      user = @vk.users.get(:uid => 1).first
+      user = @vk.users.get(uid: 1).first
       user.uid.should == 1
       user.last_name.should_not be_empty
       user.first_name.should_not be_empty
@@ -54,7 +54,7 @@ describe "Integration" do
     end
     
     it "join arrays with a comma" do
-      users = @vk.users.get(:uids => [1, 2, 3], :fields => %w[first_name last_name screen_name])
+      users = @vk.users.get(uids: [1, 2, 3], fields: %w[first_name last_name screen_name])
       users.first.screen_name.should_not be_empty
     end
   end
@@ -65,7 +65,7 @@ describe "Integration" do
     end
     
     it "map the result with a block" do
-      users = @vk.users.get(:uid => 1) do |user|
+      users = @vk.users.get(uid: 1) do |user|
         "#{user.last_name} #{user.first_name}"
       end
       
@@ -76,7 +76,7 @@ describe "Integration" do
   describe "authorization" do
     context "with a scope" do
       it "returns a correct url" do
-        VK.authorization_url(:scope => %w[friends groups]).should include('scope=friends%2Cgroups')
+        VK.authorization_url(scope: %w[friends groups]).should include('scope=friends%2Cgroups')
       end
     end
   end

@@ -3,20 +3,20 @@ require 'spec_helper'
 describe VkontakteApi::Error do
   before(:each) do
     @error_data = Hashie::Mash.new(
-      :error_code      => 5,
-      :error_msg       => 'User authorization failed: invalid access_token.',
-      :request_params  => [
+      error_code:     5,
+      error_msg:      'User authorization failed: invalid access_token.',
+      request_params: [
         {
-          :key   => 'oauth',
-          :value => '1'
+          key:   'oauth',
+          value: '1'
         },
         {
-          :key   => 'method',
-          :value => 'unknownMethod'
+          key:   'method',
+          value: 'unknownMethod'
         },
         {
-          :key   => 'access_token',
-          :value => '123'
+          key:   'access_token',
+          value: '123'
         }
       ]
     )
@@ -40,7 +40,7 @@ describe VkontakteApi::Error do
     
     context "with parameters" do
       before(:each) do
-        @error_data[:request_params] << Hashie::Mash.new(:key => 'some', :value => 'params')
+        @error_data[:request_params] << Hashie::Mash.new(key: 'some', value: 'params')
         @e = VkontakteApi::Error.new(@error_data)
       end
       

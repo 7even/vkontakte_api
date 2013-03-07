@@ -14,7 +14,7 @@ module VkontakteApi
       # @return [Hashie::Mash] Mashed server response.
       def call(method_name, args = {}, token = nil)
         flat_arguments = Utils.flatten_arguments(args)
-        connection(:url => URL_PREFIX, :token => token).send(VkontakteApi.http_verb, method_name, flat_arguments).body
+        connection(url: URL_PREFIX, token: token).send(VkontakteApi.http_verb, method_name, flat_arguments).body
       end
       
       # Faraday connection.
@@ -32,7 +32,7 @@ module VkontakteApi
           builder.request  :url_encoded
           builder.response :vk_logger
           builder.response :mashify
-          builder.response :oj, :preserve_raw => true
+          builder.response :oj, preserve_raw: true
           builder.adapter  VkontakteApi.adapter
         end
       end

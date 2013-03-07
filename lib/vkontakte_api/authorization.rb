@@ -5,12 +5,12 @@ module VkontakteApi
   module Authorization
     # Authorization options.
     OPTIONS = {
-      :client => {
-        :site          => 'https://oauth.vk.com',
-        :authorize_url => '/authorize',
-        :token_url     => '/access_token'
+      client: {
+        site:          'https://oauth.vk.com',
+        authorize_url: '/authorize',
+        token_url:     '/access_token'
       },
-      :client_credentials => {
+      client_credentials: {
         'auth_scheme' => 'request_body'
       }
     }

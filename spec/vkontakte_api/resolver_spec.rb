@@ -28,18 +28,18 @@ describe VkontakteApi::Resolver do
     context "called with a method" do
       before(:each) do
         @result = stub("Result")
-        @method = stub("Method", :call => @result)
+        @method = stub("Method", call: @result)
         VkontakteApi::Method.stub(:new).and_return(@method)
       end
       
       it "creates a Method instance" do
-        VkontakteApi::Method.should_receive(:new).with('get', :resolver => @resolver.resolver)
-        @resolver.get(:id => 1)
+        VkontakteApi::Method.should_receive(:new).with('get', resolver: @resolver.resolver)
+        @resolver.get(id: 1)
       end
       
       it "calls Method#call and returns the result" do
-        @method.should_receive(:call).with(:id => 1)
-        @resolver.get(:id => 1).should == @result
+        @method.should_receive(:call).with(id: 1)
+        @resolver.get(id: 1).should == @result
       end
     end
   end
@@ -59,7 +59,7 @@ describe VkontakteApi::Resolver do
     end
     
     it "caches the result" do
-      @mash = stub("Mash", :name => @name, :token => @token)
+      @mash = stub("Mash", name: @name, token: @token)
       Hashie::Mash.should_receive(:new).once.and_return(@mash)
       5.times { @resolver.resolver }
     end

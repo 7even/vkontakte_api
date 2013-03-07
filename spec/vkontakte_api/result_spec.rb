@@ -64,13 +64,13 @@ describe VkontakteApi::Result do
   
   describe ".extract_result" do
     before(:each) do
-      @result_response  = {'key' => 'value'}
-      @result_error     = {'request_params' => [{'key' => 'error', 'value' => 'description'}]}
+      @result_response  = { 'key' => 'value' }
+      @result_error     = { 'request_params' => [{ 'key' => 'error', 'value' => 'description' }] }
     end
     
     context "with a successful response" do
       before(:each) do
-        @result = Hashie::Mash.new(:response => @result_response)
+        @result = Hashie::Mash.new(response: @result_response)
       end
       
       it "returns the response part" do
@@ -80,7 +80,7 @@ describe VkontakteApi::Result do
     
     context "with an error response" do
       before(:each) do
-        @result = Hashie::Mash.new(:error => @result_error)
+        @result = Hashie::Mash.new(error: @result_error)
       end
       
       it "raises a VkontakteApi::Error" do

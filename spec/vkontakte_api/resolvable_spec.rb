@@ -11,9 +11,9 @@ describe VkontakteApi::Resolvable do
     it "should save name and resolver" do
       name     = stub("Name")
       token    = stub("Token")
-      resolver = Hashie::Mash.new(:token => token)
+      resolver = Hashie::Mash.new(token: token)
       
-      resolvable = @class.new(name, :resolver => resolver)
+      resolvable = @class.new(name, resolver: resolver)
       resolvable.name.should  == name
       resolvable.token.should == token
     end
