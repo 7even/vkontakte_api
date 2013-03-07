@@ -3,3 +3,4 @@
 Gemfile.lock
 pkg/*
 .yardoc/*
+spec/support/credentials.yml

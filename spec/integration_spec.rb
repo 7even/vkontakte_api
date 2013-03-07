@@ -19,32 +19,34 @@ describe "Integration" do
     
     it "get users" do
       user = @vk.users.get(:uid => 1).first
-      user.uid.should        == 1
-      user.last_name.should_not  be_empty
+      user.uid.should == 1
+      user.last_name.should_not be_empty
       user.first_name.should_not be_empty
     end
   end
   
-  describe "authorized requests" do
-    before(:each) do
-      @vk = VK::Client.new(ENV['TOKEN'])
+  if MechanizedAuthorization.on?
+    describe "authorized requests" do
+      before(:each) do
+        @vk = MechanizedAuthorization.client
+      end
+      
+      it "get groups" do
+        groups = @vk.groups.get
+        groups.should include(1)
+      end
     end
     
-    it "get groups" do
-      groups = @vk.groups.get
-      groups.should include(1)
+    describe "requests with camelCase and predicate methods" do
+      before(:each) do
+        @vk = MechanizedAuthorization.client
+      end
+      
+      it "convert method names to vk.com format" do
+        @vk.is_app_user?.should be_true
+      end
     end
-  end if ENV['TOKEN']
-  
-  describe "requests with camelCase and predicate methods" do
-    before(:each) do
-      @vk = VK::Client.new(ENV['TOKEN'])
-    end
-    
-    it "convert method names to vk.com format" do
-      @vk.is_app_user?.should be_true
-    end
-  end if ENV['TOKEN']
+  end
   
   describe "requests with array arguments" do
     before(:each) do

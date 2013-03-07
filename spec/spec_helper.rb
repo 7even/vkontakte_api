@@ -1,5 +1,7 @@
 require 'vkontakte_api'
 require 'pry'
+require 'awesome_print'
+require_relative './support/mechanized_authorization'
 
 RSpec::Matchers.define :log_requests do
   match do |logger|
