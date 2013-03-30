@@ -16,6 +16,8 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_paths = ['lib']
   
+  s.required_ruby_version = '>= 1.9.2'
+  
   s.add_runtime_dependency 'faraday',                     '~> 0.8'
   s.add_runtime_dependency 'faraday_middleware',          '~> 0.8'
   s.add_runtime_dependency 'faraday_middleware-parse_oj', '~> 0.2'
