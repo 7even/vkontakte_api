@@ -36,7 +36,11 @@ module MechanizedAuthorization
     end
     
     def settings
-      @settings ||= Hashie::Mash.new(YAML.load_file credentials_path)
+      @settings ||= Hashie::Mash.new(settings_hash)
+    end
+    
+    def settings_hash
+      YAML.load_file(credentials_path)
     end
     
     def credentials_path
