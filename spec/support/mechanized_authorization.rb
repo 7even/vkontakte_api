@@ -7,15 +7,22 @@ module MechanizedAuthorization
         agent = Mechanize.new
         
         configure
-        agent.get VkontakteApi.authorization_url(scope: [:friends, :groups])
+        agent.get VkontakteApi.authorization_url(scope: [:friends, :groups], type: :client)
         
         agent.page.form_with(action: /login.vk.com/) do |form|
           form.email = settings.email
           form.pass  = settings.password
         end.submit
         
-        code = agent.page.uri.fragment.sub('code=', '')
-        VkontakteApi.authorize(code: code)
+        # uri.fragment: access_token=ee6b952fa432c70&expires_in=86400&user_id=123456
+        params = agent.page.uri.fragment.split('&').inject({}) do |hash, pair|
+          key, value = pair.split('=')
+          hash[key] = value
+          hash
+        end
+        token = params['access_token']
+        
+        VkontakteApi::Client.new(token)
       end
     end
     
