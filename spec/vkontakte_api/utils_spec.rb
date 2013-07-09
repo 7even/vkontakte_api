@@ -3,10 +3,10 @@ require 'spec_helper'
 describe VkontakteApi::Utils do
   describe ".flatten_arguments" do
     before(:each) do
-      @arg1 = stub("First argument")
-      @arg2 = stub("Second argument")
-      @flat_arg1 = stub("Flattened first argument")
-      @flat_arg2 = stub("Flattened second argument")
+      @arg1 = double("First argument")
+      @arg2 = double("Second argument")
+      @flat_arg1 = double("Flattened first argument")
+      @flat_arg2 = double("Flattened second argument")
       
       VkontakteApi::Utils.stub(:flatten_argument) do |arg|
         case arg

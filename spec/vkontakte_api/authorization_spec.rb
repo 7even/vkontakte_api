@@ -2,21 +2,21 @@ require 'spec_helper'
 
 describe VkontakteApi::Authorization do
   before(:each) do
-    @app_id = stub("App id")
+    @app_id = double("App id")
     VkontakteApi.stub(:app_id).and_return(@app_id)
-    @app_secret = stub("App secret")
+    @app_secret = double("App secret")
     VkontakteApi.stub(:app_secret).and_return(@app_secret)
-    @redirect_uri = stub("Redirect uri")
+    @redirect_uri = double("Redirect uri")
     VkontakteApi.stub(:redirect_uri).and_return(@redirect_uri)
     
-    @url   = stub("Authorization url")
-    @token = stub("Token")
+    @url   = double("Authorization url")
+    @token = double("Token")
     
-    @auth_code          = stub("Authorization code strategy", get_token: @token, authorize_url: @url)
-    @implicit           = stub("Implicit strategy",           authorize_url: @url)
-    @client_credentials = stub("Client credentials strategy", get_token: @token)
+    @auth_code          = double("Authorization code strategy", get_token: @token, authorize_url: @url)
+    @implicit           = double("Implicit strategy",           authorize_url: @url)
+    @client_credentials = double("Client credentials strategy", get_token: @token)
     
-    @client = stub("OAuth2::Client instance", auth_code: @auth_code, implicit: @implicit, client_credentials: @client_credentials)
+    @client = double("OAuth2::Client instance", auth_code: @auth_code, implicit: @implicit, client_credentials: @client_credentials)
     OAuth2::Client.stub(:new).and_return(@client)
     
     @auth = Object.new
@@ -52,8 +52,8 @@ describe VkontakteApi::Authorization do
     
     context "given a scope" do
       it "sends it to VkontakteApi::Utils.flatten_argument" do
-        scope = stub("Scope")
-        flat_scope = stub("Flat scope")
+        scope = double("Scope")
+        flat_scope = double("Flat scope")
         
         VkontakteApi::Utils.should_receive(:flatten_argument).with(scope).and_return(flat_scope)
         @auth_code.should_receive(:authorize_url).with(redirect_uri: @redirect_uri, scope: flat_scope)
@@ -65,7 +65,7 @@ describe VkontakteApi::Authorization do
   describe "#authorize" do
     context "with a site type" do
       before(:each) do
-        @code = stub("Authorization code")
+        @code = double("Authorization code")
         @auth_code.stub(:get_token).and_return(@token)
       end
       
@@ -91,7 +91,7 @@ describe VkontakteApi::Authorization do
     end
     
     it "builds a VkontakteApi::Client instance with the received token" do
-      client = stub("VkontakteApi::Client instance")
+      client = double("VkontakteApi::Client instance")
       VkontakteApi::Client.should_receive(:new).with(@token).and_return(client)
       @auth.authorize.should == client
     end

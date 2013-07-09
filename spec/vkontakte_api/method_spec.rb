@@ -3,9 +3,9 @@ require 'spec_helper'
 describe VkontakteApi::Method do
   describe "#call" do
     before(:each) do
-      @full_name = stub("Full method name")
-      @args      = stub("Method arguments")
-      @token     = stub("Access token")
+      @full_name = double("Full method name")
+      @args      = double("Method arguments")
+      @token     = double("Access token")
       
       @method = VkontakteApi::Method.new('some_name')
       @method.stub(:full_name).and_return(@full_name)
@@ -19,9 +19,9 @@ describe VkontakteApi::Method do
     end
     
     it "sends the response to Result.process" do
-      response = stub("VK response")
+      response = double("VK response")
       VkontakteApi::API.stub(:call).and_return(response)
-      type = stub("Type")
+      type = double("Type")
       @method.stub(:type).and_return(type)
       
       VkontakteApi::Result.should_receive(:process).with(response, type, nil)

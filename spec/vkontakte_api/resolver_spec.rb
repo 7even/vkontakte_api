@@ -14,7 +14,7 @@ describe VkontakteApi::Resolver do
   describe "#method_missing" do
     before(:each) do
       @resolver = @class.new(:trololo)
-      @token = stub("Token")
+      @token = double("Token")
       @resolver.stub(:token).and_return(@token)
     end
     
@@ -27,8 +27,8 @@ describe VkontakteApi::Resolver do
     
     context "called with a method" do
       before(:each) do
-        @result = stub("Result")
-        @method = stub("Method", call: @result)
+        @result = double("Result")
+        @method = double("Method", call: @result)
         VkontakteApi::Method.stub(:new).and_return(@method)
       end
       
@@ -47,12 +47,12 @@ describe VkontakteApi::Resolver do
   describe "#send" do
     before(:each) do
       @resolver = @class.new('trololo')
-      @token = stub("Token")
+      @token = double("Token")
       @resolver.stub(:token).and_return(@token)
     end
     
     it "gets into #method_missing" do
-      method = stub("Method", call: nil)
+      method = double("Method", call: nil)
       VkontakteApi::Method.should_receive(:new).with('send', resolver: @resolver.resolver).and_return(method)
       @resolver.send(message: 'hello')
     end
@@ -60,9 +60,9 @@ describe VkontakteApi::Resolver do
   
   describe "#resolver" do
     before(:each) do
-      @name     = stub("Name")
+      @name     = double("Name")
       @resolver = @class.new(@name)
-      @token    = stub("Token")
+      @token    = double("Token")
       @resolver.stub(:token).and_return(@token)
     end
     
@@ -73,7 +73,7 @@ describe VkontakteApi::Resolver do
     end
     
     it "caches the result" do
-      @mash = stub("Mash", name: @name, token: @token)
+      @mash = double("Mash", name: @name, token: @token)
       Hashie::Mash.should_receive(:new).once.and_return(@mash)
       5.times { @resolver.resolver }
     end
@@ -86,9 +86,9 @@ describe VkontakteApi::Resolver do
     
     context "on first call" do
       it "loads namespaces from a file" do
-        filename = stub("Filename")
+        filename = double("Filename")
         File.should_receive(:expand_path).and_return(filename)
-        namespaces = stub("Namespaces list")
+        namespaces = double("Namespaces list")
         YAML.should_receive(:load_file).with(filename).and_return(namespaces)
         
         VkontakteApi::Resolver.namespaces

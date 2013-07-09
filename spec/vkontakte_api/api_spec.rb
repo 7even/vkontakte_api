@@ -33,10 +33,10 @@ describe VkontakteApi::API do
     end
     
     it "uses an HTTP verb from VkontakteApi.http_verb" do
-      http_verb = stub("HTTP verb")
+      http_verb = double("HTTP verb")
       VkontakteApi.http_verb = http_verb
       
-      response = stub("Response", body: stub)
+      response = double("Response", body: double)
       @connection.should_receive(:send).with(http_verb, 'apiMethod', {}).and_return(response)
       subject.call('apiMethod')
     end
@@ -48,9 +48,9 @@ describe VkontakteApi::API do
   
   describe ".connection" do
     it "uses the :url parameter and VkontakteApi.faraday_options" do
-      faraday_options = stub("Faraday options")
+      faraday_options = double("Faraday options")
       VkontakteApi.stub(:faraday_options).and_return(faraday_options)
-      url = stub("URL")
+      url = double("URL")
       Faraday.should_receive(:new).with(url, faraday_options)
       connection = subject.connection(url: url)
     end
@@ -64,7 +64,7 @@ describe VkontakteApi::API do
     
     context "with a token" do
       before(:each) do
-        @token = stub("Token")
+        @token = double("Token")
       end
       
       it "creates a connection with an oauth2 middleware" do

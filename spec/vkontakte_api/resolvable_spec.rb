@@ -9,8 +9,8 @@ describe VkontakteApi::Resolvable do
   
   describe "#initialize" do
     it "should save name and resolver" do
-      name     = stub("Name")
-      token    = stub("Token")
+      name     = double("Name")
+      token    = double("Token")
       resolver = Hashie::Mash.new(token: token)
       
       resolvable = @class.new(name, resolver: resolver)

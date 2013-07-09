@@ -3,8 +3,8 @@ require 'spec_helper'
 describe VkontakteApi::Result do
   describe ".process" do
     before(:each) do
-      @response = stub("Response")
-      @result = stub("Result")
+      @response = double("Response")
+      @result = double("Result")
       subject.stub(:extract_result).and_return(@result)
     end
     
@@ -15,8 +15,8 @@ describe VkontakteApi::Result do
     
     context "with a non-enumerable result" do
       before(:each) do
-        @type = stub("Type")
-        @typecasted_value = stub("Typecasted value")
+        @type = double("Type")
+        @typecasted_value = double("Typecasted value")
         subject.stub(:typecast).and_return(@typecasted_value)
       end
       
@@ -27,7 +27,7 @@ describe VkontakteApi::Result do
       
       context "when block_given?" do
         it "yields the #typecast-ed value and returns the result of the block" do
-          block_result = stub("Block result")
+          block_result = double("Block result")
           @typecasted_value.should_receive(:result_method).and_return(block_result)
           block = proc(&:result_method)
           
@@ -38,8 +38,8 @@ describe VkontakteApi::Result do
     
     context "with an enumerable result" do
       before(:each) do
-        @element1 = stub("First element")
-        @element2 = stub("Second element")
+        @element1 = double("First element")
+        @element2 = double("Second element")
         @enumerable_result = [@element1, @element2]
         subject.stub(:extract_result).and_return(@enumerable_result)
       end
@@ -50,8 +50,8 @@ describe VkontakteApi::Result do
       
       context "when block_given?" do
         it "yields each element untouched to the block" do
-          result1 = stub("First element after result_method")
-          result2 = stub("Second element after result_method")
+          result1 = double("First element after result_method")
+          result2 = double("Second element after result_method")
           @element1.should_receive(:result_method).and_return(result1)
           @element2.should_receive(:result_method).and_return(result2)
           block = proc(&:result_method)

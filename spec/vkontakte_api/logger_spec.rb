@@ -24,7 +24,7 @@ describe VkontakteApi::Logger do
       end
     end
     
-    @logger = stub("Logger").as_null_object
+    @logger = double("Logger").as_null_object
     VkontakteApi.logger = @logger
     
     VkontakteApi.log_requests  = false

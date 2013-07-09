@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe VkontakteApi::Client do
   before(:each) do
-    @user_id      = stub("User id")
-    @string_token = stub("Access token as a String")
+    @user_id      = double("User id")
+    @string_token = double("Access token as a String")
     @expires_at   = Time.now - 2 * 60 * 60 # 2.hours.ago
     
-    @oauth2_token = stub("Access token as an OAuth2::AccessToken")
+    @oauth2_token = double("Access token as an OAuth2::AccessToken")
     @oauth2_token.stub(:token).and_return(@string_token)
     @oauth2_token.stub(:params).and_return('user_id' => @user_id)
     @oauth2_token.stub(:expires_at).and_return(@expires_at)
