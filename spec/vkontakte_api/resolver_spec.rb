@@ -44,6 +44,20 @@ describe VkontakteApi::Resolver do
     end
   end
   
+  describe "#send" do
+    before(:each) do
+      @resolver = @class.new('trololo')
+      @token = stub("Token")
+      @resolver.stub(:token).and_return(@token)
+    end
+    
+    it "gets into #method_missing" do
+      method = stub("Method", call: nil)
+      VkontakteApi::Method.should_receive(:new).with('send', resolver: @resolver.resolver).and_return(method)
+      @resolver.send(message: 'hello')
+    end
+  end
+  
   describe "#resolver" do
     before(:each) do
       @name     = stub("Name")

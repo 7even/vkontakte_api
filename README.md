@@ -258,7 +258,6 @@ $ rails generate vkontakte_api:install
 
 ## Roadmap
 
-* корректная работа API-метода `messages.send`
 * настраиваемый retry запроса при стандартных исключениях
 * CLI-интерфейс с автоматической авторизацией
 

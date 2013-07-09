@@ -35,6 +35,12 @@ module VkontakteApi
         
         @namespaces
       end
+      
+      def included(base_class)
+        base_class.class_eval do
+          undef_method :send
+        end
+      end
     end
   end
 end
