@@ -13,6 +13,7 @@ module VkontakteApi
       :adapter,
       :http_verb,
       :faraday_options,
+      :max_retries,
       :logger,
       :log_requests,
       :log_errors,
@@ -30,6 +31,9 @@ module VkontakteApi
     
     # Default HTTP verb for API methods.
     DEFAULT_HTTP_VERB = :post
+    
+    # Default max retries count.
+    DEFAULT_MAX_RETRIES = 2
     
     # Logger default options.
     DEFAULT_LOGGER_OPTIONS = {
@@ -54,6 +58,7 @@ module VkontakteApi
       @adapter         = DEFAULT_ADAPTER
       @http_verb       = DEFAULT_HTTP_VERB
       @faraday_options = {}
+      @max_retries     = DEFAULT_MAX_RETRIES
       @logger          = ::Logger.new(STDOUT)
       @log_requests    = DEFAULT_LOGGER_OPTIONS[:requests]
       @log_errors      = DEFAULT_LOGGER_OPTIONS[:errors]

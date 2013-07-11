@@ -30,6 +30,7 @@ module VkontakteApi
           builder.request  :oauth2, token unless token.nil?
           builder.request  :multipart
           builder.request  :url_encoded
+          builder.request  :retry, VkontakteApi.max_retries
           builder.response :vk_logger
           builder.response :mashify
           builder.response :oj, preserve_raw: true
