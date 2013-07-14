@@ -6,7 +6,7 @@
 
 ``` ruby
 # Gemfile
-gem 'vkontakte_api', '~> 1.1'
+gem 'vkontakte_api', '~> 1.2'
 ```
 
 или просто
@@ -181,6 +181,8 @@ vk.friends.get(uid: 1, fields: [:first_name, :last_name, :photo])
 # VkontakteApi::Error: VKontakte returned an error 7: 'Permission to perform this action is denied' after calling method 'friends.get' with parameters {"uid"=>"1", "fields"=>"first_name,last_name,photo"}.
 ```
 
+Особый случай ошибки - 14: необходимо ввести код с captcha. В этом случае можно получить параметры капчи методами `VkontakteApi::Error#captcha_sid` и `VkontakteApi::Error#captcha_img` - например, [так](https://github.com/7even/vkontakte_api/issues/10#issuecomment-11666091).
+
 ### Логгирование
 
 `vkontakte_api` логгирует служебную информацию о запросах при вызове методов. По умолчанию все пишется в `STDOUT`, но в настройке можно указать любой другой совместимый логгер, например `Rails.logger`.
@@ -228,6 +230,8 @@ VkontakteApi.configure do |config|
       password: 'bar'
     }
   }
+  # максимальное количество повторов запроса при ошибках
+  config.max_retries = 2
   
   # логгер
   config.logger        = Rails.logger

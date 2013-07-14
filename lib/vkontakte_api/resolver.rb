@@ -36,6 +36,8 @@ module VkontakteApi
         @namespaces
       end
       
+      # When this module is included, it undefines the `:send` instance method in the `base_class`
+      # so it can be resolved via `method_missing`.
       def included(base_class)
         base_class.class_eval do
           undef_method :send
