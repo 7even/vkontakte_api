@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://7even.github.com/vkontakte_api'
   s.summary     = %q{Ruby wrapper for VKontakte API}
   s.description = %q{A transparent wrapper for VKontakte API. Supports ruby-way naming of API methods (without method lists inside), optional authorization, files uploading, logging and any faraday-supported http adapter of your choice.}
+  s.license     = 'MIT'
   
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
