@@ -7,8 +7,8 @@ module VkontakteApi
     # Otherwise it creates a `VkontakteApi::Method` instance and invokes it's `#call` method passing it the arguments and a block.
     def method_missing(method_name, *args, &block)
       method_name = method_name.to_s
-      
-      if Resolver.namespaces.include?(method_name)
+
+      if Resolver.namespaces.include?(method_name) && !sub_request?
         # called from Client
         Namespace.new(method_name, resolver: resolver)
       else
@@ -21,6 +21,10 @@ module VkontakteApi
     # @return [Hashie::Mash]
     def resolver
       @resolver ||= Hashie::Mash.new(name: @name, token: token)
+    end
+
+    def sub_request?
+      @name && Resolver.namespaces.include?(@name)
     end
     
     class << self
