@@ -7,7 +7,7 @@ module VkontakteApi
     # @param [String] name The name of this resolvable.
     # @option options [Hashie::Mash] :resolver A mash holding information about the previous resolver.
     def initialize(name, options = {})
-      @name = name
+      @name = name.to_s
       @previous_resolver = options.delete(:resolver)
     end
     

@@ -2,5 +2,6 @@
 .bundle
 Gemfile.lock
 pkg/*
+tmp/*
 .yardoc/*
 spec/support/credentials.yml

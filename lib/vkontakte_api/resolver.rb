@@ -6,14 +6,14 @@ module VkontakteApi
     # If the called method is a namespace, it creates and returns a new `VkontakteApi::Namespace` instance.
     # Otherwise it creates a `VkontakteApi::Method` instance and invokes it's `#call` method passing it the arguments and a block.
     def method_missing(method_name, *args, &block)
-      method_name = method_name.to_s
+      method_args = args.first || {}
       
-      if Resolver.namespaces.include?(method_name) && !sub_request?
+      if Resolver.namespaces.include?(method_name.to_s) && !sub_request?
         # called from Client
-        Namespace.new(method_name, resolver: resolver)
+        create_namespace(method_name)
       else
         # called from Namespace or one-level method
-        Method.new(method_name, resolver: resolver).call(args.first || {}, &block)
+        create_method(method_name).call(method_args, &block)
       end
     end
     
@@ -25,6 +25,15 @@ module VkontakteApi
     
     def sub_request?
       @name && Resolver.namespaces.include?(@name)
+    end
+    
+  private
+    def create_namespace(name)
+      Namespace.new(name, resolver: resolver)
+    end
+    
+    def create_method(name)
+      Method.new(name, resolver: resolver)
     end
     
     class << self

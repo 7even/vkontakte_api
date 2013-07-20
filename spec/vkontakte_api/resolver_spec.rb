@@ -13,7 +13,7 @@ describe VkontakteApi::Resolver do
   
   describe "#method_missing" do
     before(:each) do
-      @resolver = @class.new(:trololo)
+      @resolver = @class.new('trololo')
       @token = double("Token")
       @resolver.stub(:token).and_return(@token)
     end
@@ -33,7 +33,7 @@ describe VkontakteApi::Resolver do
       end
       
       it "creates a Method instance" do
-        VkontakteApi::Method.should_receive(:new).with('get', resolver: @resolver.resolver)
+        VkontakteApi::Method.should_receive(:new).with(:get, resolver: @resolver.resolver)
         @resolver.get(id: 1)
       end
       
@@ -53,7 +53,7 @@ describe VkontakteApi::Resolver do
     
     it "gets into #method_missing" do
       method = double("Method", call: nil)
-      VkontakteApi::Method.should_receive(:new).with('send', resolver: @resolver.resolver).and_return(method)
+      VkontakteApi::Method.should_receive(:new).with(:send, resolver: @resolver.resolver).and_return(method)
       @resolver.send(message: 'hello')
     end
   end
