@@ -23,12 +23,10 @@ describe "Integration" do
       user.last_name.should_not be_empty
       user.first_name.should_not be_empty
     end
-
+    
     it "search newsfeed" do
-      newsfeeds = @vk.newsfeed.search({ q: "vk", count: 1 })
-      num_of_news = newsfeeds.shift
-      newsfeeds.should be_a_kind_of Array
-      num_of_news.should be
+      news = @vk.newsfeed.search(q: 'vk', count: 1)
+      news.should be_a(Enumerable)
     end
   end
   
