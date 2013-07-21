@@ -1,20 +1,6 @@
 module VkontakteApi
   # A mixin for classes that will resolve other classes' objects via `#method_missing`.
   module Resolver
-    # Main methods dispatch.
-    # 
-    # If the called method is a namespace, it creates and returns a new `VkontakteApi::Namespace` instance.
-    # Otherwise it creates a `VkontakteApi::Method` instance and invokes it's `#call` method passing it the arguments and a block.
-    def method_missing(*args, &block)
-      if Namespace.exists?(args.first)
-        # creating a Namespace from Client
-        create_namespace(args.first)
-      else
-        # calling one-level method
-        call_method(args, &block)
-      end
-    end
-    
     # A `Hashie::Mash` structure holding the name and token of current instance.
     # @return [Hashie::Mash]
     def resolver

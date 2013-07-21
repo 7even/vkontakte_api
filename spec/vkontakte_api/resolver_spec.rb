@@ -11,39 +11,6 @@ describe VkontakteApi::Resolver do
     end
   end
   
-  describe "#method_missing" do
-    before(:each) do
-      @resolver = @class.new('trololo')
-      @token = double("Token")
-      @resolver.stub(:token).and_return(@token)
-    end
-    
-    context "called with a namespace" do
-      it "returns a Namespace instance" do
-        namespace = @resolver.users
-        namespace.should be_a(VkontakteApi::Namespace)
-      end
-    end
-    
-    context "called with a method" do
-      before(:each) do
-        @result = double("Result")
-        @method = double("Method", call: @result)
-        VkontakteApi::Method.stub(:new).and_return(@method)
-      end
-      
-      it "creates a Method instance" do
-        VkontakteApi::Method.should_receive(:new).with(:get, resolver: @resolver.resolver)
-        @resolver.get(id: 1)
-      end
-      
-      it "calls Method#call and returns the result" do
-        @method.should_receive(:call).with(id: 1)
-        @resolver.get(id: 1).should == @result
-      end
-    end
-  end
-  
   describe "#send" do
     before(:each) do
       @resolver = @class.new('trololo')
@@ -53,7 +20,7 @@ describe VkontakteApi::Resolver do
     
     it "gets into #method_missing" do
       method = double("Method", call: nil)
-      VkontakteApi::Method.should_receive(:new).with(:send, resolver: @resolver.resolver).and_return(method)
+      expect(@resolver).to receive(:method_missing).with(:send, message: 'hello')
       @resolver.send(message: 'hello')
     end
   end

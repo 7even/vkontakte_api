@@ -112,4 +112,39 @@ describe VkontakteApi::Client do
       end
     end
   end
+  
+  describe "#method_missing" do
+    before(:each) do
+      # @resolver = @class.new('trololo')
+      @token = double("Token")
+      # @resolver.stub(:token).and_return(@token)
+      
+      @client = VkontakteApi::Client.new(@token)
+    end
+    
+    context "called with a namespace" do
+      it "returns a Namespace instance" do
+        namespace = @client.users
+        namespace.should be_a(VkontakteApi::Namespace)
+      end
+    end
+    
+    context "called with a method" do
+      before(:each) do
+        @result = double("Result")
+        @method = double("Method", call: @result)
+        VkontakteApi::Method.stub(:new).and_return(@method)
+      end
+      
+      it "creates a Method instance" do
+        VkontakteApi::Method.should_receive(:new).with(:get, resolver: @client.resolver)
+        @client.get(id: 1)
+      end
+      
+      it "calls Method#call and returns the result" do
+        @method.should_receive(:call).with(id: 1)
+        @client.get(id: 1).should == @result
+      end
+    end
+  end
 end

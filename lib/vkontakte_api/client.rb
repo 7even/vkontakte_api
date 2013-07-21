@@ -69,6 +69,16 @@ module VkontakteApi
       end.keys
     end
     
+    # If the called method is a namespace, it creates and returns a new `VkontakteApi::Namespace` instance.
+    # Otherwise it creates a `VkontakteApi::Method` instance and calls it passing the arguments and a block.
+    def method_missing(*args, &block)
+      if Namespace.exists?(args.first)
+        create_namespace(args.first)
+      else
+        call_method(args, &block)
+      end
+    end
+    
   private
     def settings
       @settings ||= self.get_user_settings
