@@ -78,32 +78,4 @@ describe VkontakteApi::Resolver do
       5.times { @resolver.resolver }
     end
   end
-  
-  describe ".namespaces" do
-    before(:each) do
-      VkontakteApi::Resolver.instance_variable_set(:@namespaces, nil)
-    end
-    
-    context "on first call" do
-      it "loads namespaces from a file" do
-        filename = double("Filename")
-        File.should_receive(:expand_path).and_return(filename)
-        namespaces = double("Namespaces list")
-        YAML.should_receive(:load_file).with(filename).and_return(namespaces)
-        
-        VkontakteApi::Resolver.namespaces
-      end
-    end
-    
-    context "on subsequent calls" do
-      before(:each) do
-        VkontakteApi::Resolver.namespaces
-      end
-      
-      it "returns the cached list" do
-        YAML.should_not_receive(:load_file)
-        VkontakteApi::Resolver.namespaces
-      end
-    end
-  end
 end

@@ -6,7 +6,7 @@ module VkontakteApi
     # If the called method is a namespace, it creates and returns a new `VkontakteApi::Namespace` instance.
     # Otherwise it creates a `VkontakteApi::Method` instance and invokes it's `#call` method passing it the arguments and a block.
     def method_missing(*args, &block)
-      if Resolver.namespaces.include?(args.first.to_s)
+      if Namespace.exists?(args.first)
         # creating a Namespace from Client
         create_namespace(args.first)
       else
@@ -35,18 +35,6 @@ module VkontakteApi
     end
     
     class << self
-      # An array of method namespaces.
-      # Lazily loads the list from `namespaces.yml` and caches it.
-      # @return [Array]
-      def namespaces
-        if @namespaces.nil?
-          filename    = File.expand_path('../namespaces.yml', __FILE__)
-          @namespaces = YAML.load_file(filename)
-        end
-        
-        @namespaces
-      end
-      
       # When this module is included, it undefines the `:send` instance method in the `base_class`
       # so it can be resolved via `method_missing`.
       def included(base_class)

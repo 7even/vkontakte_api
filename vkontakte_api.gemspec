@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'hashie',                      '~> 2.0'
   
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rspec', '~> 2.14'
   s.add_development_dependency 'mechanize'
   s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'rb-fsevent', '~> 0.9.1'
