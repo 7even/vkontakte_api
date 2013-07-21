@@ -6,8 +6,9 @@ describe VkontakteApi do
       it "sets the #{name}" do
         VkontakteApi.configure do |config|
           config.send("#{name}=", name)
-          VkontakteApi.send(name).should == name
         end
+        
+        expect(VkontakteApi.send(name)).to eq(name)
       end
     end
     
@@ -17,9 +18,12 @@ describe VkontakteApi do
   end
   
   describe ".register_alias" do
-    it "creates a VK alias" do
+    before(:each) do
       VkontakteApi.register_alias
-      VK.should == VkontakteApi
+    end
+    
+    it "creates a VK alias" do
+      expect(VK).to eq(VkontakteApi)
     end
     
     after(:each) do
@@ -35,15 +39,13 @@ describe VkontakteApi do
       
       it "removes the alias" do
         VkontakteApi.unregister_alias
-        expect {
-          VK
-        }.to raise_error(NameError)
+        expect { VK }.to raise_error(NameError)
       end
     end
     
     context "without creating an alias" do
       it "does nothing" do
-        Object.should_not_receive(:remove_const)
+        expect(Object).not_to receive(:remove_const)
         VkontakteApi.unregister_alias
       end
     end

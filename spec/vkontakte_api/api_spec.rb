@@ -23,13 +23,13 @@ describe VkontakteApi::API do
     
     context "called with a token parameter" do
       it "sends it to .connection" do
-        subject.should_receive(:connection).with(url: VkontakteApi::API::URL_PREFIX, token: 'token')
+        expect(subject).to receive(:connection).with(url: VkontakteApi::API::URL_PREFIX, token: 'token')
         subject.call('apiMethod', { some: :params }, 'token')
       end
     end
     
     it "returns the response body" do
-      subject.call('apiMethod').should == @result
+      expect(subject.call('apiMethod')).to eq(@result)
     end
     
     it "uses an HTTP verb from VkontakteApi.http_verb" do
@@ -37,7 +37,7 @@ describe VkontakteApi::API do
       VkontakteApi.http_verb = http_verb
       
       response = double("Response", body: double)
-      @connection.should_receive(:send).with(http_verb, 'apiMethod', {}).and_return(response)
+      expect(@connection).to receive(:send).with(http_verb, 'apiMethod', {}).and_return(response)
       subject.call('apiMethod')
     end
     
@@ -51,27 +51,27 @@ describe VkontakteApi::API do
       faraday_options = double("Faraday options")
       VkontakteApi.stub(:faraday_options).and_return(faraday_options)
       url = double("URL")
-      Faraday.should_receive(:new).with(url, faraday_options)
-      connection = subject.connection(url: url)
+      
+      expect(Faraday).to receive(:new).with(url, faraday_options)
+      subject.connection(url: url)
     end
     
     context "without a token" do
       it "creates a connection without an oauth2 middleware" do
-        connection = subject.connection
-        connection.builder.handlers.map(&:name).should_not include('FaradayMiddleware::OAuth2')
+        handler_names = subject.connection.builder.handlers.map(&:name)
+        expect(handler_names).not_to include('FaradayMiddleware::OAuth2')
       end
     end
     
     context "with a token" do
-      before(:each) do
-        @token = double("Token")
-      end
+      let(:token) { double("Token") }
       
       it "creates a connection with an oauth2 middleware" do
-        connection = subject.connection(token: @token)
+        connection = subject.connection(token: token)
         handler = connection.builder.handlers.first
-        handler.name.should == 'FaradayMiddleware::OAuth2'
-        handler.instance_variable_get(:@args).should == [@token]
+        
+        expect(handler.name).to eq('FaradayMiddleware::OAuth2')
+        expect(handler.instance_variable_get(:@args)).to eq([token])
       end
     end
   end

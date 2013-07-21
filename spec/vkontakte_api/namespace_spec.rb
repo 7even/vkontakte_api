@@ -9,9 +9,9 @@ describe VkontakteApi::Namespace do
     context "on first call" do
       it "loads namespaces from a file" do
         filename = double("Filename")
-        File.should_receive(:expand_path).and_return(filename)
+        expect(File).to receive(:expand_path).and_return(filename)
         namespaces = double("Namespaces list")
-        YAML.should_receive(:load_file).with(filename).and_return(namespaces)
+        expect(YAML).to receive(:load_file).with(filename).and_return(namespaces)
         
         VkontakteApi::Namespace.names
       end
@@ -23,7 +23,7 @@ describe VkontakteApi::Namespace do
       end
       
       it "returns the cached list" do
-        YAML.should_not_receive(:load_file)
+        expect(YAML).not_to receive(:load_file)
         VkontakteApi::Namespace.names
       end
     end

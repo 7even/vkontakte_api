@@ -13,75 +13,65 @@ describe "Integration" do
   end
   
   describe "unauthorized requests" do
-    before(:each) do
-      @vk = VK::Client.new
-    end
+    let(:vk) { VK::Client.new }
     
     it "get users" do
-      user = @vk.users.get(uid: 1).first
-      user.uid.should == 1
-      user.last_name.should_not be_empty
-      user.first_name.should_not be_empty
+      user = vk.users.get(uid: 1).first
+      expect(user.uid).to eq(1)
+      expect(user.last_name).not_to be_empty
+      expect(user.first_name).not_to be_empty
     end
     
     it "search newsfeed" do
-      news = @vk.newsfeed.search(q: 'vk', count: 1)
-      news.should be_a(Enumerable)
+      news = vk.newsfeed.search(q: 'vk', count: 1)
+      expect(news).to be_a(Enumerable)
     end
   end
   
   if MechanizedAuthorization.on?
     describe "authorized requests" do
-      before(:each) do
-        @vk = MechanizedAuthorization.client
-      end
+      let(:vk) { MechanizedAuthorization.client }
       
       it "get groups" do
-        groups = @vk.groups.get
-        groups.should include(1)
+        expect(vk.groups.get).to include(1)
       end
     end
     
     describe "requests with camelCase and predicate methods" do
-      before(:each) do
-        @vk = MechanizedAuthorization.client
-      end
+      let(:vk) { MechanizedAuthorization.client }
       
       it "convert method names to vk.com format" do
-        @vk.is_app_user?.should be_true
+        expect(vk.is_app_user?).to be_true
       end
     end
   end
   
   describe "requests with array arguments" do
-    before(:each) do
-      @vk = VK::Client.new
-    end
+    let(:vk) { VK::Client.new }
     
     it "join arrays with a comma" do
-      users = @vk.users.get(uids: [1, 2, 3], fields: %w[first_name last_name screen_name])
-      users.first.screen_name.should_not be_empty
+      users = vk.users.get(uids: [1, 2, 3], fields: %w[first_name last_name screen_name])
+      expect(users.first.screen_name).not_to be_empty
     end
   end
   
   describe "requests with blocks" do
-    before(:each) do
-      @vk = VK::Client.new
-    end
+    let(:vk) { VK::Client.new }
     
     it "map the result with a block" do
-      users = @vk.users.get(uid: 1) do |user|
+      users = vk.users.get(uid: 1) do |user|
         "#{user.last_name} #{user.first_name}"
       end
       
-      users.first.should_not be_empty
+      expect(users.first).not_to be_empty
     end
   end
   
   describe "authorization" do
     context "with a scope" do
       it "returns a correct url" do
-        VK.authorization_url(scope: %w[friends groups]).should include('scope=friends%2Cgroups')
+        url = VK.authorization_url(scope: %w[friends groups])
+        expect(url).to include('scope=friends%2Cgroups')
       end
     end
   end

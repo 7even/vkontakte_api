@@ -33,15 +33,16 @@ describe VkontakteApi::Resolver do
       @resolver.stub(:token).and_return(@token)
     end
     
+    let(:resolver) { @resolver.resolver }
+    
     it "returns a Hashie::Mash with a name and a token" do
-      r = @resolver.resolver
-      r.name.should  == @name
-      r.token.should == @token
+      expect(resolver.name).to  eq(@name)
+      expect(resolver.token).to eq(@token)
     end
     
     it "caches the result" do
       @mash = double("Mash", name: @name, token: @token)
-      Hashie::Mash.should_receive(:new).once.and_return(@mash)
+      expect(Hashie::Mash).to receive(:new).once.and_return(@mash)
       5.times { @resolver.resolver }
     end
   end
