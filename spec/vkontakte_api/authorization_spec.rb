@@ -18,35 +18,38 @@ describe VkontakteApi::Authorization do
     
     @client = double("OAuth2::Client instance", auth_code: @auth_code, implicit: @implicit, client_credentials: @client_credentials)
     OAuth2::Client.stub(:new).and_return(@client)
-    
-    @auth = Object.new
-    @auth.extend VkontakteApi::Authorization
   end
+  
+  let(:auth) do
+    Object.new.tap do |object|
+      object.extend VkontakteApi::Authorization
+    end
+  end  
   
   describe "#authorization_url" do
     before(:each) do
-      @auth.stub(:client).and_return(@client)
+      auth.stub(:client).and_return(@client)
     end
     
     context "with a site type" do
       it "returns a valid authorization url" do
-        @auth_code.should_receive(:authorize_url).with(redirect_uri: @redirect_uri)
-        @auth.authorization_url(type: :site).should == @url
+        expect(@auth_code).to receive(:authorize_url).with(redirect_uri: @redirect_uri)
+        expect(auth.authorization_url(type: :site)).to eq(@url)
       end
     end
     
     context "with a client type" do
       it "returns a valid authorization url" do
-        @implicit.should_receive(:authorize_url).with(redirect_uri: @redirect_uri)
-        @auth.authorization_url(type: :client).should == @url
+        expect(@implicit).to receive(:authorize_url).with(redirect_uri: @redirect_uri)
+        expect(auth.authorization_url(type: :client)).to eq(@url)
       end
     end
     
     context "given a redirect_uri" do
       it "prefers the given uri over VkontakteApi.redirect_uri" do
         redirect_uri = 'http://example.com/oauth/callback'
-        @auth_code.should_receive(:authorize_url).with(redirect_uri: redirect_uri)
-        @auth.authorization_url(redirect_uri: redirect_uri)
+        expect(@auth_code).to receive(:authorize_url).with(redirect_uri: redirect_uri)
+        auth.authorization_url(redirect_uri: redirect_uri)
       end
     end
     
@@ -55,9 +58,9 @@ describe VkontakteApi::Authorization do
         scope = double("Scope")
         flat_scope = double("Flat scope")
         
-        VkontakteApi::Utils.should_receive(:flatten_argument).with(scope).and_return(flat_scope)
-        @auth_code.should_receive(:authorize_url).with(redirect_uri: @redirect_uri, scope: flat_scope)
-        @auth.authorization_url(scope: scope)
+        expect(VkontakteApi::Utils).to receive(:flatten_argument).with(scope).and_return(flat_scope)
+        expect(@auth_code).to receive(:authorize_url).with(redirect_uri: @redirect_uri, scope: flat_scope)
+        auth.authorization_url(scope: scope)
       end
     end
   end
@@ -70,42 +73,42 @@ describe VkontakteApi::Authorization do
       end
       
       it "gets the token" do
-        @auth_code.should_receive(:get_token).with(@code, redirect_uri: @redirect_uri)
-        @auth.authorize(type: :site, code: @code)
+        expect(@auth_code).to receive(:get_token).with(@code, redirect_uri: @redirect_uri)
+        auth.authorize(type: :site, code: @code)
       end
     end
     
     context "with an app_server type" do
       it "gets the token" do
-        @client_credentials.should_receive(:get_token).with({ redirect_uri: @redirect_uri }, subject::OPTIONS[:client_credentials])
-        @auth.authorize(type: :app_server)
+        expect(@client_credentials).to receive(:get_token).with({ redirect_uri: @redirect_uri }, subject::OPTIONS[:client_credentials])
+        auth.authorize(type: :app_server)
       end
     end
     
     context "with an unknown type" do
       it "raises an ArgumentError" do
         expect {
-          @auth.authorize(type: :unknown)
+          auth.authorize(type: :unknown)
         }.to raise_error(ArgumentError)
       end
     end
     
     it "builds a VkontakteApi::Client instance with the received token" do
       client = double("VkontakteApi::Client instance")
-      VkontakteApi::Client.should_receive(:new).with(@token).and_return(client)
-      @auth.authorize.should == client
+      expect(VkontakteApi::Client).to receive(:new).with(@token).and_return(client)
+      expect(auth.authorize).to eq(client)
     end
   end
   
   describe "#client" do
     it "creates and returns an OAuth2::Client instance" do
-      OAuth2::Client.should_receive(:new).with(@app_id, @app_secret, subject::OPTIONS[:client])
-      @auth.send(:client).should == @client
+      expect(OAuth2::Client).to receive(:new).with(@app_id, @app_secret, subject::OPTIONS[:client])
+      expect(auth.send(:client)).to eq(@client)
     end
     
     it "caches the result" do
-      OAuth2::Client.should_receive(:new).once
-      5.times { @auth.send(:client) }
+      expect(OAuth2::Client).to receive(:new).once
+      5.times { auth.send(:client) }
     end
   end
 end
