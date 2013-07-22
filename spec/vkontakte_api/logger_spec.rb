@@ -2,10 +2,18 @@ require 'spec_helper'
 
 describe VkontakteApi::Logger do
   before(:each) do
-    @success_response = Oj.dump('a' => 1, 'b' => 2)
-    @fail_response    = Oj.dump('error' => 404)
+    VkontakteApi.logger = double("Logger").as_null_object
     
-    @connection = Faraday.new(url: 'http://example.com') do |builder|
+    VkontakteApi.log_requests  = false
+    VkontakteApi.log_responses = false
+    VkontakteApi.log_errors    = false
+  end
+  
+  let(:success_response) { Oj.dump('a' => 1, 'b' => 2) }
+  let(:fail_response) { Oj.dump('error' => 404) }
+  
+  let(:connection) do
+    Faraday.new(url: 'http://example.com') do |builder|
       builder.request  :url_encoded
       builder.response :vk_logger
       builder.response :mashify
@@ -13,23 +21,18 @@ describe VkontakteApi::Logger do
       
       builder.adapter :test do |stub|
         stub.get('/success') do
-          [200, {}, @success_response]
+          [200, {}, success_response]
         end
+        
         stub.post('/success') do
-          [200, {}, @success_response]
+          [200, {}, success_response]
         end
+        
         stub.get('/fail') do
-          [200, {}, @fail_response]
+          [200, {}, fail_response]
         end
       end
     end
-    
-    @logger = double("Logger").as_null_object
-    VkontakteApi.logger = @logger
-    
-    VkontakteApi.log_requests  = false
-    VkontakteApi.log_responses = false
-    VkontakteApi.log_errors    = false
   end
   
   context "with VkontakteApi.log_requests?" do
@@ -38,23 +41,23 @@ describe VkontakteApi::Logger do
     end
     
     it "logs the request URL" do
-      @logger.should_receive(:debug).with('GET http://example.com/success')
-      @connection.get('/success')
+      expect(VkontakteApi.logger).to receive(:debug).with('GET http://example.com/success')
+      connection.get('/success')
     end
     
     context "with a POST request" do
       it "logs the request URL and the request body" do
-        @logger.should_receive(:debug).with('POST http://example.com/success')
-        @logger.should_receive(:debug).with('body: "param=1"')
-        @connection.post('/success', param: 1)
+        expect(VkontakteApi.logger).to receive(:debug).with('POST http://example.com/success')
+        expect(VkontakteApi.logger).to receive(:debug).with('body: "param=1"')
+        connection.post('/success', param: 1)
       end
     end
   end
   
   context "without VkontakteApi.log_requests?" do
     it "doesn't log the request" do
-      @logger.should_not_receive(:debug)
-      @connection.get('/success')
+      expect(VkontakteApi.logger).not_to receive(:debug)
+      connection.get('/success')
     end
   end
   
@@ -65,15 +68,15 @@ describe VkontakteApi::Logger do
       end
       
       it "logs the response body" do
-        @logger.should_receive(:debug).with(@success_response)
-        @connection.get('/success')
+        expect(VkontakteApi.logger).to receive(:debug).with(success_response)
+        connection.get('/success')
       end
     end
     
     context "without VkontakteApi.log_responses?" do
       it "doesn't log the response body" do
-        @logger.should_not_receive(:debug)
-        @connection.get('/success')
+        expect(VkontakteApi.logger).not_to receive(:debug)
+        connection.get('/success')
       end
     end
   end
@@ -85,15 +88,15 @@ describe VkontakteApi::Logger do
       end
       
       it "logs the response body" do
-        @logger.should_receive(:warn).with(@fail_response)
-        @connection.get('/fail')
+        expect(VkontakteApi.logger).to receive(:warn).with(fail_response)
+        connection.get('/fail')
       end
     end
     
     context "without VkontakteApi.log_errors?" do
       it "doesn't log the response body" do
-        @logger.should_not_receive(:warn)
-        @connection.get('/fail')
+        expect(VkontakteApi.logger).not_to receive(:warn)
+        connection.get('/fail')
       end
     end
   end

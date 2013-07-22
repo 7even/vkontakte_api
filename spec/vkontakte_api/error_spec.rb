@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe VkontakteApi::Error do
-  before(:each) do
-    @error_data = Hashie::Mash.new(
+  let(:error_data) do
+    Hashie::Mash.new(
       error_code:     5,
       error_msg:      'User authorization failed: invalid access_token.',
       request_params: [
@@ -24,24 +24,22 @@ describe VkontakteApi::Error do
   
   describe "#message" do
     context "without parameters" do
-      before(:each) do
-        @e = VkontakteApi::Error.new(@error_data)
-      end
+      let(:error) { VkontakteApi::Error.new(error_data) }
       
       it "returns all needed data about an error" do
         message = 'VKontakte returned an error 5: \'User authorization failed: invalid access_token.\''
         message << ' after calling method \'unknownMethod\' without parameters.'
         
         expect {
-          raise @e
-        }.to raise_error(@e.class, message)
+          raise error
+        }.to raise_error(error.class, message)
       end
     end
     
     context "with parameters" do
-      before(:each) do
-        @error_data[:request_params] << Hashie::Mash.new(key: 'some', value: 'params')
-        @e = VkontakteApi::Error.new(@error_data)
+      let(:error) do
+        error_data[:request_params] << Hashie::Mash.new(key: 'some', value: 'params')
+        VkontakteApi::Error.new(error_data)
       end
       
       it "returns all needed data about an error" do
@@ -49,8 +47,8 @@ describe VkontakteApi::Error do
         message << ' after calling method \'unknownMethod\' with parameters {"some"=>"params"}.'
         
         expect {
-          raise @e
-        }.to raise_error(@e.class, message)
+          raise error
+        }.to raise_error(error.class, message)
       end
     end
   end

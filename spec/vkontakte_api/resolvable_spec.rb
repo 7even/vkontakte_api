@@ -12,8 +12,8 @@ describe VkontakteApi::Resolvable do
       resolver   = Hashie::Mash.new(token: 'token')
       resolvable = @class.new(:name, resolver: resolver)
       
-      resolvable.name.should  == 'name'
-      resolvable.token.should == 'token'
+      expect(resolvable.name).to  eq('name')
+      expect(resolvable.token).to eq('token')
     end
   end
 end
