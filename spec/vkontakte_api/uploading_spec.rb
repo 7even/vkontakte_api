@@ -1,26 +1,27 @@
 require 'spec_helper'
 
 describe VkontakteApi::Uploading do
-  before(:each) do
-    @uploader = Object.new
-    @uploader.extend VkontakteApi::Uploading
+  let(:uploader) do
+    Object.new.tap do |object|
+      object.extend VkontakteApi::Uploading
+    end
   end
   
   describe "#upload" do
+    let(:upload_io)     { double("Faraday::UploadIO instance") }
+    let(:response_body) { double("Server response body") }
+    let(:response)      { double("Server response", body: response_body) }
+    let(:connection)    { double("Faraday connection", post: response) }
+    
     before(:each) do
-      @upload_io = double("Faraday::UploadIO instance")
-      Faraday::UploadIO.stub(:new).and_return(@upload_io)
-      
-      @response_body = double("Server response body")
-      response       = double("Server response", body: @response_body)
-      @connection    = double("Faraday connection", post: response)
-      VkontakteApi::API.stub(:connection).and_return(@connection)
+      Faraday::UploadIO.stub(:new).and_return(upload_io)
+      VkontakteApi::API.stub(:connection).and_return(connection)
     end
     
     context "without a :url param" do
       it "raises an ArgumentError" do
         expect {
-          @uploader.upload
+          uploader.upload
         }.to raise_error(ArgumentError)
       end
     end
@@ -28,19 +29,20 @@ describe VkontakteApi::Uploading do
     it "creates a Faraday::UploadIO for each file passed in" do
       path = double("File path")
       type = double("File mime type")
-      Faraday::UploadIO.should_receive(:new).with(path, type)
-      @uploader.upload(url: 'http://example.com', file1: [path, type])
+      
+      expect(Faraday::UploadIO).to receive(:new).with(path, type)
+      uploader.upload(url: 'http://example.com', file1: [path, type])
     end
     
     it "POSTs the files through the connection to a given URL" do
       url  = double("URL")
       file = double("File")
-      @connection.should_receive(:post).with(url, file1: @upload_io)
-      @uploader.upload(url: url, file1: file)
+      expect(connection).to receive(:post).with(url, file1: upload_io)
+      uploader.upload(url: url, file1: file)
     end
     
     it "returns the server response" do
-      @uploader.upload(url: 'http://example.com').should == @response_body
+      expect(uploader.upload(url: 'http://example.com')).to eq(response_body)
     end
   end
 end
