@@ -47,7 +47,7 @@ users.first.last_name  # => "Дуров"
 # то блок будет выполнен для каждого элемента,
 # и метод вернет обработанный массив
 fields = [:first_name, :last_name, :screen_name]
-@vk.friends.get(fields: fields) do |friend|
+@vk.friends.get(uid: 2, fields: fields) do |friend|
   "#{friend.first_name} '#{friend.screen_name}' #{friend.last_name}"
 end
 # => ["Павел 'durov' Дуров"]
