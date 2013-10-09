@@ -64,6 +64,13 @@ url = 'http://cs303110.vkontakte.ru/upload.php?act=do_add'
 VkontakteApi.upload(url: url, photo: ['/path/to/file.jpg', 'image/jpeg'])
 ```
 
+Если загружаемый файл доступен как открытый IO-объект, его можно передать альтернативным синтаксисом - IO-объект, MIME-тип и путь к файлу:
+
+``` ruby
+url = 'http://cs303110.vkontakte.ru/upload.php?act=do_add'
+VkontakteApi.upload(url: url, photo: [file_io, 'image/jpeg', '/path/to/file.jpg'])
+```
+
 Метод вернет ответ сервера ВКонтакте, преобразованный в `Hashie::Mash`; его можно использовать при вызове метода API на последнем этапе процесса загрузки.
 
 ### Авторизация
