@@ -1,6 +1,6 @@
 module VkontakteApi
   # A module implementing files uploading functionality.
-  # 
+  #
   # @note `VkontakteApi::Uploading` extends `VkontakteApi` so these methods should be called from the latter.
   module Uploading
     # Files uploading. It uses the same faraday middleware stack as API method calls (by using `VkontakteApi::API.connection`).
@@ -12,17 +12,17 @@ module VkontakteApi
     #   VkontakteApi.upload(
     #     url:   'http://example.com/upload',
     #     file1: ['/path/to/file1.jpg', 'image/jpeg'],
-    #     file2: ['/path/to/file2.png', 'image/png']
+    #     file2: [io_object, 'image/png', '/path/to/file2.png']
     #   )
     def upload(params = {})
       url = params.delete(:url)
       raise ArgumentError, 'You should pass :url parameter' unless url
-      
+
       files = {}
-      params.each do |param_name, (file_path, file_type)|
-        files[param_name] = Faraday::UploadIO.new(file_path, file_type)
+      params.each do |param_name, (file_path_or_io, file_type, file_path)|
+        files[param_name] = Faraday::UploadIO.new(file_path_or_io, file_type, file_path)
       end
-      
+
       API.connection.post(url, files).body
     end
   end
