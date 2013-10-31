@@ -6,7 +6,7 @@
 
 ``` ruby
 # Gemfile
-gem 'vkontakte_api', '~> 1.2'
+gem 'vkontakte_api', '~> 1.3'
 ```
 
 или просто

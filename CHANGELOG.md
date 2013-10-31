@@ -1,7 +1,7 @@
-## 1.3 (unreleased yet)
+## 1.3 (01.11.2013)
 
-* Корректная работа API-методов `*.search`
-* Поддержка IO-объектов в методе `upload`
+* Корректная работа API-методов `*.search` (спасибо [leonko](https://github.com/leonko))
+* Поддержка IO-объектов в методе `upload` (спасибо [undr](https://github.com/undr))
 
 ## 1.2 (14.07.2013)
 
