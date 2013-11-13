@@ -14,19 +14,24 @@ module VkontakteApi
     #     file1: ['/path/to/file1.jpg', 'image/jpeg'],
     #     file2: [io_object, 'image/png', '/path/to/file2.png']
     #   )
+    #   # alternative syntax
     #   VkontakteApi.upload(
     #     url:   'http://example.com/upload',
-    #     files: [['/path/to/file1.jpg', 'image/jpeg'], [io_object, 'image/png', '/path/to/file2.png']],
+    #     files: [
+    #       ['/path/to/file1.jpg', 'image/jpeg'],
+    #       [io_object, 'image/png', '/path/to/file2.png']
+    #     ]
     #   )
 
     def upload(params = {})
       url = params.delete(:url)
       raise ArgumentError, 'You should pass :url parameter' unless url
       
-      upfiles = params.delete(:files).compact
-      upfiles.each_index do |i|
-        params["file#{i+1}".to_sym] = upfiles[i]
+      (params.delete(:files) || []).each_with_index do |file, index|
+        key = "file#{index.succ}"
+        params[key.to_sym] = file
       end
+      
       files = {}
       params.each do |param_name, (file_path_or_io, file_type, file_path)|
         files[param_name] = Faraday::UploadIO.new(file_path_or_io, file_type, file_path)

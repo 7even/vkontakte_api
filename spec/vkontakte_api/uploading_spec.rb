@@ -46,5 +46,26 @@ describe VkontakteApi::Uploading do
     it "returns the server response" do
       expect(uploader.upload(url: 'http://example.com')).to eq(response_body)
     end
+    
+    context "with a :files param" do
+      it "uploads the files as file1, file2 etc" do
+        url = double("URL")
+        type = double("File mime type")
+        file1 = double("First file")
+        file2 = double("Second file")
+        
+        expect(Faraday::UploadIO).to receive(:new).with(file1, type, nil)
+        expect(Faraday::UploadIO).to receive(:new).with(file2, type, nil)
+        expect(connection).to receive(:post).with(url, file1: upload_io, file2: upload_io)
+        
+        uploader.upload(
+          url: url,
+          files: [
+            [file1, type],
+            [file2, type]
+          ]
+        )
+      end
+    end
   end
 end
