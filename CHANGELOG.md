@@ -1,3 +1,8 @@
+## 1.3.1 (14.11.2013)
+
+* Пространство имен `database` (спасибо [umka](https://github.com/umka))
+* Альтернативный синтаксис `upload` (спасибо [Alexander21](https://github.com/Alexander21))
+
 ## 1.3 (01.11.2013)
 
 * Корректная работа API-методов `*.search` (спасибо [leonko](https://github.com/leonko))
