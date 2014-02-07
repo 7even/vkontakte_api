@@ -3,12 +3,13 @@ require 'spec_helper'
 describe VkontakteApi::Client do
   before(:each) do
     @user_id = double("User id")
+    @email = double("User email")
   end
   
   def oauth2_token(expires_at = Time.now)
     token = double("Access token as an OAuth2::AccessToken").tap do |token|
       token.stub(:token).and_return(string_token)
-      token.stub(:params).and_return('user_id' => @user_id)
+      token.stub(:params).and_return('user_id' => @user_id, 'email' => @email)
       token.stub(:expires_at).and_return(expires_at)
     end
   end
@@ -41,6 +42,7 @@ describe VkontakteApi::Client do
         it "extracts the string token and uses it" do
           expect(client.token).to eq(string_token)
           expect(client.user_id).to eq(@user_id)
+          expect(client.email).to eq(@email)
           
           expect(client.expires_at).to be_a(Time)
           expect(client.expires_at).to be < Time.now

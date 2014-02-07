@@ -27,9 +27,15 @@ module VkontakteApi
     # An access token needed by authorized requests.
     # @return [String]
     attr_reader :token
+    
     # Current user id.
     # @return [Integer]
     attr_reader :user_id
+    
+    # Current user email.
+    # @return [String]
+    attr_reader :email
+    
     # Token expiration time
     # @return [Time]
     attr_reader :expires_at
@@ -44,6 +50,7 @@ module VkontakteApi
         # token is an OAuth2::AccessToken
         @token      = token.token
         @user_id    = token.params['user_id']
+        @email      = token.params['email']
         @expires_at = Time.at(token.expires_at) unless token.expires_at.nil?
       else
         # token is a String or nil
