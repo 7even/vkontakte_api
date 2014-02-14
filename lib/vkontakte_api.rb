@@ -7,6 +7,7 @@ require 'hashie'
 
 require 'vkontakte_api/version'
 require 'vkontakte_api/error'
+require 'vkontakte_api/execute_error'
 require 'vkontakte_api/configuration'
 require 'vkontakte_api/authorization'
 require 'vkontakte_api/uploading'
