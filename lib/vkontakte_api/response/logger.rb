@@ -33,4 +33,3 @@ module VkontakteApi
   end
 end
 
-Faraday.register_middleware :response, vk_logger: VkontakteApi::Logger

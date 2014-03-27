@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'oj'
 
 describe VkontakteApi::Logger do
   before(:each) do
