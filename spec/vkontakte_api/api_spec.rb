@@ -6,7 +6,7 @@ describe VkontakteApi::API do
     
     @connection = Faraday.new do |builder|
       builder.response :mashify
-      builder.response :oj, preserve_raw: true
+      builder.response :oj
       builder.adapter  :test do |stub|
         stub.post('/apiMethod') do
           [200, {}, Oj.dump(@result)]
@@ -70,7 +70,7 @@ describe VkontakteApi::API do
         connection = subject.connection(token: token)
         handler = connection.builder.handlers.first
         
-        expect(handler.name).to eq('FaradayMiddleware::OAuth2')
+        expect(handler.name).to eq('VkontakteApi::OAuth2Middleware')
         expect(handler.instance_variable_get(:@args)).to eq([token])
       end
     end

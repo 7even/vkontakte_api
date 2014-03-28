@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'oj'
 
 describe VkontakteApi::Logger do
   before(:each) do
@@ -17,7 +18,7 @@ describe VkontakteApi::Logger do
       builder.request  :url_encoded
       builder.response :vk_logger
       builder.response :mashify
-      builder.response :oj, preserve_raw: true
+      builder.response :oj
       
       builder.adapter :test do |stub|
         stub.get('/success') do

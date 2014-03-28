@@ -25,12 +25,14 @@ module VkontakteApi
     # @param [Hash] env Response data.
     def on_complete(env)
       if env[:body].error?
-        @logger.warn env[:raw_body]  if VkontakteApi.log_errors?
+        @logger.warn env[:raw_body] if VkontakteApi.log_errors?
       else
         @logger.debug env[:raw_body] if VkontakteApi.log_responses?
       end
     end
+
   end
+
+  Faraday::Response.register_middleware vk_logger: Logger
 end
 
-Faraday.register_middleware :response, vk_logger: VkontakteApi::Logger
