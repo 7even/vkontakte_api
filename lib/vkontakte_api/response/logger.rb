@@ -25,9 +25,9 @@ module VkontakteApi
     # @param [Hash] env Response data.
     def on_complete(env)
       if env[:body].error?
-        @logger.warn env[:raw_body]  if VkontakteApi.log_errors?
+        @logger.warn env[:body].to_json  if VkontakteApi.log_errors?
       else
-        @logger.debug env[:raw_body] if VkontakteApi.log_responses?
+        @logger.debug env[:body].to_json if VkontakteApi.log_responses?
       end
     end
   end
