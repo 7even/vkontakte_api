@@ -56,4 +56,6 @@ module VkontakteApi
       end
     end
   end
+
+  Faraday::Request.register_middleware oauth2: OAuth2Middleware
 end

@@ -29,4 +29,6 @@ module VkontakteApi
       end
     end
   end
+
+  Faraday::Response.register_middleware mashify: Mashify
 end

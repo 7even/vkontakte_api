@@ -27,14 +27,6 @@ module VkontakteApi
   extend VkontakteApi::Authorization
   extend VkontakteApi::Uploading
 
-  Faraday::Response.register_middleware File.expand_path('../vkontakte_api/response', __FILE__),
-      vk_logger: [:Logger, 'logger'],
-      mashify: [Mashify, 'mashify'],
-      oj: [ParseOj, 'parse_oj']
-
-  Faraday::Request.register_middleware oauth2: OAuth2Middleware
-
-
   class << self
     # Creates a short alias `VK` for `VkontakteApi` module.
     def register_alias
