@@ -1,23 +1,26 @@
 module VkontakteApi
-  # Public: Converts parsed response bodies to a Hashie::Mash if they were of
+  # Converts parsed response bodies to a Hashie::Mash if they were of
   # Hash or Array type.
   class Mashify < Faraday::Response::Middleware
     attr_accessor :mash_class
-
+    
     class << self
       attr_accessor :mash_class
     end
-
+    
     dependency do
       require 'hashie/mash'
       self.mash_class = ::Hashie::Mash
     end
-
+    
+    # Initializes the middleware.
     def initialize(app = nil, options = {})
       super(app)
       self.mash_class = options[:mash_class] || self.class.mash_class
     end
-
+    
+    # Converts the response to a `Hashie::Mash` instance
+    # (or an array of them).
     def parse(body)
       case body
       when Hash

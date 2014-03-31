@@ -1,6 +1,6 @@
 module VkontakteApi
   # A low-level module which handles the requests to VKontakte API and returns their results as mashes.
-  # 
+  #
   # It uses Faraday with middleware underneath the hood.
   module API
     # URL prefix for calling API methods.
@@ -27,14 +27,16 @@ module VkontakteApi
         token = options.delete(:token)
         
         Faraday.new(url, VkontakteApi.faraday_options) do |builder|
-          builder.request  :oauth2, token unless token.nil?
-          builder.request  :multipart
-          builder.request  :url_encoded
-          builder.request  :retry, VkontakteApi.max_retries
+          builder.request :oauth2, token unless token.nil?
+          builder.request :multipart
+          builder.request :url_encoded
+          builder.request :retry, VkontakteApi.max_retries
+          
           builder.response :vk_logger
           builder.response :mashify
           builder.response :oj
-          builder.adapter  VkontakteApi.adapter
+          
+          builder.adapter VkontakteApi.adapter
         end
       end
     end

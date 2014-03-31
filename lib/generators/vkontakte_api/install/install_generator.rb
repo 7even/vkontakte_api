@@ -1,4 +1,5 @@
-# A rails generator `vkontakte:install`. It creates a config file in `config/initializers/vkontakte_api.rb`.
+# A rails generator `vkontakte_api:install`.
+# It creates a config file in `config/initializers/vkontakte_api.rb`.
 class VkontakteApi::InstallGenerator < Rails::Generators::Base
   source_root File.expand_path('../templates', __FILE__)
   

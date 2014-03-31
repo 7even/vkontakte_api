@@ -19,11 +19,11 @@ Gem::Specification.new do |s|
   
   s.required_ruby_version = '>= 1.9.2'
   
-  s.add_runtime_dependency 'faraday',                     '~> 0.9'
-  s.add_runtime_dependency 'oauth2',                      '~> 0.8'
-  s.add_runtime_dependency 'hashie',                      '~> 2.0'
-  s.add_runtime_dependency 'oj',                        '~> 2.0'
-
+  s.add_runtime_dependency 'faraday', '~> 0.9'
+  s.add_runtime_dependency 'oauth2',  '~> 0.8'
+  s.add_runtime_dependency 'hashie',  '~> 2.0'
+  s.add_runtime_dependency 'oj',      '~> 2.0'
+  
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 2.14'
   s.add_development_dependency 'mechanize'
@@ -36,4 +36,5 @@ Gem::Specification.new do |s|
   
   s.add_development_dependency 'yard'
   s.add_development_dependency 'redcarpet'
+  s.add_development_dependency 'guard-yard'
 end

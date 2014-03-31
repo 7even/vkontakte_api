@@ -6,4 +6,8 @@ guard 'rspec', all_on_start: true, all_after_pass: true do
   watch('spec/support/mechanized_authorization.rb') { 'spec/integration_spec.rb' }
 end
 
+guard 'yard' do
+  watch(%r{lib/.+\.rb})
+end
+
 notification :terminal_notifier, activate: 'com.googlecode.iTerm2'

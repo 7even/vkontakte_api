@@ -6,3 +6,4 @@ tmp/*
 .yardoc/*
 .idea/*
 spec/support/credentials.yml
+doc/

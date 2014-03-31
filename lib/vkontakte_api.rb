@@ -26,7 +26,7 @@ module VkontakteApi
   extend VkontakteApi::Configuration
   extend VkontakteApi::Authorization
   extend VkontakteApi::Uploading
-
+  
   class << self
     # Creates a short alias `VK` for `VkontakteApi` module.
     def register_alias

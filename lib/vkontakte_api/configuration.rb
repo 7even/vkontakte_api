@@ -2,7 +2,7 @@ require 'logger'
 
 module VkontakteApi
   # General configuration module.
-  # 
+  #
   # @note `VkontakteApi::Configuration` extends `VkontakteApi` so these methods should be called from the latter.
   module Configuration
     # Available options.

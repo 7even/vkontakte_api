@@ -1,6 +1,6 @@
 module VkontakteApi
   # A module that handles method result processing.
-  # 
+  #
   # It implements method blocks support, result typecasting and raises `VkontakteApi::Error` in case of an error response.
   module Result
     class << self
