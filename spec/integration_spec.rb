@@ -33,7 +33,6 @@ describe "Integration" do
       let(:vk) { MechanizedAuthorization.client }
       
       it "get groups" do
-        pending 'MechanizedAuthorization not working'
         expect(vk.groups.get).to include(1)
       end
     end
@@ -42,7 +41,6 @@ describe "Integration" do
       let(:vk) { MechanizedAuthorization.client }
       
       it "convert method names to vk.com format" do
-        pending 'MechanizedAuthorization not working'
         expect(vk.is_app_user?).to be_true
       end
     end

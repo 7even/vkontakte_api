@@ -14,6 +14,9 @@ module MechanizedAuthorization
           form.pass  = settings.password
         end.submit
         
+        # extra form in some cases
+        agent.page.form.submit if agent.page.uri.fragment.nil?
+        
         # uri.fragment: access_token=ee6b952fa432c70&expires_in=86400&user_id=123456
         params = agent.page.uri.fragment.split('&').inject({}) do |hash, pair|
           key, value = pair.split('=')
