@@ -2,7 +2,7 @@ require 'faraday'
 require 'forwardable'
 
 module VkontakteApi
-  # Public: A simple middleware that adds an access token to each request.
+  # A simple middleware that adds an access token to each request.
   #
   # The token is added as both "access_token" query parameter and the
   # "Authorization" HTTP request header. However, an explicit "access_token"
