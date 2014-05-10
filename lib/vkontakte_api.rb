@@ -1,4 +1,6 @@
 require 'faraday'
+require 'faraday_middleware'
+require 'faraday_middleware/parse_oj'
 require 'oauth2'
 require 'yaml'
 require 'hashie'
@@ -16,10 +18,7 @@ require 'vkontakte_api/client'
 require 'vkontakte_api/namespace'
 require 'vkontakte_api/method'
 require 'vkontakte_api/result'
-require 'vkontakte_api/response/logger'
-require 'vkontakte_api/response/mashify'
-require 'vkontakte_api/response/parse_oj'
-require 'vkontakte_api/request/oauth2'
+require 'vkontakte_api/logger'
 
 # Main module.
 module VkontakteApi
