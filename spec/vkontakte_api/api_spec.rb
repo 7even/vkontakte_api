@@ -41,6 +41,22 @@ describe VkontakteApi::API do
       subject.call('apiMethod')
     end
     
+    context "when the api_version is set" do
+      let(:api_version) { double("API version") }
+      let(:response) { double("API response", body: @result) }
+      
+      before(:each) do
+        VkontakteApi.configure do |config|
+          config.api_version = api_version
+        end
+      end
+      
+      it "adds it to request params" do
+        expect(@connection).to receive(:post).with('apiMethod', v: api_version).and_return(response)
+        subject.call('apiMethod')
+      end
+    end
+    
     after(:each) do
       VkontakteApi.reset
     end

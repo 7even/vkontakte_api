@@ -17,7 +17,8 @@ module VkontakteApi
       :logger,
       :log_requests,
       :log_errors,
-      :log_responses
+      :log_responses,
+      :api_version
     ]
     
     attr_accessor *OPTION_NAMES
@@ -63,6 +64,7 @@ module VkontakteApi
       @log_requests    = DEFAULT_LOGGER_OPTIONS[:requests]
       @log_errors      = DEFAULT_LOGGER_OPTIONS[:errors]
       @log_responses   = DEFAULT_LOGGER_OPTIONS[:responses]
+      @api_version     = nil
     end
     
     # When this module is extended, set all configuration options to their default values.
