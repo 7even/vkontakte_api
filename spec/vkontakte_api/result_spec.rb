@@ -6,7 +6,7 @@ describe VkontakteApi::Result do
     let(:result) { double("Result") }
     
     before(:each) do
-      subject.stub(:extract_result).and_return(result)
+      allow(subject).to receive(:extract_result).and_return(result)
     end
     
     it "calls .extract_result passing it the response" do
@@ -19,7 +19,7 @@ describe VkontakteApi::Result do
       let(:typecasted_value) { double("Typecasted value") }
       
       before(:each) do
-        subject.stub(:typecast).and_return(typecasted_value)
+        allow(subject).to receive(:typecast).and_return(typecasted_value)
       end
       
       it "returns #typecast-ed value" do
@@ -44,7 +44,7 @@ describe VkontakteApi::Result do
       let(:enumerable_result) { [element1, element2] }
       
       before(:each) do
-        subject.stub(:extract_result).and_return(enumerable_result)
+        allow(subject).to receive(:extract_result).and_return(enumerable_result)
       end
       
       it "returns the untouched value" do

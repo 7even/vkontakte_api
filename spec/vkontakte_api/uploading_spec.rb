@@ -14,8 +14,8 @@ describe VkontakteApi::Uploading do
     let(:connection)    { double("Faraday connection", post: response) }
     
     before(:each) do
-      Faraday::UploadIO.stub(:new).and_return(upload_io)
-      VkontakteApi::API.stub(:connection).and_return(connection)
+      allow(Faraday::UploadIO).to receive(:new).and_return(upload_io)
+      allow(VkontakteApi::API).to receive(:connection).and_return(connection)
     end
     
     context "without a :url param" do

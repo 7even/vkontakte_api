@@ -8,13 +8,13 @@ describe VkontakteApi::Method do
     
     let(:method) do
       VkontakteApi::Method.new('some_name').tap do |method|
-        method.stub(:full_name).and_return(full_name)
-        method.stub(:token).and_return(token)
+        allow(method).to receive(:full_name).and_return(full_name)
+        allow(method).to receive(:token).and_return(token)
       end
     end
     
     before(:each) do
-      VkontakteApi::Result.stub(:process)
+      allow(VkontakteApi::Result).to receive(:process)
     end
     
     it "calls API.call with full name, args and token" do
@@ -24,9 +24,9 @@ describe VkontakteApi::Method do
     
     it "sends the response to Result.process" do
       response = double("VK response")
-      VkontakteApi::API.stub(:call).and_return(response)
+      allow(VkontakteApi::API).to receive(:call).and_return(response)
       type = double("Type")
-      method.stub(:type).and_return(type)
+      allow(method).to receive(:type).and_return(type)
       
       expect(VkontakteApi::Result).to receive(:process).with(response, type, nil)
       method.call(args)

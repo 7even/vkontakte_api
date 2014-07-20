@@ -41,7 +41,7 @@ describe "Integration" do
       let(:vk) { MechanizedAuthorization.client }
       
       it "convert method names to vk.com format" do
-        expect(vk.is_app_user?).to be_true
+        expect(vk.is_app_user?).to be_truthy
       end
     end
   end

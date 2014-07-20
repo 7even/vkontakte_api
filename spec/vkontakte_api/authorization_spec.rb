@@ -3,11 +3,11 @@ require 'spec_helper'
 describe VkontakteApi::Authorization do
   before(:each) do
     @app_id = double("App id")
-    VkontakteApi.stub(:app_id).and_return(@app_id)
+    allow(VkontakteApi).to receive(:app_id).and_return(@app_id)
     @app_secret = double("App secret")
-    VkontakteApi.stub(:app_secret).and_return(@app_secret)
+    allow(VkontakteApi).to receive(:app_secret).and_return(@app_secret)
     @redirect_uri = double("Redirect uri")
-    VkontakteApi.stub(:redirect_uri).and_return(@redirect_uri)
+    allow(VkontakteApi).to receive(:redirect_uri).and_return(@redirect_uri)
     
     @url   = double("Authorization url")
     @token = double("Token")
@@ -17,18 +17,18 @@ describe VkontakteApi::Authorization do
     @client_credentials = double("Client credentials strategy", get_token: @token)
     
     @client = double("OAuth2::Client instance", auth_code: @auth_code, implicit: @implicit, client_credentials: @client_credentials)
-    OAuth2::Client.stub(:new).and_return(@client)
+    allow(OAuth2::Client).to receive(:new).and_return(@client)
   end
   
   let(:auth) do
     Object.new.tap do |object|
       object.extend VkontakteApi::Authorization
     end
-  end  
+  end
   
   describe "#authorization_url" do
     before(:each) do
-      auth.stub(:client).and_return(@client)
+      allow(auth).to receive(:client).and_return(@client)
     end
     
     context "with a site type" do
@@ -69,7 +69,7 @@ describe VkontakteApi::Authorization do
     context "with a site type" do
       before(:each) do
         @code = double("Authorization code")
-        @auth_code.stub(:get_token).and_return(@token)
+        allow(@auth_code).to receive(:get_token).and_return(@token)
       end
       
       it "gets the token" do

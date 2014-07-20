@@ -13,7 +13,7 @@ describe VkontakteApi::API do
         end
       end
     end
-    subject.stub(:connection).and_return(@connection)
+    allow(subject).to receive(:connection).and_return(@connection)
   end
   
   describe ".call" do
@@ -65,7 +65,7 @@ describe VkontakteApi::API do
   describe ".connection" do
     it "uses the :url parameter and VkontakteApi.faraday_options" do
       faraday_options = double("Faraday options")
-      VkontakteApi.stub(:faraday_options).and_return(faraday_options)
+      allow(VkontakteApi).to receive(:faraday_options).and_return(faraday_options)
       url = double("URL")
       
       expect(Faraday).to receive(:new).with(url, faraday_options)
