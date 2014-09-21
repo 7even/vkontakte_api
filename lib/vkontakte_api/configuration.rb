@@ -13,6 +13,7 @@ module VkontakteApi
       :adapter,
       :http_verb,
       :faraday_options,
+      :stored_procedures,
       :max_retries,
       :logger,
       :log_requests,
@@ -56,15 +57,16 @@ module VkontakteApi
     
     # Reset all configuration options to defaults.
     def reset
-      @adapter         = DEFAULT_ADAPTER
-      @http_verb       = DEFAULT_HTTP_VERB
-      @faraday_options = {}
-      @max_retries     = DEFAULT_MAX_RETRIES
-      @logger          = ::Logger.new(STDOUT)
-      @log_requests    = DEFAULT_LOGGER_OPTIONS[:requests]
-      @log_errors      = DEFAULT_LOGGER_OPTIONS[:errors]
-      @log_responses   = DEFAULT_LOGGER_OPTIONS[:responses]
-      @api_version     = nil
+      @adapter           = DEFAULT_ADAPTER
+      @http_verb         = DEFAULT_HTTP_VERB
+      @faraday_options   = {}
+      @stored_procedures = []
+      @max_retries       = DEFAULT_MAX_RETRIES
+      @logger            = ::Logger.new(STDOUT)
+      @log_requests      = DEFAULT_LOGGER_OPTIONS[:requests]
+      @log_errors        = DEFAULT_LOGGER_OPTIONS[:errors]
+      @log_responses     = DEFAULT_LOGGER_OPTIONS[:responses]
+      @api_version       = nil
     end
     
     # When this module is extended, set all configuration options to their default values.
