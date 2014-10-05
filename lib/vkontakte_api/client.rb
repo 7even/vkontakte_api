@@ -76,6 +76,16 @@ module VkontakteApi
       end.keys
     end
     
+    # Called without arguments it returns the `execute` namespace;
+    # called with arguments it calls the top-level `execute` API method.
+    def execute(*args)
+      if args.empty?
+        create_namespace(:execute)
+      else
+        call_method([:execute, *args])
+      end
+    end
+    
     # If the called method is a namespace, it creates and returns a new `VkontakteApi::Namespace` instance.
     # Otherwise it creates a `VkontakteApi::Method` instance and calls it passing the arguments and a block.
     def method_missing(*args, &block)

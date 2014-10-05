@@ -150,4 +150,23 @@ describe VkontakteApi::Client do
       end
     end
   end
+  
+  describe '#execute' do
+    let(:client) { VkontakteApi::Client.new('token') }
+    
+    context 'called without arguments' do
+      it 'returns an :execute namespace' do
+        expect(client.execute).to be_a(VkontakteApi::Namespace)
+        expect(client.execute.name).to eq('execute')
+      end
+    end
+    
+    context 'called with arguments' do
+      it 'calls the :execute method' do
+        code = 'return "Hello World!";'
+        expect(client).to receive(:call_method).with([:execute, code: code])
+        client.execute(code: code)
+      end
+    end
+  end
 end
