@@ -10,6 +10,9 @@ module VkontakteApi
     # Captcha image URL (only for "Captcha needed" errors).
     # @return [String]
     attr_reader :captcha_img
+    # Redirect URL (only for 17 errors).
+    # @return [String]
+    attr_reader :redirect_uri
     
     # An exception is initialized by the data from response mash.
     # @param [Hash] data Error data.
