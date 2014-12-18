@@ -171,16 +171,16 @@ VkontakteApi.register_alias
 VK::Client.new # => #<VkontakteApi::Client:0x007fa578d6d948>
 ```
 
-При необходимости можно удалить синоним методом `VkontakteApi.unregister_alias`:
+One can also remove this alias when needed `VkontakteApi.unregister_alias`:
 
 ``` ruby
 VK.unregister_alias
 VK # => NameError: uninitialized constant VK
 ```
 
-### Обработка ошибок
+### Error handling
 
-Если ВКонтакте API возвращает ошибку, выбрасывается исключение класса `VkontakteApi::Error`.
+When VKontakte API returns an error, it is of class `VkontakteApi::Error`.
 
 ``` ruby
 vk = VK::Client.new
@@ -188,55 +188,55 @@ vk.friends.get(uid: 1, fields: [:first_name, :last_name, :photo])
 # VkontakteApi::Error: VKontakte returned an error 7: 'Permission to perform this action is denied' after calling method 'friends.get' with parameters {"uid"=>"1", "fields"=>"first_name,last_name,photo"}.
 ```
 
-Особый случай ошибки &mdash; 14: необходимо ввести код с captcha.
-В этом случае можно получить параметры капчи методами
-`VkontakteApi::Error#captcha_sid` и `VkontakteApi::Error#captcha_img` &mdash; например,
-[так](https://github.com/7even/vkontakte_api/issues/10#issuecomment-11666091).
+There is special case of errors &mdash; 14: one has to enter captcha code.
+In this case one can obtain captcha parameters using method:
+`VkontakteApi::Error#captcha_sid` and `VkontakteApi::Error#captcha_img` &mdash; for example,
+[like this](https://github.com/7even/vkontakte_api/issues/10#issuecomment-11666091).
 
-### Логгирование
+### Logging
 
-`vkontakte_api` логгирует служебную информацию о запросах при вызове методов.
-По умолчанию все пишется в `STDOUT`, но в настройке можно указать
-любой другой совместимый логгер, например `Rails.logger`.
+`vkontakte_api` loggs information about requests when calling methods.
+They are all written in `STDOUT` by default, but you can choose any
+other data logger, for example `Rails.logger`.
 
-Есть возможность логгирования 3 типов информации,
-каждому соответствует ключ в глобальных настройках.
+There is a possibility of logging 3 types of information,
+each one has a key in global settings.
 
-|                        | ключ настройки  | по умолчанию | уровень логгирования |
-| ---------------------- | --------------- | ------------ | -------------------- |
-| URL запроса            | `log_requests`  | `true`       | `debug`              |
-| JSON ответа при ошибке | `log_errors`    | `true`       | `warn`               |
-| JSON удачного ответа   | `log_responses` | `false`      | `debug`              |
+|                            | key of setting  | default value | message level        |
+| -------------------------- | --------------- | ------------- | -------------------- |
+| request URL                | `log_requests`  | `true`        | `debug`              |
+| JSON response of error     | `log_errors`    | `true`        | `warn`               |
+| JSON successful response   | `log_responses` | `false`       | `debug`              |
 
-Таким образом, в rails-приложении с настройками по умолчанию в production
-записываются только ответы сервера при ошибках;
-в development также логгируются URL-ы запросов.
 
-### Пример использования
+In rails-application with default settings in production only server responses
+with errors are being saved; in development there are also logged URL addresses of requests.
 
-Пример использования `vkontakte_api` совместно с `eventmachine` можно посмотреть
-[здесь](https://github.com/7even/vkontakte_on_em).
+### Examplary usage
 
-Также был написан [пример использования с rails](https://github.com/7even/vkontakte_on_rails),
-но он больше не работает из-за отсутствия прав на вызов метода `newsfeed.get`.
+An examplary usage of `vkontakte_api` together with `eventmachine` can be seen
+[here](https://github.com/7even/vkontakte_on_em).
 
-## Настройка
+There was also written [an example with rails](https://github.com/7even/vkontakte_on_rails),
+but in no longer works due to lack of rights when calling `newsfeed.get`.
 
-Глобальные параметры `vkontakte_api` задаются в блоке `VkontakteApi.configure` следующим образом:
+## Settings
+
+Global parameters of `vkontakte_api` should be set in `VkontakteApi.configure` block, as follows:
 
 ``` ruby
 VkontakteApi.configure do |config|
-  # параметры, необходимые для авторизации средствами vkontakte_api
-  # (не нужны при использовании сторонней авторизации)
+  # parameters required for authorization of vkontakte_api
+  # (not needed when using third-party authorization)
   config.app_id       = '123'
   config.app_secret   = 'AbCdE654'
   config.redirect_uri = 'http://example.com/oauth/callback'
   
-  # faraday-адаптер для сетевых запросов
+  # faraday-adapter for network requests
   config.adapter = :net_http
-  # HTTP-метод для вызова методов API (:get или :post)
+  # HTTP-method for calling API methods (:get or :post)
   config.http_verb = :post
-  # параметры для faraday-соединения
+  # parameters for faraday_connection
   config.faraday_options = {
     ssl: {
       ca_path:  '/usr/lib/ssl/certs'
@@ -247,65 +247,64 @@ VkontakteApi.configure do |config|
       password: 'bar'
     }
   }
-  # максимальное количество повторов запроса при ошибках
+  # maximum number of retries after error occurence
   config.max_retries = 2
   
-  # логгер
+  # logger
   config.logger        = Rails.logger
-  config.log_requests  = true  # URL-ы запросов
-  config.log_errors    = true  # ошибки
-  config.log_responses = false # удачные ответы
+  config.log_requests  = true  # URLs of requests
+  config.log_errors    = true  # errors
+  config.log_responses = false # successful responses
   
-  # используемая версия API
+  # API version
   config.api_version = '5.21'
 end
 ```
 
-По умолчанию для HTTP-запросов используется `Net::HTTP`; можно выбрать
-[любой другой адаптер](https://github.com/technoweenie/faraday/blob/master/lib/faraday/adapter.rb),
-поддерживаемый `faraday`.
+By default, for HTTP-requests using `Net::HTTP`; one can choose
+[any other adapter](https://github.com/technoweenie/faraday/blob/master/lib/faraday/adapter.rb),
+supported by `faraday`.
 
-ВКонтакте [позволяет](https://vk.com/dev/api_requests)
-использовать как `GET`-, так и `POST`-запросы при вызове методов API.
-По умолчанию `vkontakte_api` использует `POST`, но в настройке `http_verb`
-можно указать `:get`, чтобы совершать `GET`-запросы.
+VKontakte [allows](https://vk.com/dev/api_requests)
+used either as `GET`-, or `POST`-requests when choosing API methods.
+`vkontakte_api` uses `POST` by default, set up to `http_verb`
+One can use `:get`, to create `GET`-requests.
 
-При необходимости можно указать параметры для faraday-соединения &mdash; например,
-параметры прокси-сервера или путь к SSL-сертификатам.
+If necessary, one can choose parameters for faraday-connection &mdash; for example,
+parameters of proxy-server or path to SSL-certificates.
 
-Чтобы при каждом вызове API-метода передавалась определенная версия API, можно
-указать ее в конфигурации в `api_version`. По умолчанию версия не указана.
+To choose API version with evey call of API-method, one can specify it in the settings of
+`api_version`. The default version is not available.
 
-Чтобы сгенерировать файл с настройками по умолчанию в rails-приложении,
-можно воспользоваться генератором `vkontakte_api:install`:
+To generate a file with default settings in rails-application,
+one can use `vkontakte_api:install` generator:
 
 ``` sh
 $ cd /path/to/app
 $ rails generate vkontakte_api:install
 ```
 
-## JSON-парсер
+## JSON-parser
 
-`vkontakte_api` использует парсер [Oj](https://github.com/ohler55/oj) &mdash; это
-единственный парсер, который не показал [ошибок](https://github.com/7even/vkontakte_api/issues/1)
-при парсинге JSON, генерируемого ВКонтакте.
+`vkontakte_api` uses parser [Oj](https://github.com/ohler55/oj) &mdash; it is
+the only parser that has not thrown [error](https://github.com/7even/vkontakte_api/issues/1)
+while parsing JSON, generated by VKontakte.
 
-Также в библиотеке `multi_json` (обертка для различных JSON-парсеров,
-которая выбирает самый быстрый из установленных в системе и парсит им)
-`Oj` поддерживается и имеет наивысший приоритет; поэтому если он установлен
-в системе, `multi_json` будет использовать именно его.
+Furthermore, in `multi_json` library (wrapper for different JSON-parsers,
+which selects the fastest parser installed on the system and uses it)
+`Oj` was chosen as the one having the highest priority; so when it is set in the system, 
+`multi_json` will use it.
 
 ## Roadmap
 
-* CLI-интерфейс с автоматической авторизацией
+* CLI-interface with authomatic authorization
 
-## Участие в разработке
+## Participation in development
 
-Если вы хотите поучаствовать в разработке проекта, форкните репозиторий,
-положите свои изменения в отдельную ветку, покройте их спеками
-и отправьте мне pull request.
+When you want to participate in the process of development of project, fork
+the repository, create changes on separate branch, cover them with specs
+and create a pull request.
 
-`vkontakte_api` тестируется под MRI `1.9.3`, `2.0.0` и `2.1.2`.
-Если в одной из этих сред что-то работает неправильно, либо вообще не работает,
-то это следует считать багом, и написать об этом
-в [issues на Github](https://github.com/7even/vkontakte_api/issues).
+`vkontakte_api` was tested under MRI `1.9.3`, `2.0.0` и `2.1.2`.
+If it is not working properly under any of the media, it should be considered
+as bug and reported in [issues on Github](https://github.com/7even/vkontakte_api/issues).
