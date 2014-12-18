@@ -305,6 +305,6 @@ When you want to participate in the process of development of project, fork
 the repository, create changes on separate branch, cover them with specs
 and create a pull request.
 
-`vkontakte_api` was tested under MRI `1.9.3`, `2.0.0` и `2.1.2`.
+`vkontakte_api` was tested under MRI `1.9.3`, `2.0.0` and `2.1.2`.
 If it is not working properly under any of the media, it should be considered
 as bug and reported in [issues on Github](https://github.com/7even/vkontakte_api/issues).
