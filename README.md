@@ -1,7 +1,7 @@
 ## vkontakte_api [![Build Status](https://secure.travis-ci.org/7even/vkontakte_api.png)](http://travis-ci.org/7even/vkontakte_api) [![Gem Version](https://badge.fury.io/rb/vkontakte_api.png)](http://badge.fury.io/rb/vkontakte_api) [![Dependency Status](https://gemnasium.com/7even/vkontakte_api.png)](https://gemnasium.com/7even/vkontakte_api) [![Code Climate](https://codeclimate.com/github/7even/vkontakte_api.png)](https://codeclimate.com/github/7even/vkontakte_api)
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/7even/vkontakte_api)
 
-`vkontakte_api` &mdash; ruby-adapter for ВКонтакте API. It allows to call API methods, upload files to ВКонтакте server, and also supports 3 available methods of authorization (it also allows to use third-party solutions).
+`vkontakte_api` &mdash; ruby-adapter for VKontakte API. It allows to call API methods, upload files to VKontakte server, and also supports 3 available methods of authorization (it also allows to use third-party solutions).
 
 ## Settings
 
@@ -21,7 +21,7 @@ $ gem install vkontakte_api
 ### Method calls
 
 ``` ruby
-# creating cliend
+# creating client
 @vk = VkontakteApi::Client.new
 # and calling API method
 @vk.users.get(uid: 1)
@@ -35,7 +35,7 @@ $ gem install vkontakte_api
 # become true or false
 @vk.is_app_user? # => false
 
-# when ВКонтакте is supposed to obtain list of parameters
+# when VKontakte is supposed to obtain list of parameters
 # separated by commas, then one can pass an array
 users = @vk.users.get(uids: [1, 2, 3])
 
@@ -57,7 +57,7 @@ end
 
 ### Files upload
 
-Files upload to ВКонтакте server is composed of several states: in the beginning there is API method call, which returns URL for this call and then in some cases one needs another API method call, passing in the parameters obtained by previous call. Calling API method depends on type of files - this case is described in [the appropriate section section](https://vk.com/dev/upload_files).
+Files upload to VKontakte server is composed of several states: in the beginning there is API method call, which returns URL for this call and then in some cases one needs another API method call, passing in the parameters obtained by previous call. Calling API method depends on type of files - this case is described in [the appropriate section section](https://vk.com/dev/upload_files).
 
 Files are transferred in a Hash format, where key is the name of parameter in query (described in documentation, for example when one uploads a photo, then this key is named `photo`), and the value of &mdash; is an array composed of 2 strings: full path of the file and its MIME-type:
 
@@ -73,17 +73,17 @@ url = 'http://cs303110.vkontakte.ru/upload.php?act=do_add'
 VkontakteApi.upload(url: url, photo: [file_io, 'image/jpeg', '/path/to/file.jpg'])
 ```
 
-Method returns ВКонтакте server response converted to `Hashie::Mash`, it may be used when calling API method in the last stage of upload process.
+Method returns VKontakte server response converted to `Hashie::Mash`, it may be used when calling API method in the last stage of upload process.
 
-### Авторизация
+### Authorization
 
-Для вызова большинства методов требуется токен доступа (access token). Чтобы получить его, можно использовать авторизацию, встроенную в `vkontakte_api`, либо положиться на какой-то другой механизм (например, [OmniAuth](https://github.com/intridea/omniauth)). В последнем случае в результате авторизации будет получен токен, который нужно будет передать в `VkontakteApi::Client.new`.
+Most of methods require an access token to be called. To get this token, one can use authorization built in `vkontakte_api` or other form (for example [OmniAuth](https://github.com/intridea/omniauth)). In the second case the result of authorization process is a token, which needs to be passed into `VkontakteApi::Client.new`.
 
-Для работы с ВКонтакте API предусмотрено 3 типа авторизации: для сайтов, для клиентских приложений (мобильных либо десктопных, имеющих доступ к управлению браузером) и специальный тип авторизации серверов приложений для вызова административных методов без авторизации самого пользователя. Более подробно они описаны [тут](https://vk.com/dev/authentication); рассмотрим, как работать с ними средствами `vkontakte_api`.
+Working with VKontakte API provides 3 types of authorization: for webpages, for client applications (mobile or desktop, having access to authorized browsers) and special type for servers to invoke administration methods without user authorization. More details available [here](https://vk.com/dev/authentication); where one can take a look how to work with `vkontakte_api` resources.
 
-Для авторизации необходимо задать параметры `app_id` (ID приложения), `app_secret` (защищенный ключ) и `redirect_uri` (адрес, куда пользователь будет направлен после предоставления прав приложению) в настройках `VkontakteApi.configure`. Более подробно о конфигурировании `vkontakte_api` см. далее в соответствующем разделе.
+For the purposes of authorization one has to specify `app_id` (ID of application), `app_secret` (secret key) and `redirect_uri` (address where the user is redirected after successful authorization) in the `VkontakteApi.configure` settings. For more information about configuring `vkontakte_api` see the section presented below.
 
-##### Сайт
+##### Site
 
 Авторизация сайтов проходит в 2 шага. Сначала пользователь перенаправляется на страницу ВКонтакте для подтверждения запрошенных у него прав сайта на доступ к его данным. Со списком возможных прав можно ознакомиться [здесь](https://vk.com/dev/permissions). Допустим, нужно получить доступ к друзьям (`friends`) и фотографиям (`photos`) пользователя.
 
