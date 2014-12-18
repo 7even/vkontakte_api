@@ -94,79 +94,77 @@ session[:state] = Digest::MD5.hexdigest(rand.to_s)
 redirect_to VkontakteApi.authorization_url(scope: [:notify, :friends, :photos], state: session[:state])
 ```
 
-After successful authorization user is redirected to `redirect_uri`, and the parameters will contain code allowing to obtain an access token together with `state`. Если `state` не совпадает с тем, который был использован при отправлении пользователя на ВКонтакте, то скорее всего это попытка CSRF-атаки &mdash; стоит отправить пользователя на повторную авторизацию.
+After successful authorization user is redirected to `redirect_uri`, and the parameters will contain code allowing to obtain an access token together with `state`. When `state` is not the same as the state which was assigned to user in the beginning, there is a high probability of CSRF-attack &mdash; the user should be undergo the process of authorization again.
 
 ``` ruby
 redirect_to login_url, alert: 'Ошибка авторизации' if params[:state] != session[:state]
 ```
 
-`vkontakte_api` предоставляет метод `VkontakteApi.authorize`, который делает запрос к ВКонтакте, получает токен и создает клиент; нужно лишь передать ему код:
+`vkontakte_api` provides a method `VkontakteApi.authorize`, which makes a request to VKontakte, receives a token and creates a client when given the code:
 
 ``` ruby
 @vk = VkontakteApi.authorize(code: params[:code])
-# и теперь можно вызывать методы API на объекте @vk
+# and then one can call API methods on @vk object
 @vk.is_app_user?
 ```
-
-Клиент будет содержать id пользователя, авторизовавшего приложение; его можно получить с помощью метода `VkontakteApi::Client#user_id`:
+Client will contain id of user authorizing application; it can be obtained using following method: `VkontakteApi::Client#user_id`:
 
 ``` ruby
 @vk.user_id # => 123456
 ```
-
-Также в этот момент полезно сохранить полученный токен (и, при необходимости, id пользователя) в БД либо в сессии, чтобы использовать их повторно:
+It is also good to keep obtained token at this point (and user id if necessary) in the DB or in session, to use them again:
 
 ``` ruby
 current_user.token = @vk.token
 current_user.vk_id = @vk.user_id
 current_user.save
-# позже
+# later
 @vk = VkontakteApi::Client.new(current_user.token)
 ```
 
-##### Клиентское приложение
+##### Client application
 
-Авторизация клиентского приложения несколько проще &mdash; не нужно получать токен отдельным запросом, он выдается сразу после редиректа пользователя.
+Authorization of client application is much easier &mdash; one does not need to obtain token using separate request, it is obtained right after redirection of user.
 
 ``` ruby
-# пользователь направляется на следующий урл
+# user is redirecred to the following URL
 VkontakteApi.authorization_url(type: :client, scope: [:friends, :photos])
 ```
 
-Необходимо принимать во внимание, что `redirect_uri` нужно выставлять на `http://api.vkontakte.ru/blank.html`, иначе не получится вызывать методы, доступные клиентским приложениям.
+One has to take into account that `redirect_uri` should be assigned to `http://api.vkontakte.ru/blank.html`, otherwise it will not be possible to call methods available to client applications.
 
-Когда пользователь подтвердит права приложения, он будет перенаправлен на `redirect_uri`, при этом в параметре `access_token` будет токен, который нужно передать в `VkontakteApi::Client.new`.
+When user confirms his access rights, he will be redirected to `redirect_uri`, while the parameter `access_token` will store the token, that should be passed to `VkontakteApi::Client.new`.
 
-##### Сервер приложения
+##### Application server
 
-Последний тип авторизации &mdash; самый простой, т.к. не предполагает участия пользователя.
+The last type of authorization &mdash; is the easiest one, since it does not require user involvment.
 
 ``` ruby
 @vk = VkontakteApi.authorize(type: :app_server)
 ```
 
-### Прочее
+### Others
 
-Если клиент API (объект класса `VkontakteApi::Client`) был создан с помощью метода `VkontakteApi.authorize`, он будет содержать информацию об id текущего пользователя (`user_id`) и о времени истечения токена (`expires_at`). Получить их можно с помощью соответствующих методов:
+When API client (object of class `VkontakteApi::Client`) was created with the help of `VkontakteApi.authorize` method, it will contain the information about current user id (`user_id`) and also about expiry time of token (`expires_at`). You can check it using following methods:
 
 ``` ruby
 vk = VkontakteApi.authorize(code: 'c1493e81f69fce1b43')
 # => #<VkontakteApi::Client:0x007fa578f00ad0>
 vk.user_id    # => 628985
 vk.expires_at # => 2012-12-18 23:22:55 +0400
-# можно проверить, истекло ли время жизни токена
+# one can check if the token was expired
 vk.expired?   # => false
 ```
 
-Также можно получить список прав доступа, которые дает данный токен, в виде, аналогичном формату параметра `scope` в авторизации:
+You can also get the list of access rights given by this token, in the form similar to the form of `scope` parameter in authorization process:
 
 ``` ruby
 vk.scope # => [:friends, :groups]
 ```
 
-Это работает на основе метода `getUserSettings`, причем результат запоминается после первого обращения.
+It works on the basis of `getUserSettings` method with the result obtained after the first call.
 
-Чтобы создать короткий синоним `VK` для модуля `VkontakteApi`, достаточно вызвать метод `VkontakteApi.register_alias`:
+To create a `VK` synonim for `VkontakteApi` module, it is enough to call `VkontakteApi.register_alias` method:
 
 ``` ruby
 VkontakteApi.register_alias
