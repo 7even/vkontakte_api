@@ -85,16 +85,16 @@ For the purposes of authorization one has to specify `app_id` (ID of application
 
 ##### Site
 
-Авторизация сайтов проходит в 2 шага. Сначала пользователь перенаправляется на страницу ВКонтакте для подтверждения запрошенных у него прав сайта на доступ к его данным. Со списком возможных прав можно ознакомиться [здесь](https://vk.com/dev/permissions). Допустим, нужно получить доступ к друзьям (`friends`) и фотографиям (`photos`) пользователя.
+Authorization of websites is a 2-step one. First, user is redirected to VKontakte website to confirm the rights of site to access his data. The list od permissions is avaliable [here](https://vk.com/dev/permissions). Let's suppose one wants to access friends (`friends`) and photos (`photos`) section of the user.
 
-В соответствии с [рекомендациями](http://tools.ietf.org/html/draft-ietf-oauth-v2-30#section-10.12) в протоколе OAuth2 для защиты от [CSRF](http://ru.wikipedia.org/wiki/%D0%9F%D0%BE%D0%B4%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0_%D0%BC%D0%B5%D0%B6%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2%D1%8B%D1%85_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2), нужно передать параметр `state`, содержащий случайное значение.
+According to the [guidelines](http://tools.ietf.org/html/draft-ietf-oauth-v2-30#section-10.12) in protocol OAuth2 to prevent [CSRF](http://ru.wikipedia.org/wiki/%D0%9F%D0%BE%D0%B4%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0_%D0%BC%D0%B5%D0%B6%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2%D1%8B%D1%85_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2), one should pass `state` parameter, containing random number.
 
 ``` ruby
 session[:state] = Digest::MD5.hexdigest(rand.to_s)
 redirect_to VkontakteApi.authorization_url(scope: [:notify, :friends, :photos], state: session[:state])
 ```
 
-После подтверждения пользователь перенаправляется на указанный в настройках `redirect_uri`, причем в параметрах будет передан код, по которому можно получить токен доступа, а также переданный ранее `state`. Если `state` не совпадает с тем, который был использован при отправлении пользователя на ВКонтакте, то скорее всего это попытка CSRF-атаки &mdash; стоит отправить пользователя на повторную авторизацию.
+After successful authorization user is redirected to `redirect_uri`, and the parameters will contain code allowing to obtain an access token together with `state`. Если `state` не совпадает с тем, который был использован при отправлении пользователя на ВКонтакте, то скорее всего это попытка CSRF-атаки &mdash; стоит отправить пользователя на повторную авторизацию.
 
 ``` ruby
 redirect_to login_url, alert: 'Ошибка авторизации' if params[:state] != session[:state]
