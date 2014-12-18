@@ -1,52 +1,53 @@
 ## vkontakte_api [![Build Status](https://secure.travis-ci.org/7even/vkontakte_api.png)](http://travis-ci.org/7even/vkontakte_api) [![Gem Version](https://badge.fury.io/rb/vkontakte_api.png)](http://badge.fury.io/rb/vkontakte_api) [![Dependency Status](https://gemnasium.com/7even/vkontakte_api.png)](https://gemnasium.com/7even/vkontakte_api) [![Code Climate](https://codeclimate.com/github/7even/vkontakte_api.png)](https://codeclimate.com/github/7even/vkontakte_api)
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/7even/vkontakte_api)
 
-`vkontakte_api` &mdash; ruby-адаптер для ВКонтакте API. Он позволяет вызывать методы API, загружать файлы на сервера ВКонтакте, а также поддерживает все 3 доступных способа авторизации (при этом позволяя использовать стороннее решение).
+`vkontakte_api` &mdash; ruby-adapter for ВКонтакте API. It allows to call API methods, upload files to ВКонтакте server, and also supports 3 available methods of authorization (it also allows to use third-party solutions).
 
-## Установка
+## Settings
 
 ``` ruby
 # Gemfile
 gem 'vkontakte_api', '~> 1.4'
 ```
 
-или просто
+or simply
 
 ``` sh
 $ gem install vkontakte_api
 ```
 
-## Использование
+## Usage
 
-### Вызов методов
+### Method calls
 
 ``` ruby
-# создаем клиент
+# creating cliend
 @vk = VkontakteApi::Client.new
-# и вызываем методы API
+# and calling API method
 @vk.users.get(uid: 1)
 
-# в ruby принято использовать snake_case в названиях методов,
-# поэтому likes.getList становится likes.get_list
+# it is a good practice to follow snake_case convention
+# while creating methods in ruby
+# that is why likes.getList becomes likes.get_list
 @vk.likes.get_list
-# также названия методов, которые возвращают '1' или '0',
-# заканчиваются на '?', а возвращаемые значения приводятся
-# к true или false
+# names of methods that return '1' or '0',
+# should end with '?', and returned values
+# become true or false
 @vk.is_app_user? # => false
 
-# если ВКонтакте ожидает получить параметр в виде списка,
-# разделенного запятыми, то его можно передать массивом
+# when ВКонтакте is supposed to obtain list of parameters
+# separated by commas, then one can pass an array
 users = @vk.users.get(uids: [1, 2, 3])
 
-# большинство методов возвращает структуры Hashie::Mash
-# и массивы из них
+# most of methods return return Hashie::Mash structure
+# and arrays with this type of structure
 users.first.uid        # => 1
 users.first.first_name # => "Павел"
 users.first.last_name  # => "Дуров"
 
-# если метод, возвращающий массив, вызывается с блоком,
-# то блок будет выполнен для каждого элемента,
-# и метод вернет обработанный массив
+# when method returns an array and was called with a block
+# then block is being executed for each element
+# and method returns processed array
 fields = [:first_name, :last_name, :screen_name]
 @vk.friends.get(uid: 2, fields: fields) do |friend|
   "#{friend.first_name} '#{friend.screen_name}' #{friend.last_name}"
@@ -54,25 +55,25 @@ end
 # => ["Павел 'durov' Дуров"]
 ```
 
-### Загрузка файлов
+### Files upload
 
-Загрузка файлов на сервера ВКонтакте осуществляется в несколько этапов: сначала вызывается метод API, возвращающий URL для загрузки, затем происходит сама загрузка файлов, и после этого в некоторых случаях нужно вызвать другой метод API, передав в параметрах данные, возвращенные сервером после предыдущего запроса. Вызываемые методы API зависят от типа загружаемых файлов и описаны в [соответствующем разделе документации](https://vk.com/dev/upload_files).
+Files upload to ВКонтакте server is composed of several states: in the beginning there is API method call, which returns URL for this call and then in some cases one needs another API method call, passing in the parameters obtained by previous call. Calling API method depends on type of files - this case is described in [the appropriate section section](https://vk.com/dev/upload_files).
 
-Файлы передаются в формате хэша, где ключом является название параметра в запросе (указано в документации, например для загрузки фото на стену это будет `photo`), а значением &mdash; массив из 2 строк: полный путь к файлу и его MIME-тип:
+Files are transferred in a Hash format, where key is the name of parameter in query (described in documentation, for example when one uploads a photo, then this key is named `photo`), and the value of &mdash; is an array composed of 2 strings: full path of the file and its MIME-type:
 
 ``` ruby
 url = 'http://cs303110.vkontakte.ru/upload.php?act=do_add'
 VkontakteApi.upload(url: url, photo: ['/path/to/file.jpg', 'image/jpeg'])
 ```
 
-Если загружаемый файл доступен как открытый IO-объект, его можно передать альтернативным синтаксисом &mdash; IO-объект, MIME-тип и путь к файлу:
+If one wants to upload file as an IO-object, then it can be passed using alternative syntax &mdash; IO-object, MIME-type and the file path:
 
 ``` ruby
 url = 'http://cs303110.vkontakte.ru/upload.php?act=do_add'
 VkontakteApi.upload(url: url, photo: [file_io, 'image/jpeg', '/path/to/file.jpg'])
 ```
 
-Метод вернет ответ сервера ВКонтакте, преобразованный в `Hashie::Mash`; его можно использовать при вызове метода API на последнем этапе процесса загрузки.
+Method returns ВКонтакте server response converted to `Hashie::Mash`, it may be used when calling API method in the last stage of upload process.
 
 ### Авторизация
 
