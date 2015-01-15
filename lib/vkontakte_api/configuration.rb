@@ -18,7 +18,8 @@ module VkontakteApi
       :log_requests,
       :log_errors,
       :log_responses,
-      :api_version
+      :api_version,
+      :lang
     ]
     
     attr_accessor *OPTION_NAMES
