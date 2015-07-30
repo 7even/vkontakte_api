@@ -1,6 +1,6 @@
 require 'faraday'
 require 'faraday_middleware'
-require 'faraday_middleware/parse_oj'
+require 'faraday_middleware/multi_json'
 require 'oauth2'
 require 'yaml'
 require 'hashie'
