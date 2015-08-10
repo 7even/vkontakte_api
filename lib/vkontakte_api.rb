@@ -1,5 +1,8 @@
 require 'faraday'
 require 'faraday_middleware'
+unless defined?(JRUBY_VERSION)
+  require 'oj'
+end
 require 'faraday_middleware/multi_json'
 require 'oauth2'
 require 'yaml'
