@@ -6,10 +6,9 @@ guard 'rspec', all_on_start: true, all_after_pass: true, cmd: 'bin/rspec' do
   watch('spec/support/mechanized_authorization.rb') { 'spec/integration_spec.rb' }
 end
 
-unless defined?(JRUBY_VERSION)
-  guard 'yard' do
-    watch(%r{lib/.+\.rb})
-  end
-end
+
+guard 'yard' do
+  watch(%r{lib/.+\.rb})
+end unless defined?(JRUBY_VERSION)
 
 notification :terminal_notifier, activate: 'com.googlecode.iTerm2'
