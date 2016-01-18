@@ -2,12 +2,12 @@ require 'mechanize'
 
 module MechanizedAuthorization
   class << self
-    def client
+    def client(scope: [:friends, :groups])
       @client ||= begin
         agent = Mechanize.new
         
         configure
-        agent.get VkontakteApi.authorization_url(scope: [:friends, :groups], type: :client)
+        agent.get VkontakteApi.authorization_url(scope: scope, type: :client)
         
         agent.page.form_with(action: /login.vk.com/) do |form|
           form.email = settings.email
