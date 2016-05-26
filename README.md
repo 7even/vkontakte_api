@@ -249,6 +249,7 @@ VkontakteApi.configure do |config|
     }
   }
   # максимальное количество повторов запроса при ошибках
+  # работает только если переключить http_verb в :get
   config.max_retries = 2
   
   # логгер
