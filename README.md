@@ -24,7 +24,7 @@ $ gem install vkontakte_api
 # создаем клиент
 @vk = VkontakteApi::Client.new
 # и вызываем методы API
-@vk.users.get(uid: 1)
+@vk.users.get(user_ids: 1)
 
 # в ruby принято использовать snake_case в названиях методов,
 # поэтому likes.getList становится likes.get_list
@@ -36,7 +36,7 @@ $ gem install vkontakte_api
 
 # если ВКонтакте ожидает получить параметр в виде списка,
 # разделенного запятыми, то его можно передать массивом
-users = @vk.users.get(uids: [1, 2, 3])
+users = @vk.users.get(user_ids: [1, 2, 3])
 
 # большинство методов возвращает структуры Hashie::Mash
 # и массивы из них
@@ -48,7 +48,7 @@ users.first.last_name  # => "Дуров"
 # то блок будет выполнен для каждого элемента,
 # и метод вернет обработанный массив
 fields = [:first_name, :last_name, :screen_name]
-@vk.friends.get(uid: 2, fields: fields) do |friend|
+@vk.friends.get(user_id: 2, fields: fields) do |friend|
   "#{friend.first_name} '#{friend.screen_name}' #{friend.last_name}"
 end
 # => ["Павел 'durov' Дуров"]
@@ -185,8 +185,8 @@ VK # => NameError: uninitialized constant VK
 
 ``` ruby
 vk = VK::Client.new
-vk.friends.get(uid: 1, fields: [:first_name, :last_name, :photo])
-# VkontakteApi::Error: VKontakte returned an error 7: 'Permission to perform this action is denied' after calling method 'friends.get' with parameters {"uid"=>"1", "fields"=>"first_name,last_name,photo"}.
+vk.friends.get(user_id: 1, fields: [:first_name, :last_name, :photo])
+# VkontakteApi::Error: VKontakte returned an error 7: 'Permission to perform this action is denied' after calling method 'friends.get' with parameters {"user_id"=>"1", "fields"=>"first_name,last_name,photo"}.
 ```
 
 Особый случай ошибки &mdash; 14: необходимо ввести код с captcha.
