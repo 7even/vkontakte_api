@@ -18,8 +18,8 @@ Gem::Specification.new do |s|
   
   s.required_ruby_version = '>= 1.9.2'
   
-  s.add_runtime_dependency 'faraday',                        '~> 0.9.0'
-  s.add_runtime_dependency 'faraday_middleware',             '~> 0.9.1'
+  s.add_runtime_dependency 'faraday',                        '>= 0.9.0'
+  s.add_runtime_dependency 'faraday_middleware',             '>= 0.9.1'
   unless defined?(JRUBY_VERSION)
     s.add_runtime_dependency 'oj',                           '~> 2.12'
   end
@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mechanize'
   s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'rb-fsevent', '~> 0.9.1'
+  s.add_development_dependency 'terminal-notifier'
   s.add_development_dependency 'terminal-notifier-guard'
   
   s.add_development_dependency 'pry'
