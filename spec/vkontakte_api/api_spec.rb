@@ -6,10 +6,10 @@ describe VkontakteApi::API do
     
     @connection = Faraday.new do |builder|
       builder.response :mashify
-      builder.response :oj, preserve_raw: true
+      builder.response :multi_json, preserve_raw: true
       builder.adapter  :test do |stub|
         stub.post('/apiMethod') do
-          [200, {}, Oj.dump(@result)]
+          [200, {}, MultiJson.dump(@result)]
         end
       end
     end

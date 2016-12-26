@@ -18,10 +18,13 @@ module VkontakteApi
       messages:      4096,
       wall:          8192,
       ads:           32768,
+      offline:       65536,
       docs:          131072,
       groups:        262144,
       notifications: 524288,
-      stats:         1048576
+      stats:         1048576,
+      email:         4194304,
+      market:        134217728
     }
     
     # An access token needed by authorized requests.

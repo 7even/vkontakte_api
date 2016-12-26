@@ -9,15 +9,15 @@ describe VkontakteApi::Logger do
     VkontakteApi.log_errors    = false
   end
   
-  let(:success_response) { Oj.dump('a' => 1, 'b' => 2) }
-  let(:fail_response) { Oj.dump('error' => 404) }
+  let(:success_response) { MultiJson.dump('a' => 1, 'b' => 2) }
+  let(:fail_response) { MultiJson.dump('error' => 404) }
   
   let(:connection) do
     Faraday.new(url: 'http://example.com') do |builder|
       builder.request  :url_encoded
       builder.response :vk_logger
       builder.response :mashify
-      builder.response :oj, preserve_raw: true
+      builder.response :multi_json, preserve_raw: true
       
       builder.adapter :test do |stub|
         stub.get('/success') do
