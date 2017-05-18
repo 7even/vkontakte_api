@@ -1,5 +1,4 @@
-## vkontakte_api [![Build Status](https://secure.travis-ci.org/7even/vkontakte_api.png)](http://travis-ci.org/7even/vkontakte_api) [![Gem Version](https://badge.fury.io/rb/vkontakte_api.png)](http://badge.fury.io/rb/vkontakte_api) [![Dependency Status](https://gemnasium.com/7even/vkontakte_api.png)](https://gemnasium.com/7even/vkontakte_api) [![Code Climate](https://codeclimate.com/github/7even/vkontakte_api.png)](https://codeclimate.com/github/7even/vkontakte_api)
-[![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/7even/vkontakte_api)
+## vkontakte_api [![Build Status](https://secure.travis-ci.org/7even/vkontakte_api.png)](http://travis-ci.org/7even/vkontakte_api) [![Gem Version](https://badge.fury.io/rb/vkontakte_api.png)](http://badge.fury.io/rb/vkontakte_api) [![Dependency Status](https://gemnasium.com/7even/vkontakte_api.png)](https://gemnasium.com/7even/vkontakte_api) [![Code Climate](https://codeclimate.com/github/7even/vkontakte_api.png)](https://codeclimate.com/github/7even/vkontakte_api) [![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/7even/vkontakte_api)
 
 `vkontakte_api` &mdash; ruby-adapter for VKontakte API. It allows to call API methods, upload files to VKontakte server, and also supports 3 available methods of authorization (it also allows to use third-party solutions).
 
