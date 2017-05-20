@@ -1,8 +1,8 @@
 ## vkontakte_api [![Build Status](https://secure.travis-ci.org/7even/vkontakte_api.png)](http://travis-ci.org/7even/vkontakte_api) [![Gem Version](https://badge.fury.io/rb/vkontakte_api.png)](http://badge.fury.io/rb/vkontakte_api) [![Dependency Status](https://gemnasium.com/7even/vkontakte_api.png)](https://gemnasium.com/7even/vkontakte_api) [![Code Climate](https://codeclimate.com/github/7even/vkontakte_api.png)](https://codeclimate.com/github/7even/vkontakte_api) [![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/7even/vkontakte_api)
 
-`vkontakte_api` &mdash; ruby-adapter for VKontakte API. It allows to call API methods, upload files to VKontakte server, and also supports 3 available methods of authorization (it also allows to use third-party solutions).
+`vkontakte_api` is a ruby-adapter for VKontakte API. It allows you to call API methods, upload files to VKontakte servers and also supports 3 available authorization methods (while allowing to use third-party solutions).
 
-## Settings
+## Installation
 
 ``` ruby
 # Gemfile
@@ -17,7 +17,7 @@ $ gem install vkontakte_api
 
 ## Usage
 
-### Method calls
+### Calling API methods
 
 ``` ruby
 # creating client
@@ -25,28 +25,28 @@ $ gem install vkontakte_api
 # and calling API method
 @vk.users.get(user_ids: 1)
 
-# it is a good practice to follow snake_case convention
-# while creating methods in ruby
-# that is why likes.getList becomes likes.get_list
+# snake_case convention is a de-facto standard
+# for method names in ruby
+# so likes.getList becomes likes.get_list
 @vk.likes.get_list
-# names of methods that return '1' or '0',
-# should end with '?', and returned values
-# become true or false
+# names of methods that return '1' or '0'
+# end with '?', and returned values
+# are typecasted to true or false
 @vk.is_app_user? # => false
 
-# when VKontakte is supposed to obtain list of parameters
-# separated by commas, then one can pass an array
+# if some VKontakte method expects a list of parameters
+# separated by commas, you can pass an array
 users = @vk.users.get(user_ids: [1, 2, 3])
 
-# most of methods return return Hashie::Mash structure
-# and arrays with this type of structure
+# most methods return a Hashie::Mash structure
+# or an array of them
 users.first.uid        # => 1
 users.first.first_name # => "Павел"
 users.first.last_name  # => "Дуров"
 
-# when method returns an array and was called with a block
-# then block is being executed for each element
-# and method returns processed array
+# when a method that returns an array is being called with a block
+# then block will be executed for each element
+# and the final result will be a processed array (like Enumerable#map)
 fields = [:first_name, :last_name, :screen_name]
 @vk.friends.get(user_id: 2, fields: fields) do |friend|
   "#{friend.first_name} '#{friend.screen_name}' #{friend.last_name}"
@@ -54,64 +54,66 @@ end
 # => ["Павел 'durov' Дуров"]
 ```
 
-### Files upload
+### File upload
 
-Files upload to VKontakte server is composed of several states: in the beginning there is API method call, which returns URL for this call and then in some cases one needs another API method call, passing in the parameters obtained by previous call. Calling API method depends on type of files - this case is described in [the appropriate section section](https://vk.com/dev/upload_files).
+Files can be uploaded to VKontakte in several steps: first you need to call an API method that returns a URL to upload to; then upload the file(s) and in some cases call another finalization API method with uploaded file params. The API methods to call depend on the uploaded file type and are described in the [documentation](https://vk.com/dev/upload_files).
 
-Files are transferred in a Hash format, where key is the name of parameter in query (described in documentation, for example when one uploads a photo, then this key is named `photo`), and the value of &mdash; is an array composed of 2 strings: full path of the file and its MIME-type:
+Files are transferred in a Hash format, where key is the name of the request parameter (described in documentation, for example `photo` when uploading photos), and the value is an array composed of 2 strings: full path to the file and it's MIME-type:
 
 ``` ruby
 url = 'http://cs303110.vkontakte.ru/upload.php?act=do_add'
 VkontakteApi.upload(url: url, photo: ['/path/to/file.jpg', 'image/jpeg'])
 ```
 
-If one wants to upload file as an IO-object, then it can be passed using alternative syntax &mdash; IO-object, MIME-type and the file path:
+If the file was opened as an IO object, then it can be passed using alternative syntax &mdash; IO-object, MIME-type and the file path:
 
 ``` ruby
 url = 'http://cs303110.vkontakte.ru/upload.php?act=do_add'
 VkontakteApi.upload(url: url, photo: [file_io, 'image/jpeg', '/path/to/file.jpg'])
 ```
 
-Method returns VKontakte server response converted to `Hashie::Mash`, it may be used when calling API method in the last stage of upload process.
+The `upload` method returns VKontakte server response converted to `Hashie::Mash`; it can be used when calling API method in the last step of upload process.
 
 ### Authorization
 
-Most of methods require an access token to be called. To get this token, one can use authorization built in `vkontakte_api` or other form (for example [OmniAuth](https://github.com/intridea/omniauth)). In the second case the result of authorization process is a token, which needs to be passed into `VkontakteApi::Client.new`.
+Most of methods require an access token to be called. To get this token, you can use authorization built in `vkontakte_api` or any other solution (for example [OmniAuth](https://github.com/intridea/omniauth)). In the latter case the result of authorization process is a token, which needs to be passed into `VkontakteApi::Client.new`.
 
-Working with VKontakte API provides 3 types of authorization: for webpages, for client applications (mobile or desktop, having access to authorized browsers) and special type for servers to invoke administration methods without user authorization. More details available [here](https://vk.com/dev/authentication); where one can take a look how to work with `vkontakte_api` resources.
+VKontakte API provides 3 types of authorization: for webpages, for client applications (mobile or desktop, having access to authorized browsers) and special authorization type for servers to invoke administration methods without user authorization. More details are available [here](https://vk.com/dev/authentication); let's see how to use them with `vkontakte_api`.
 
-For the purposes of authorization one has to specify `app_id` (ID of application), `app_secret` (secret key) and `redirect_uri` (address where the user is redirected after successful authorization) in the `VkontakteApi.configure` settings. For more information about configuring `vkontakte_api` see the section presented below.
+For the purposes of authorization you have to specify `app_id` (application ID), `app_secret` (secret key) and `redirect_uri` (a URL where the user will be redirected after successful authorization) in the `VkontakteApi.configure` settings. For more information about configuring `vkontakte_api` see below.
 
-##### Site
+##### Website
 
-Authorization of websites is a 2-step one. First, user is redirected to VKontakte website to confirm the rights of site to access his data. The list od permissions is avaliable [here](https://vk.com/dev/permissions). Let's suppose one wants to access friends (`friends`) and photos (`photos`) section of the user.
+Website authorization goes in 2 steps. First user is redirected to VKontakte website to confirm the rights of a website to access his data. The list of available permissions is avaliable [here](https://vk.com/dev/permissions). Let's suppose one wants to access friends (`friends`) and photos (`photos`) of the user.
 
-According to the [guidelines](http://tools.ietf.org/html/draft-ietf-oauth-v2-30#section-10.12) in protocol OAuth2 to prevent [CSRF](http://ru.wikipedia.org/wiki/%D0%9F%D0%BE%D0%B4%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0_%D0%BC%D0%B5%D0%B6%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2%D1%8B%D1%85_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2), one should pass `state` parameter, containing random number.
+According to the [guidelines](http://tools.ietf.org/html/draft-ietf-oauth-v2-30#section-10.12) in OAuth2 protocol the `state` parameter should be passed with a random number in order to prevent [CSRF](http://ru.wikipedia.org/wiki/%D0%9F%D0%BE%D0%B4%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0_%D0%BC%D0%B5%D0%B6%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2%D1%8B%D1%85_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2).
 
 ``` ruby
 session[:state] = Digest::MD5.hexdigest(rand.to_s)
 redirect_to VkontakteApi.authorization_url(scope: [:notify, :friends, :photos], state: session[:state])
 ```
 
-After successful authorization user is redirected to `redirect_uri`, and the parameters will contain code allowing to obtain an access token together with `state`. When `state` is not the same as the state which was assigned to user in the beginning, there is a high probability of CSRF-attack &mdash; the user should be undergo the process of authorization again.
+After successful authorization the user is redirected to `redirect_uri` and the parameters will contain the code that can be used to obtain an access token, as well as the `state`. When `state` differs from the one used in the first step there is a high probability of CSRF-attack &mdash; the user should be forced to begin the authorization process from the beginning.
 
 ``` ruby
-redirect_to login_url, alert: 'Ошибка авторизации' if params[:state] != session[:state]
+redirect_to login_url, alert: 'Authorization error' if params[:state] != session[:state]
 ```
 
-`vkontakte_api` provides a method `VkontakteApi.authorize`, which makes a request to VKontakte, receives a token and creates a client when given the code:
+`vkontakte_api` provides a `VkontakteApi.authorize` method which makes a request to VKontakte with a given code, gets a token and creates a client:
 
 ``` ruby
 @vk = VkontakteApi.authorize(code: params[:code])
-# and then one can call API methods on @vk object
+# now API methods can be called on @vk object
 @vk.is_app_user?
 ```
-Client will contain id of user authorizing application; it can be obtained using following method: `VkontakteApi::Client#user_id`:
+
+Client will contain the id of the user who authorized the application; it can be obtained using the `VkontakteApi::Client#user_id` method:
 
 ``` ruby
 @vk.user_id # => 123456
 ```
-It is also good to keep obtained token at this point (and user id if necessary) in the DB or in session, to use them again:
+
+It's also helpful to keep the obtained token at this point (and the user id if necessary) in the DB or in session so they can be used again in the future:
 
 ``` ruby
 current_user.token = @vk.token
@@ -123,35 +125,35 @@ current_user.save
 
 ##### Client application
 
-Authorization of client application is much easier &mdash; one does not need to obtain token using separate request, it is obtained right after redirection of user.
+Client application authorization is much easier: you don't need a separate request to obtain the token &mdash; it's returned right after the user is redirected back to the application.
 
 ``` ruby
-# user is redirecred to the following URL
+# user is redirected to the following URL
 VkontakteApi.authorization_url(type: :client, scope: [:friends, :photos])
 ```
 
-One has to take into account that `redirect_uri` should be assigned to `http://api.vkontakte.ru/blank.html`, otherwise it will not be possible to call methods available to client applications.
+You should note that `redirect_uri` must be assigned to `http://api.vkontakte.ru/blank.html`, otherwise it won't be possible to call methods available to client applications.
 
-When user confirms his access rights, he will be redirected to `redirect_uri`, while the parameter `access_token` will store the token, that should be passed to `VkontakteApi::Client.new`.
+After user confirms his access rights he will be redirected to `redirect_uri` with the `access_token` parameter containing the token that should be passed to `VkontakteApi::Client.new`.
 
 ##### Application server
 
-The last type of authorization &mdash; is the easiest one, since it does not require user involvment.
+The last type of authorization is the easiest one since it does not require any user involvement.
 
 ``` ruby
 @vk = VkontakteApi.authorize(type: :app_server)
 ```
 
-### Others
+### Other
 
-When API client (object of class `VkontakteApi::Client`) was created with the help of `VkontakteApi.authorize` method, it will contain the information about current user id (`user_id`) and also about expiry time of token (`expires_at`). You can check it using following methods:
+If the API client (instance of `VkontakteApi::Client`) was created by calling `VkontakteApi.authorize` method, it will contain the information about current user id (`user_id`) and about expiry time of token (`expires_at`). You can check it using these methods:
 
 ``` ruby
 vk = VkontakteApi.authorize(code: 'c1493e81f69fce1b43')
 # => #<VkontakteApi::Client:0x007fa578f00ad0>
 vk.user_id    # => 628985
 vk.expires_at # => 2012-12-18 23:22:55 +0400
-# one can check if the token was expired
+# VkontakteApi::Client#expired can be used to check if the token has expired
 vk.expired?   # => false
 ```
 
@@ -161,16 +163,16 @@ You can also get the list of access rights given by this token, in the form simi
 vk.scope # => [:friends, :groups]
 ```
 
-It works on the basis of `getUserSettings` method with the result obtained after the first call.
+It uses the `getUserSettings` API method with the result cached after the first call.
 
-To create a `VK` synonim for `VkontakteApi` module, it is enough to call `VkontakteApi.register_alias` method:
+To create a `VK` alias for `VkontakteApi` module just call `VkontakteApi.register_alias`:
 
 ``` ruby
 VkontakteApi.register_alias
 VK::Client.new # => #<VkontakteApi::Client:0x007fa578d6d948>
 ```
 
-One can also remove this alias when needed `VkontakteApi.unregister_alias`:
+This alias can be removed with `VkontakteApi.unregister_alias`:
 
 ``` ruby
 VK.unregister_alias
@@ -179,7 +181,7 @@ VK # => NameError: uninitialized constant VK
 
 ### Error handling
 
-When VKontakte API returns an error, it is of class `VkontakteApi::Error`.
+When VKontakte API returns an error, a `VkontakteApi::Error` exception is raised.
 
 ``` ruby
 vk = VK::Client.new
@@ -187,55 +189,55 @@ vk.friends.get(user_id: 1, fields: [:first_name, :last_name, :photo])
 # VkontakteApi::Error: VKontakte returned an error 7: 'Permission to perform this action is denied' after calling method 'friends.get' with parameters {"user_id"=>"1", "fields"=>"first_name,last_name,photo"}.
 ```
 
-There is special case of errors &mdash; 14: one has to enter captcha code.
-In this case one can obtain captcha parameters using method:
-`VkontakteApi::Error#captcha_sid` and `VkontakteApi::Error#captcha_img` &mdash; for example,
+There is special case of errors &mdash; 14: the user has to enter a captcha code.
+In this case captcha parameters can be obtained using `VkontakteApi::Error#captcha_sid` method
+and `VkontakteApi::Error#captcha_img` &mdash; for example,
 [like this](https://github.com/7even/vkontakte_api/issues/10#issuecomment-11666091).
 
 ### Logging
 
-`vkontakte_api` loggs information about requests when calling methods.
-They are all written in `STDOUT` by default, but you can choose any
-other data logger, for example `Rails.logger`.
+`vkontakte_api` logs information about requests when calling methods.
+By default they are all written in `STDOUT` but you can choose any
+other data logger, `Rails.logger` for example.
 
-There is a possibility of logging 3 types of information,
-each one has a key in global settings.
+It is possible to log 3 types of information,
+and each one has a corresponding key in the global settings.
 
-|                            | key of setting  | default value | message level        |
-| -------------------------- | --------------- | ------------- | -------------------- |
-| request URL                | `log_requests`  | `true`        | `debug`              |
-| JSON response of error     | `log_errors`    | `true`        | `warn`               |
-| JSON successful response   | `log_responses` | `false`       | `debug`              |
+|                          | setting key     | default value | message level |
+| ------------------------ | --------------- | ------------- | ------------- |
+| request URL              | `log_requests`  | `true`        | `debug`       |
+| JSON response of error   | `log_errors`    | `true`        | `warn`        |
+| JSON successful response | `log_responses` | `false`       | `debug`       |
 
-
-In rails-application with default settings in production only server responses
+In Rails application with default settings in production only server responses
 with errors are being saved; in development there are also logged URL addresses of requests.
 
-### Examplary usage
+### Example
 
-An examplary usage of `vkontakte_api` together with `eventmachine` can be seen
+An example of using `vkontakte_api` together with `eventmachine` can be seen
 [here](https://github.com/7even/vkontakte_on_em).
 
-There was also written [an example with rails](https://github.com/7even/vkontakte_on_rails),
-but in no longer works due to lack of rights when calling `newsfeed.get`.
+[An example with rails](https://github.com/7even/vkontakte_on_rails) also
+exists, but it no longer works due to the lack of access rights to call
+the `newsfeed.get` method from websites.
 
 ## Settings
 
-Global parameters of `vkontakte_api` should be set in `VkontakteApi.configure` block, as follows:
+Global parameters of `vkontakte_api` should be set in `VkontakteApi.configure` block as follows:
 
 ``` ruby
 VkontakteApi.configure do |config|
-  # parameters required for authorization of vkontakte_api
-  # (not needed when using third-party authorization)
+  # parameters required for authorization with vkontakte_api
+  # (not needed when using a third-party authorization solution)
   config.app_id       = '123'
   config.app_secret   = 'AbCdE654'
   config.redirect_uri = 'http://example.com/oauth/callback'
 
-  # faraday-adapter for network requests
+  # faraday adapter for network requests
   config.adapter = :net_http
-  # HTTP-method for calling API methods (:get or :post)
+  # HTTP method for calling API methods (:get or :post)
   config.http_verb = :post
-  # parameters for faraday_connection
+  # parameters for faraday connection
   config.faraday_options = {
     ssl: {
       ca_path:  '/usr/lib/ssl/certs'
@@ -247,13 +249,13 @@ VkontakteApi.configure do |config|
     }
   }
 
-  # maximum number of retries after error occurence
+  # maximum number of retries after an error
   # works only when using http_verb :get
   config.max_retries = 2
 
   # logger
   config.logger        = Rails.logger
-  config.log_requests  = true  # URLs of requests
+  config.log_requests  = true  # request URLs
   config.log_errors    = true  # errors
   config.log_responses = false # successful responses
 
@@ -262,50 +264,49 @@ VkontakteApi.configure do |config|
 end
 ```
 
-By default, for HTTP-requests using `Net::HTTP`; one can choose
-[any other adapter](https://github.com/technoweenie/faraday/blob/master/lib/faraday/adapter.rb),
+By default the `Net::HTTP` Faraday adapter is used but you can choose
+[any other adapter](https://github.com/lostisland/faraday/blob/master/lib/faraday/adapter.rb)
 supported by `faraday`.
 
 VKontakte [allows](https://vk.com/dev/api_requests)
-used either as `GET`-, or `POST`-requests when choosing API methods.
-`vkontakte_api` uses `POST` by default, set up to `http_verb`
-One can use `:get`, to create `GET`-requests.
+using either `GET` or `POST` requests when calling API methods.
+`vkontakte_api` uses `POST` by default but you can change that by
+setting `http_verb` to `:get`.
 
-If necessary, one can choose parameters for faraday-connection &mdash; for example,
-parameters of proxy-server or path to SSL-certificates.
+You can specify custom parameters for faraday-connection if necessary &mdash;
+parameters of a proxy server or a path to SSL certificates for example.
 
-To choose API version with evey call of API-method, one can specify it in the settings of
-`api_version`. The default version is not available.
+In order to use a specific API version in every method call you can specify it
+in the `api_version` key of configuration. By default it is not set.
 
-To generate a file with default settings in rails-application,
-one can use `vkontakte_api:install` generator:
+To generate a file with default settings in Rails application
+you can use the `vkontakte_api:install` generator:
 
 ``` sh
 $ cd /path/to/app
 $ rails generate vkontakte_api:install
 ```
 
-## JSON-parser
+## JSON parser
 
-`vkontakte_api` uses parser [Oj](https://github.com/ohler55/oj) &mdash; it is
-the only parser that has not thrown [error](https://github.com/7even/vkontakte_api/issues/1)
-while parsing JSON, generated by VKontakte.
+`vkontakte_api` uses the [Oj](https://github.com/ohler55/oj) parser &mdash; it is
+the only parser that has not thrown any [errors](https://github.com/7even/vkontakte_api/issues/1)
+while parsing JSON generated by VKontakte API.
 
-Furthermore, in `multi_json` library (wrapper for different JSON-parsers,
-which selects the fastest parser installed on the system and uses it)
-`Oj` was chosen as the one having the highest priority; so when it is set in the system,
-`multi_json` will use it.
+Oj has the top priority in `multi_json` library (a wrapper for different
+JSON parsers which selects the fastest parser installed on the system and uses it)
+so when `Oj` is present in your bundle it will also be used by MultiJSON.
 
 ## Roadmap
 
-* CLI-interface with authomatic authorization
+* CLI-interface with automatic authorization
 
-## Participation in development
+## Development
 
-When you want to participate in the process of development of project, fork
+If you want to participate in the vkontakte_api development fork
 the repository, create changes on separate branch, cover them with specs
 and create a pull request.
 
-`vkontakte_api` was tested under MRI `1.9.3`, `2.0.0` and `2.1.2`.
-If it is not working properly under any of the media, it should be considered
-as bug and reported in [issues on Github](https://github.com/7even/vkontakte_api/issues).
+`vkontakte_api` is tested under MRI `1.9.3`, `2.0.0` and `2.1.2`.
+If it is not working properly in any of these versions it should be considered
+a bug and reported to [issues on Github](https://github.com/7even/vkontakte_api/issues).

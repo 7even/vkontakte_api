@@ -266,7 +266,7 @@ end
 ```
 
 По умолчанию для HTTP-запросов используется `Net::HTTP`; можно выбрать
-[любой другой адаптер](https://github.com/technoweenie/faraday/blob/master/lib/faraday/adapter.rb),
+[любой другой адаптер](https://github.com/lostisland/faraday/blob/master/lib/faraday/adapter.rb),
 поддерживаемый `faraday`.
 
 ВКонтакте [позволяет](https://vk.com/dev/api_requests)
