@@ -17,7 +17,10 @@ module VkontakteApi
     end
     
     def call_method(args, &block)
-      create_method(args.shift).call(args.first || {}, &block)
+      method_name = args.shift
+      params = args.first || {}
+      params[:lang] = VkontakteApi.lang if VkontakteApi.lang.present?
+      create_method(method_name).call(params, &block)
     end
     
     class << self
