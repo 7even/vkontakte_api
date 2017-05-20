@@ -22,6 +22,7 @@ module VkontakteApi
     def initialize(data)
       @error_code = data.error_code
       @error_msg  = data.error_msg
+      @redirect_uri = data.redirect_uri
       
       request_params = parse_params(data.request_params)
       
