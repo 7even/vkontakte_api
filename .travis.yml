@@ -1,12 +1,11 @@
 language: ruby
 
 rvm:
-  - 1.9.3
-  - 2.0
   - 2.1
   - 2.2
+  - 2.3
+  - 2.4
   - ruby-head
-  - jruby-19mode
   - jruby-9.0.0.0
   - jruby-head
 
@@ -17,3 +16,6 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
+
+before_install:
+  - gem install bundler
