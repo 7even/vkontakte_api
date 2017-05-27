@@ -5,6 +5,10 @@ require_relative './support/mechanized_authorization'
 
 RSpec.configure do |config|
   config.raise_errors_for_deprecations!
+
+  config.before(:suite) do
+    Hashie.logger = Logger.new(nil)
+  end
 end
 
 RSpec::Matchers.define :log_requests do

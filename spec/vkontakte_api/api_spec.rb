@@ -87,7 +87,7 @@ describe VkontakteApi::API do
         handler = connection.builder.handlers.first
         
         expect(handler.name).to eq('FaradayMiddleware::OAuth2')
-        expect(handler.instance_variable_get(:@args)).to eq([token])
+        expect(handler.instance_variable_get(:@args)).to eq([token, token_type: 'param'])
       end
     end
   end
