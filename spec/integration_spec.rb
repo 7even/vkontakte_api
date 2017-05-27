@@ -21,11 +21,6 @@ describe "Integration" do
       expect(user.last_name).not_to be_empty
       expect(user.first_name).not_to be_empty
     end
-    
-    it "search newsfeed" do
-      news = vk.newsfeed.search(q: 'vk', count: 1)
-      expect(news).to be_a(Enumerable)
-    end
   end
   
   if MechanizedAuthorization.on?
