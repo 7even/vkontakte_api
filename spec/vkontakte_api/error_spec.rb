@@ -51,5 +51,19 @@ describe VkontakteApi::Error do
         }.to raise_error(error.class, message)
       end
     end
+
+    context "for interval server error without request_params" do
+      let(:error) { VkontakteApi::Error.new(Hashie::Mash.new(error_code: 11, error_msg: 'Internal server error: Unknown error, try later')) }
+
+      it "returns all needed data about an error" do
+        message = 'VKontakte returned an error 11: \'Internal server error: Unknown error, try later\''
+        message << ' after calling method \'\' without parameters.'
+
+        expect {
+          raise error
+        }.to raise_error(error.class, message)
+      end
+    end
   end
 end
+
