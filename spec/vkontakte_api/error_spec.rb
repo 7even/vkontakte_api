@@ -3,8 +3,8 @@ require 'spec_helper'
 describe VkontakteApi::Error do
   let(:error_data) do
     Hashie::Mash.new(
-      error_code:     5,
-      error_msg:      'User authorization failed: invalid access_token.',
+      error_code: 5,
+      error_msg:  'User authorization failed: invalid access_token.',
       request_params: [
         {
           key:   'oauth',
@@ -21,25 +21,24 @@ describe VkontakteApi::Error do
       ]
     )
   end
+
+  subject { VkontakteApi::Error.new(error_data) }
   
   describe "#message" do
     context "without parameters" do
-      let(:error) { VkontakteApi::Error.new(error_data) }
-      
       it "returns all needed data about an error" do
         message = 'VKontakte returned an error 5: \'User authorization failed: invalid access_token.\''
         message << ' after calling method \'unknownMethod\' without parameters.'
         
         expect {
-          raise error
-        }.to raise_error(error.class, message)
+          raise subject
+        }.to raise_error(subject.class, message)
       end
     end
     
     context "with parameters" do
-      let(:error) do
+      before(:each) do
         error_data[:request_params] << Hashie::Mash.new(key: 'some', value: 'params')
-        VkontakteApi::Error.new(error_data)
       end
       
       it "returns all needed data about an error" do
@@ -47,23 +46,24 @@ describe VkontakteApi::Error do
         message << ' after calling method \'unknownMethod\' with parameters {"some"=>"params"}.'
         
         expect {
-          raise error
-        }.to raise_error(error.class, message)
+          raise subject
+        }.to raise_error(subject.class, message)
       end
     end
 
     context "for interval server error without request_params" do
-      let(:error) { VkontakteApi::Error.new(Hashie::Mash.new(error_code: 11, error_msg: 'Internal server error: Unknown error, try later')) }
+      let(:error_data) do
+        Hashie::Mash.new(error_code: 11, error_msg: 'Internal server error: Unknown error, try later')
+      end
 
       it "returns all needed data about an error" do
         message = 'VKontakte returned an error 11: \'Internal server error: Unknown error, try later\''
         message << ' after calling method \'\' without parameters.'
 
         expect {
-          raise error
-        }.to raise_error(error.class, message)
+          raise subject
+        }.to raise_error(subject.class, message)
       end
     end
   end
 end
-

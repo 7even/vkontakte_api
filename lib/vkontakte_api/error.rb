@@ -23,7 +23,7 @@ module VkontakteApi
       @error_code = data.error_code
       @error_msg  = data.error_msg
       
-      request_params = data.request_params ? parse_params(data.request_params) : {}
+      request_params = parse_params(data.request_params || [])
       
       @method_name  = request_params.delete('method')
       @access_token = request_params.delete('access_token')
@@ -52,9 +52,8 @@ module VkontakteApi
     
   private
     def parse_params(params)
-      params.inject({}) do |memo, pair|
-        memo[pair[:key]] = pair[:value]
-        memo
+      params.reduce({}) do |memo, pair|
+        memo.merge(pair[:key] => pair[:value])
       end
     end
   end
