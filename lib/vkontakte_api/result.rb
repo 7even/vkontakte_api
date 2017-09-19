@@ -29,6 +29,10 @@ module VkontakteApi
       def extract_result(response)
         if response.error?
           raise VkontakteApi::Error.new(response.error)
+        elsif response.execute_errors?
+          error = response.execute_errors.last
+          error.method = response.execute_errors.map{ |er| er['method'] }.reverse.join ' -> '
+          raise VkontakteApi::Error.new(error)
         else
           response.response
         end

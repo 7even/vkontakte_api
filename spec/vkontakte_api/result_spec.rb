@@ -80,6 +80,16 @@ describe VkontakteApi::Result do
         ]
       }
     end
+
+    let(:response_error_for_execute) do
+      {
+        'response'=>'', 
+        'execute_errors'=>[
+          {'method'=>'groups.getMembers', 'error_code'=>15, 'error_msg'=>'Access denied: you should be group moderator'}, 
+          {'method'=>'execute', 'error_code'=>15, 'error_msg'=>'Access denied: you should be group moderator'}
+        ]
+      }
+    end
     
     context "with a successful response" do
       let(:result) { Hashie::Mash.new(response: result_response) }
@@ -92,6 +102,16 @@ describe VkontakteApi::Result do
     context "with an error response" do
       let(:result) { Hashie::Mash.new(error: result_error) }
       
+      it "raises a VkontakteApi::Error" do
+        expect {
+          subject.send(:extract_result, result)
+        }.to raise_error(VkontakteApi::Error)
+      end
+    end
+
+    context "with an error response for execute method" do
+      let(:result) { Hashie::Mash.new(response_error_for_execute) }
+
       it "raises a VkontakteApi::Error" do
         expect {
           subject.send(:extract_result, result)
