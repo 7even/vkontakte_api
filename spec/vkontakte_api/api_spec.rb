@@ -6,14 +6,14 @@ describe VkontakteApi::API do
     
     @connection = Faraday.new do |builder|
       builder.response :mashify
-      builder.response :oj, preserve_raw: true
+      builder.response :multi_json, preserve_raw: true
       builder.adapter  :test do |stub|
         stub.post('/apiMethod') do
-          [200, {}, Oj.dump(@result)]
+          [200, {}, MultiJson.dump(@result)]
         end
       end
     end
-    subject.stub(:connection).and_return(@connection)
+    allow(subject).to receive(:connection).and_return(@connection)
   end
   
   describe ".call" do
@@ -41,6 +41,22 @@ describe VkontakteApi::API do
       subject.call('apiMethod')
     end
     
+    context "when the api_version is set" do
+      let(:api_version) { double("API version") }
+      let(:response) { double("API response", body: @result) }
+      
+      before(:each) do
+        VkontakteApi.configure do |config|
+          config.api_version = api_version
+        end
+      end
+      
+      it "adds it to request params" do
+        expect(@connection).to receive(:post).with('apiMethod', v: api_version).and_return(response)
+        subject.call('apiMethod')
+      end
+    end
+    
     after(:each) do
       VkontakteApi.reset
     end
@@ -49,7 +65,7 @@ describe VkontakteApi::API do
   describe ".connection" do
     it "uses the :url parameter and VkontakteApi.faraday_options" do
       faraday_options = double("Faraday options")
-      VkontakteApi.stub(:faraday_options).and_return(faraday_options)
+      allow(VkontakteApi).to receive(:faraday_options).and_return(faraday_options)
       url = double("URL")
       
       expect(Faraday).to receive(:new).with(url, faraday_options)
@@ -71,7 +87,7 @@ describe VkontakteApi::API do
         handler = connection.builder.handlers.first
         
         expect(handler.name).to eq('FaradayMiddleware::OAuth2')
-        expect(handler.instance_variable_get(:@args)).to eq([token])
+        expect(handler.instance_variable_get(:@args)).to eq([token, token_type: 'param'])
       end
     end
   end

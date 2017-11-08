@@ -18,10 +18,13 @@ module VkontakteApi
       messages:      4096,
       wall:          8192,
       ads:           32768,
+      offline:       65536,
       docs:          131072,
       groups:        262144,
       notifications: 524288,
-      stats:         1048576
+      stats:         1048576,
+      email:         4194304,
+      market:        134217728
     }
     
     # An access token needed by authorized requests.
@@ -74,6 +77,16 @@ module VkontakteApi
       SCOPE.reject do |access_scope, mask|
         (settings & mask).zero?
       end.keys
+    end
+    
+    # Called without arguments it returns the `execute` namespace;
+    # called with arguments it calls the top-level `execute` API method.
+    def execute(*args)
+      if args.empty?
+        create_namespace(:execute)
+      else
+        call_method([:execute, *args])
+      end
     end
     
     # If the called method is a namespace, it creates and returns a new `VkontakteApi::Namespace` instance.

@@ -32,6 +32,7 @@ describe VkontakteApi::Configuration do
       expect(Configurable).to log_requests
       expect(Configurable).to log_errors
       expect(Configurable).not_to log_responses
+      expect(Configurable.api_version).to be_nil
     end
   end
 end

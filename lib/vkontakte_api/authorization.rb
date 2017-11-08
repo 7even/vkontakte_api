@@ -1,6 +1,6 @@
 module VkontakteApi
   # A module containing the methods for authorization.
-  # 
+  #
   # @note `VkontakteApi::Authorization` extends `VkontakteApi` so these methods should be called from the latter.
   module Authorization
     # Authorization options.
@@ -39,7 +39,7 @@ module VkontakteApi
     
     # Authorization (getting the access token and building a `VkontakteApi::Client` with it).
     # @option options [Symbol] :type The type of authorization being used (`:site` and `:app_server` supported).
-    # @option options [String] :code The code to exchange for an access token (for `:site` authorization type). 
+    # @option options [String] :code The code to exchange for an access token (for `:site` authorization type).
     # @raise [ArgumentError] raises after receiving an unknown authorization type.
     # @return [VkontakteApi::Client] An API client.
     def authorize(options = {})

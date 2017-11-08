@@ -8,7 +8,7 @@ describe VkontakteApi::Utils do
     let(:flat_arg2) { double("Flattened second argument") }
     
     before(:each) do
-      VkontakteApi::Utils.stub(:flatten_argument) do |arg|
+      allow(VkontakteApi::Utils).to receive(:flatten_argument) do |arg|
         case arg
         when arg1 then flat_arg1
         when arg2 then flat_arg2

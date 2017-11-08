@@ -1,6 +1,6 @@
 module VkontakteApi
   # An API method namespace (such as `users` or `friends`).
-  # 
+  #
   # It includes `Resolvable` and `Resolver` and calls API methods via `Resolver#call_method`.
   # It also holds the list of all known namespaces.
   class Namespace
@@ -14,7 +14,7 @@ module VkontakteApi
     
     class << self
       # An array of all method namespaces.
-      # 
+      #
       # Lazily loads the list from `namespaces.yml` and caches it.
       # @return [Array] An array of strings
       def names

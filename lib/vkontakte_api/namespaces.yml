@@ -18,6 +18,7 @@
 - subscriptions
 - widgets
 - leads
+- market
 - messages
 - status
 - polls
@@ -31,3 +32,5 @@
 - apps
 - utils
 - database
+- gifts
+- streaming

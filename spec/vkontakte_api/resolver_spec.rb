@@ -15,7 +15,7 @@ describe VkontakteApi::Resolver do
     before(:each) do
       @resolver = @class.new('trololo')
       @token = double("Token")
-      @resolver.stub(:token).and_return(@token)
+      allow(@resolver).to receive(:token).and_return(@token)
     end
     
     it "gets into #method_missing" do
@@ -30,7 +30,7 @@ describe VkontakteApi::Resolver do
       @name     = double("Name")
       @resolver = @class.new(@name)
       @token    = double("Token")
-      @resolver.stub(:token).and_return(@token)
+      allow(@resolver).to receive(:token).and_return(@token)
     end
     
     let(:resolver) { @resolver.resolver }

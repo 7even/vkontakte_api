@@ -1,6 +1,6 @@
 module VkontakteApi
   # A low-level module which handles the requests to VKontakte API and returns their results as mashes.
-  # 
+  #
   # It uses Faraday with middleware underneath the hood.
   module API
     # URL prefix for calling API methods.
@@ -14,6 +14,7 @@ module VkontakteApi
       # @return [Hashie::Mash] Mashed server response.
       def call(method_name, args = {}, token = nil)
         flat_arguments = Utils.flatten_arguments(args)
+        flat_arguments[:v] ||= VkontakteApi.api_version unless VkontakteApi.api_version.nil?
         connection(url: URL_PREFIX, token: token).send(VkontakteApi.http_verb, method_name, flat_arguments).body
       end
       
@@ -27,14 +28,16 @@ module VkontakteApi
         token = options.delete(:token)
         
         Faraday.new(url, VkontakteApi.faraday_options) do |builder|
-          builder.request  :oauth2, token unless token.nil?
-          builder.request  :multipart
-          builder.request  :url_encoded
-          builder.request  :retry, VkontakteApi.max_retries
+          builder.request :oauth2, token, token_type: 'param' unless token.nil?
+          builder.request :multipart
+          builder.request :url_encoded
+          builder.request :retry, VkontakteApi.max_retries
+          
           builder.response :vk_logger
           builder.response :mashify
-          builder.response :oj, preserve_raw: true
-          builder.adapter  VkontakteApi.adapter
+          builder.response :multi_json, preserve_raw: true
+          
+          builder.adapter VkontakteApi.adapter
         end
       end
     end

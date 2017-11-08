@@ -8,9 +8,9 @@ describe VkontakteApi::Client do
   
   def oauth2_token(expires_at = Time.now)
     token = double("Access token as an OAuth2::AccessToken").tap do |token|
-      token.stub(:token).and_return(string_token)
-      token.stub(:params).and_return('user_id' => @user_id, 'email' => @email)
-      token.stub(:expires_at).and_return(expires_at)
+      allow(token).to receive(:token).and_return(string_token)
+      allow(token).to receive(:params).and_return('user_id' => @user_id, 'email' => @email)
+      allow(token).to receive(:expires_at).and_return(expires_at)
     end
   end
   
@@ -98,7 +98,7 @@ describe VkontakteApi::Client do
   describe "#scope" do
     let(:client) do
       VkontakteApi::Client.new.tap do |client|
-        client.stub(:get_user_settings).and_return(865310)
+        allow(client).to receive(:get_user_settings).and_return(865310)
       end
     end
     let(:scope) { client.scope }
@@ -136,7 +136,7 @@ describe VkontakteApi::Client do
       before(:each) do
         @result = double("Result")
         @method = double("Method", call: @result)
-        VkontakteApi::Method.stub(:new).and_return(@method)
+        allow(VkontakteApi::Method).to receive(:new).and_return(@method)
       end
       
       it "creates a Method instance" do
@@ -147,6 +147,25 @@ describe VkontakteApi::Client do
       it "calls Method#call and returns the result" do
         expect(@method).to receive(:call).with(id: 1)
         expect(client.get(id: 1)).to eq(@result)
+      end
+    end
+  end
+  
+  describe '#execute' do
+    let(:client) { VkontakteApi::Client.new('token') }
+    
+    context 'called without arguments' do
+      it 'returns an :execute namespace' do
+        expect(client.execute).to be_a(VkontakteApi::Namespace)
+        expect(client.execute.name).to eq('execute')
+      end
+    end
+    
+    context 'called with arguments' do
+      it 'calls the :execute method' do
+        code = 'return "Hello World!";'
+        expect(client).to receive(:call_method).with([:execute, code: code])
+        client.execute(code: code)
       end
     end
   end

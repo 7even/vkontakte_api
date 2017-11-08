@@ -1,12 +1,15 @@
-## vkontakte_api [![Build Status](https://secure.travis-ci.org/7even/vkontakte_api.png)](http://travis-ci.org/7even/vkontakte_api) [![Gem Version](https://badge.fury.io/rb/vkontakte_api.png)](http://badge.fury.io/rb/vkontakte_api) [![Dependency Status](https://gemnasium.com/7even/vkontakte_api.png)](https://gemnasium.com/7even/vkontakte_api) [![Code Climate](https://codeclimate.com/github/7even/vkontakte_api.png)](https://codeclimate.com/github/7even/vkontakte_api)
+## vkontakte_api [![Build Status](https://secure.travis-ci.org/7even/vkontakte_api.png)](http://travis-ci.org/7even/vkontakte_api) [![Gem Version](https://badge.fury.io/rb/vkontakte_api.png)](http://badge.fury.io/rb/vkontakte_api) [![Dependency Status](https://gemnasium.com/7even/vkontakte_api.png)](https://gemnasium.com/7even/vkontakte_api) [![Code Climate](https://codeclimate.com/github/7even/vkontakte_api.png)](https://codeclimate.com/github/7even/vkontakte_api) [![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/7even/vkontakte_api)
 
-`vkontakte_api` - ruby-адаптер для ВКонтакте API. Он позволяет вызывать методы API, загружать файлы на сервера ВКонтакте, а также поддерживает все 3 доступных способа авторизации (при этом позволяя использовать стороннее решение).
+`vkontakte_api` &mdash; ruby-адаптер для ВКонтакте API. Он позволяет вызывать методы API, загружать файлы на сервера ВКонтакте, а также поддерживает все 3 доступных способа авторизации (при этом позволяя использовать стороннее решение).
+
+## English version
+For English version please go [here](README_en.md).
 
 ## Установка
 
 ``` ruby
 # Gemfile
-gem 'vkontakte_api', '~> 1.3'
+gem 'vkontakte_api', '~> 1.4'
 ```
 
 или просто
@@ -23,7 +26,7 @@ $ gem install vkontakte_api
 # создаем клиент
 @vk = VkontakteApi::Client.new
 # и вызываем методы API
-@vk.users.get(uid: 1)
+@vk.users.get(user_ids: 1)
 
 # в ruby принято использовать snake_case в названиях методов,
 # поэтому likes.getList становится likes.get_list
@@ -35,7 +38,7 @@ $ gem install vkontakte_api
 
 # если ВКонтакте ожидает получить параметр в виде списка,
 # разделенного запятыми, то его можно передать массивом
-users = @vk.users.get(uids: [1, 2, 3])
+users = @vk.users.get(user_ids: [1, 2, 3])
 
 # большинство методов возвращает структуры Hashie::Mash
 # и массивы из них
@@ -47,7 +50,7 @@ users.first.last_name  # => "Дуров"
 # то блок будет выполнен для каждого элемента,
 # и метод вернет обработанный массив
 fields = [:first_name, :last_name, :screen_name]
-@vk.friends.get(uid: 2, fields: fields) do |friend|
+@vk.friends.get(user_id: 2, fields: fields) do |friend|
   "#{friend.first_name} '#{friend.screen_name}' #{friend.last_name}"
 end
 # => ["Павел 'durov' Дуров"]
@@ -55,16 +58,16 @@ end
 
 ### Загрузка файлов
 
-Загрузка файлов на сервера ВКонтакте осуществляется в несколько этапов: сначала вызывается метод API, возвращающий URL для загрузки, затем происходит сама загрузка файлов, и после этого в некоторых случаях нужно вызвать другой метод API, передав в параметрах данные, возвращенные сервером после предыдущего запроса. Вызываемые методы API зависят от типа загружаемых файлов и описаны в [соответствующем разделе документации](http://vk.com/developers.php?oid=-1&p=%D0%9F%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B8_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2_%D0%BD%D0%B0_%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80_%D0%92%D0%9A%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D0%B5).
+Загрузка файлов на сервера ВКонтакте осуществляется в несколько этапов: сначала вызывается метод API, возвращающий URL для загрузки, затем происходит сама загрузка файлов, и после этого в некоторых случаях нужно вызвать другой метод API, передав в параметрах данные, возвращенные сервером после предыдущего запроса. Вызываемые методы API зависят от типа загружаемых файлов и описаны в [соответствующем разделе документации](https://vk.com/dev/upload_files).
 
-Файлы передаются в формате хэша, где ключом является название параметра в запросе (указано в документации, например для загрузки фото на стену это будет `photo`), а значением - массив из 2 строк: полный путь к файлу и его MIME-тип:
+Файлы передаются в формате хэша, где ключом является название параметра в запросе (указано в документации, например для загрузки фото на стену это будет `photo`), а значением &mdash; массив из 2 строк: полный путь к файлу и его MIME-тип:
 
 ``` ruby
 url = 'http://cs303110.vkontakte.ru/upload.php?act=do_add'
 VkontakteApi.upload(url: url, photo: ['/path/to/file.jpg', 'image/jpeg'])
 ```
 
-Если загружаемый файл доступен как открытый IO-объект, его можно передать альтернативным синтаксисом - IO-объект, MIME-тип и путь к файлу:
+Если загружаемый файл доступен как открытый IO-объект, его можно передать альтернативным синтаксисом &mdash; IO-объект, MIME-тип и путь к файлу:
 
 ``` ruby
 url = 'http://cs303110.vkontakte.ru/upload.php?act=do_add'
@@ -77,13 +80,13 @@ VkontakteApi.upload(url: url, photo: [file_io, 'image/jpeg', '/path/to/file.jpg'
 
 Для вызова большинства методов требуется токен доступа (access token). Чтобы получить его, можно использовать авторизацию, встроенную в `vkontakte_api`, либо положиться на какой-то другой механизм (например, [OmniAuth](https://github.com/intridea/omniauth)). В последнем случае в результате авторизации будет получен токен, который нужно будет передать в `VkontakteApi::Client.new`.
 
-Для работы с ВКонтакте API предусмотрено 3 типа авторизации: для сайтов, для клиентских приложений (мобильных либо десктопных, имеющих доступ к управлению браузером) и специальный тип авторизации серверов приложений для вызова административных методов без авторизации самого пользователя. Более подробно они описаны [тут](http://vk.com/developers.php?oid=-1&p=%D0%90%D0%B2%D1%82%D0%BE%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F); рассмотрим, как работать с ними средствами `vkontakte_api`.
+Для работы с ВКонтакте API предусмотрено 3 типа авторизации: для сайтов, для клиентских приложений (мобильных либо десктопных, имеющих доступ к управлению браузером) и специальный тип авторизации серверов приложений для вызова административных методов без авторизации самого пользователя. Более подробно они описаны [тут](https://vk.com/dev/authentication); рассмотрим, как работать с ними средствами `vkontakte_api`.
 
 Для авторизации необходимо задать параметры `app_id` (ID приложения), `app_secret` (защищенный ключ) и `redirect_uri` (адрес, куда пользователь будет направлен после предоставления прав приложению) в настройках `VkontakteApi.configure`. Более подробно о конфигурировании `vkontakte_api` см. далее в соответствующем разделе.
 
 ##### Сайт
 
-Авторизация сайтов проходит в 2 шага. Сначала пользователь перенаправляется на страницу ВКонтакте для подтверждения запрошенных у него прав сайта на доступ к его данным. Со списком возможных прав можно ознакомиться [здесь](http://vk.com/developers.php?oid=-1&p=%D0%9F%D1%80%D0%B0%D0%B2%D0%B0_%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%D0%B0_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B9). Допустим, нужно получить доступ к друзьям (`friends`) и фотографиям (`photos`) пользователя.
+Авторизация сайтов проходит в 2 шага. Сначала пользователь перенаправляется на страницу ВКонтакте для подтверждения запрошенных у него прав сайта на доступ к его данным. Со списком возможных прав можно ознакомиться [здесь](https://vk.com/dev/permissions). Допустим, нужно получить доступ к друзьям (`friends`) и фотографиям (`photos`) пользователя.
 
 В соответствии с [рекомендациями](http://tools.ietf.org/html/draft-ietf-oauth-v2-30#section-10.12) в протоколе OAuth2 для защиты от [CSRF](http://ru.wikipedia.org/wiki/%D0%9F%D0%BE%D0%B4%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0_%D0%BC%D0%B5%D0%B6%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2%D1%8B%D1%85_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2), нужно передать параметр `state`, содержащий случайное значение.
 
@@ -92,7 +95,7 @@ session[:state] = Digest::MD5.hexdigest(rand.to_s)
 redirect_to VkontakteApi.authorization_url(scope: [:notify, :friends, :photos], state: session[:state])
 ```
 
-После подтверждения пользователь перенаправляется на указанный в настройках `redirect_uri`, причем в параметрах будет передан код, по которому можно получить токен доступа, а также переданный ранее `state`. Если `state` не совпадает с тем, который был использован при отправлении пользователя на ВКонтакте, то скорее всего это попытка CSRF-атаки - стоит отправить пользователя на повторную авторизацию.
+После подтверждения пользователь перенаправляется на указанный в настройках `redirect_uri`, причем в параметрах будет передан код, по которому можно получить токен доступа, а также переданный ранее `state`. Если `state` не совпадает с тем, который был использован при отправлении пользователя на ВКонтакте, то скорее всего это попытка CSRF-атаки &mdash; стоит отправить пользователя на повторную авторизацию.
 
 ``` ruby
 redirect_to login_url, alert: 'Ошибка авторизации' if params[:state] != session[:state]
@@ -124,7 +127,7 @@ current_user.save
 
 ##### Клиентское приложение
 
-Авторизация клиентского приложения несколько проще - не нужно получать токен отдельным запросом, он выдается сразу после редиректа пользователя.
+Авторизация клиентского приложения несколько проще &mdash; не нужно получать токен отдельным запросом, он выдается сразу после редиректа пользователя.
 
 ``` ruby
 # пользователь направляется на следующий урл
@@ -137,7 +140,7 @@ VkontakteApi.authorization_url(type: :client, scope: [:friends, :photos])
 
 ##### Сервер приложения
 
-Последний тип авторизации - самый простой, т.к. не предполагает участия пользователя.
+Последний тип авторизации &mdash; самый простой, т.к. не предполагает участия пользователя.
 
 ``` ruby
 @vk = VkontakteApi.authorize(type: :app_server)
@@ -184,17 +187,23 @@ VK # => NameError: uninitialized constant VK
 
 ``` ruby
 vk = VK::Client.new
-vk.friends.get(uid: 1, fields: [:first_name, :last_name, :photo])
-# VkontakteApi::Error: VKontakte returned an error 7: 'Permission to perform this action is denied' after calling method 'friends.get' with parameters {"uid"=>"1", "fields"=>"first_name,last_name,photo"}.
+vk.friends.get(user_id: 1, fields: [:first_name, :last_name, :photo])
+# VkontakteApi::Error: VKontakte returned an error 7: 'Permission to perform this action is denied' after calling method 'friends.get' with parameters {"user_id"=>"1", "fields"=>"first_name,last_name,photo"}.
 ```
 
-Особый случай ошибки - 14: необходимо ввести код с captcha. В этом случае можно получить параметры капчи методами `VkontakteApi::Error#captcha_sid` и `VkontakteApi::Error#captcha_img` - например, [так](https://github.com/7even/vkontakte_api/issues/10#issuecomment-11666091).
+Особый случай ошибки &mdash; 14: необходимо ввести код с captcha.
+В этом случае можно получить параметры капчи методами
+`VkontakteApi::Error#captcha_sid` и `VkontakteApi::Error#captcha_img` &mdash; например,
+[так](https://github.com/7even/vkontakte_api/issues/10#issuecomment-11666091).
 
 ### Логгирование
 
-`vkontakte_api` логгирует служебную информацию о запросах при вызове методов. По умолчанию все пишется в `STDOUT`, но в настройке можно указать любой другой совместимый логгер, например `Rails.logger`.
+`vkontakte_api` логгирует служебную информацию о запросах при вызове методов.
+По умолчанию все пишется в `STDOUT`, но в настройке можно указать
+любой другой совместимый логгер, например `Rails.logger`.
 
-Есть возможность логгирования 3 типов информации, каждому соответствует ключ в глобальных настройках.
+Есть возможность логгирования 3 типов информации,
+каждому соответствует ключ в глобальных настройках.
 
 |                        | ключ настройки  | по умолчанию | уровень логгирования |
 | ---------------------- | --------------- | ------------ | -------------------- |
@@ -202,13 +211,17 @@ vk.friends.get(uid: 1, fields: [:first_name, :last_name, :photo])
 | JSON ответа при ошибке | `log_errors`    | `true`       | `warn`               |
 | JSON удачного ответа   | `log_responses` | `false`      | `debug`              |
 
-Таким образом, в rails-приложении с настройками по умолчанию в production записываются только ответы сервера при ошибках; в development также логгируются URL-ы запросов.
+Таким образом, в rails-приложении с настройками по умолчанию в production
+записываются только ответы сервера при ошибках;
+в development также логгируются URL-ы запросов.
 
 ### Пример использования
 
-Пример использования `vkontakte_api` совместно с `eventmachine` можно посмотреть [здесь](https://github.com/7even/vkontakte_on_em).
+Пример использования `vkontakte_api` совместно с `eventmachine` можно посмотреть
+[здесь](https://github.com/7even/vkontakte_on_em).
 
-Также был написан [пример использования с rails](https://github.com/7even/vkontakte_on_rails), но он больше не работает из-за отсутствия прав на вызов метода `newsfeed.get`.
+Также был написан [пример использования с rails](https://github.com/7even/vkontakte_on_rails),
+но он больше не работает из-за отсутствия прав на вызов метода `newsfeed.get`.
 
 ## Настройка
 
@@ -221,7 +234,7 @@ VkontakteApi.configure do |config|
   config.app_id       = '123'
   config.app_secret   = 'AbCdE654'
   config.redirect_uri = 'http://example.com/oauth/callback'
-  
+
   # faraday-адаптер для сетевых запросов
   config.adapter = :net_http
   # HTTP-метод для вызова методов API (:get или :post)
@@ -238,23 +251,37 @@ VkontakteApi.configure do |config|
     }
   }
   # максимальное количество повторов запроса при ошибках
+  # работает только если переключить http_verb в :get
   config.max_retries = 2
-  
+
   # логгер
   config.logger        = Rails.logger
   config.log_requests  = true  # URL-ы запросов
   config.log_errors    = true  # ошибки
   config.log_responses = false # удачные ответы
+
+  # используемая версия API
+  config.api_version = '5.21'
 end
 ```
 
-По умолчанию для HTTP-запросов используется `Net::HTTP`; можно выбрать [любой другой адаптер](https://github.com/technoweenie/faraday/blob/master/lib/faraday/adapter.rb), поддерживаемый `faraday`.
+По умолчанию для HTTP-запросов используется `Net::HTTP`; можно выбрать
+[любой другой адаптер](https://github.com/lostisland/faraday/blob/master/lib/faraday/adapter.rb),
+поддерживаемый `faraday`.
 
-ВКонтакте [позволяет](http://vk.com/developers.php?oid=-1&p=%D0%92%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2_%D0%BA_API) использовать как `GET`-, так и `POST`-запросы при вызове методов API. По умолчанию `vkontakte_api` использует `POST`, но в настройке `http_verb` можно указать `:get`, чтобы совершать `GET`-запросы.
+ВКонтакте [позволяет](https://vk.com/dev/api_requests)
+использовать как `GET`-, так и `POST`-запросы при вызове методов API.
+По умолчанию `vkontakte_api` использует `POST`, но в настройке `http_verb`
+можно указать `:get`, чтобы совершать `GET`-запросы.
 
-При необходимости можно указать параметры для faraday-соединения - например, параметры прокси-сервера или путь к SSL-сертификатам.
+При необходимости можно указать параметры для faraday-соединения &mdash; например,
+параметры прокси-сервера или путь к SSL-сертификатам.
 
-Чтобы сгенерировать файл с настройками по умолчанию в rails-приложении, можно воспользоваться генератором `vkontakte_api:install`:
+Чтобы при каждом вызове API-метода передавалась определенная версия API, можно
+указать ее в конфигурации в `api_version`. По умолчанию версия не указана.
+
+Чтобы сгенерировать файл с настройками по умолчанию в rails-приложении,
+можно воспользоваться генератором `vkontakte_api:install`:
 
 ``` sh
 $ cd /path/to/app
@@ -263,17 +290,26 @@ $ rails generate vkontakte_api:install
 
 ## JSON-парсер
 
-`vkontakte_api` использует парсер [Oj](https://github.com/ohler55/oj) - это единственный парсер, который не показал [ошибок](https://github.com/7even/vkontakte_api/issues/1) при парсинге JSON, генерируемого ВКонтакте.
+`vkontakte_api` использует парсер [Oj](https://github.com/ohler55/oj) &mdash; это
+единственный парсер, который не показал [ошибок](https://github.com/7even/vkontakte_api/issues/1)
+при парсинге JSON, генерируемого ВКонтакте.
 
-Также в библиотеке `multi_json` (обертка для различных JSON-парсеров, которая выбирает самый быстрый из установленных в системе и парсит им) `Oj` поддерживается и имеет наивысший приоритет; поэтому если он установлен в системе, `multi_json` будет использовать именно его.
+Также в библиотеке `multi_json` (обертка для различных JSON-парсеров,
+которая выбирает самый быстрый из установленных в системе и парсит им)
+`Oj` поддерживается и имеет наивысший приоритет; поэтому если он установлен
+в системе, `multi_json` будет использовать именно его.
 
 ## Roadmap
 
 * CLI-интерфейс с автоматической авторизацией
-* Глобальное указание версии API
 
 ## Участие в разработке
 
-Если вы хотите поучаствовать в разработке проекта, форкните репозиторий, положите свои изменения в отдельную ветку, покройте их спеками и отправьте мне pull request.
+Если вы хотите поучаствовать в разработке проекта, форкните репозиторий,
+положите свои изменения в отдельную ветку, покройте их спеками
+и отправьте мне pull request.
 
-`vkontakte_api` тестируется под MRI `1.9.3`, `2.0.0` и `2.1.0`. Если в одной из этих сред что-то работает неправильно, либо вообще не работает, то это следует считать багом, и написать об этом в [issues на Github](https://github.com/7even/vkontakte_api/issues).
+`vkontakte_api` тестируется под MRI `2.1`, `2.2`, `2.3` и `2.4`, а также JRuby `9.x`.
+Если в одной из этих сред что-то работает неправильно, либо вообще не работает,
+то это следует считать багом, и написать об этом
+в [issues на Github](https://github.com/7even/vkontakte_api/issues).

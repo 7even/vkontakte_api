@@ -1,6 +1,7 @@
 require 'faraday'
 require 'faraday_middleware'
-require 'faraday_middleware/parse_oj'
+require 'oj' unless defined?(JRUBY_VERSION)
+require 'faraday_middleware/multi_json'
 require 'oauth2'
 require 'yaml'
 require 'hashie'
