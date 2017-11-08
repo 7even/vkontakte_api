@@ -98,6 +98,17 @@ describe VkontakteApi::Result do
         }.to raise_error(VkontakteApi::Error)
       end
     end
+
+    context 'with execute_errors in the response' do
+      let(:error)  { Hashie::Mash.new(method: 'wall.get', error_code: 15, error_msg: 'Access denied') }
+      let(:result) { Hashie::Mash.new(execute_errors: [error]) }
+
+      it 'raises a VkontakteApi::ExecuteError' do
+        expect {
+          subject.send(:extract_result, result)
+        }.to raise_error(VkontakteApi::ExecuteError)
+      end
+    end
   end
   
   describe ".typecast" do
