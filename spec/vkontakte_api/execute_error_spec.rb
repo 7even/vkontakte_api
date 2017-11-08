@@ -4,24 +4,38 @@ describe VkontakteApi::ExecuteError do
   let(:errors_data) do
     [
       Hashie::Mash.new(
-        method: 'wall.get',
+        method:     'status.get',
+        error_code: 15,
+        error_msg:  'Access denied: no access to call this method'
+      ),
+      Hashie::Mash.new(
+        method:     'photos.get',
         error_code: 100,
-        error_msg: 'One of the parameters specified was missing or invalid: owner_id not integer'
+        error_msg:  'One of the parameters specified was missing or invalid: album_id is invalid'
+      ),
+      Hashie::Mash.new(
+        method:     'execute',
+        error_code: 100,
+        error_msg:  'One of the parameters specified was missing or invalid: album_id is invalid'
       )
     ]
   end
 
-  describe "#message" do
-    let(:error) { VkontakteApi::ExecuteError.new(errors_data) }
+  subject { VkontakteApi::ExecuteError.new(errors_data) }
 
-    it "returns all needed data about an error" do
-      message = 'VKontakte returned an errors:'
-      message << "\n 1) Code 100: 'One of the parameters specified was missing or invalid: owner_id not integer'"
-      message << "\n    after calling method 'wall.get'."
+  describe '#message' do
+    it 'returns a description of all errors' do
+      message = 'VKontakte returned the following errors:'
+      message << "\n * Code 15: 'Access denied: no access to call this method'"
+      message << "\n   after calling method 'status.get'."
+      message << "\n * Code 100: 'One of the parameters specified was missing or invalid: album_id is invalid'"
+      message << "\n   after calling method 'photos.get'."
+      message << "\n * Code 100: 'One of the parameters specified was missing or invalid: album_id is invalid'"
+      message << "\n   after calling method 'execute'."
 
       expect {
-        raise error
-      }.to raise_error(error.class, message)
+        raise subject
+      }.to raise_error(subject.class, message)
     end
   end
 end
