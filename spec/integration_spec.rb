@@ -9,59 +9,43 @@ describe "Integration" do
       config.log_requests  = false
       config.log_errors    = false
       config.log_responses = false
-    end
-  end
-  
-  describe "unauthorized requests" do
-    let(:vk) { VK::Client.new }
-    
-    it "get users" do
-      user = vk.users.get(uid: 1).first
-      expect(user.uid).to eq(1)
-      expect(user.last_name).not_to be_empty
-      expect(user.first_name).not_to be_empty
+      config.api_version = '5.0'
     end
   end
   
   if MechanizedAuthorization.on?
-    describe "authorized requests" do
-      let(:vk) { MechanizedAuthorization.client }
+    let(:vk) { MechanizedAuthorization.client }
       
+    describe "authorized requests" do
       it "get groups" do
-        expect(vk.groups.get).to include(1)
+        expect(vk.groups.get.items).to include(1)
       end
     end
     
     describe "requests with camelCase and predicate methods" do
-      let(:vk) { MechanizedAuthorization.client }
-      
       it "convert method names to vk.com format" do
         expect(vk.is_app_user?).to be_truthy
       end
     end
-  end
-  
-  describe "requests with array arguments" do
-    let(:vk) { VK::Client.new }
-    
-    it "join arrays with a comma" do
-      users = vk.users.get(uids: [1, 2, 3], fields: %w[first_name last_name screen_name])
-      expect(users.first.screen_name).not_to be_empty
-    end
-  end
-  
-  describe "requests with blocks" do
-    let(:vk) { VK::Client.new }
-    
-    it "map the result with a block" do
-      users = vk.users.get(uid: 1) do |user|
-        "#{user.last_name} #{user.first_name}"
+
+    describe "requests with array arguments" do
+      it "join arrays with a comma" do
+        users = vk.users.get(uids: [1, 2, 3], fields: %w[first_name last_name screen_name])
+        expect(users.first.screen_name).not_to be_empty
       end
-      
-      expect(users.first).not_to be_empty
+    end
+    
+    describe "requests with blocks" do
+      it "map the result with a block" do
+        users = vk.users.get(uid: 1) do |user|
+          "#{user.last_name} #{user.first_name}"
+        end
+
+        expect(users.first).not_to be_empty
+      end
     end
   end
-  
+
   describe "authorization" do
     context "with a scope" do
       it "returns a correct url" do
