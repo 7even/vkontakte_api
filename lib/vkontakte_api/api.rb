@@ -12,9 +12,14 @@ module VkontakteApi
       # @param [Hash] args Method arguments.
       # @param [String] token The access token.
       # @return [Hashie::Mash] Mashed server response.
+      # @raise [ArgumentError] raised when the API version is not set.
       def call(method_name, args = {}, token = nil)
+        if VkontakteApi.api_version.nil?
+          raise ArgumentError, 'You must specify the API version in VkontakteApi configuration'
+        end
+
         flat_arguments = Utils.flatten_arguments(args)
-        flat_arguments[:v] ||= VkontakteApi.api_version unless VkontakteApi.api_version.nil?
+        flat_arguments[:v] ||= VkontakteApi.api_version
         connection(url: URL_PREFIX, token: token).send(VkontakteApi.http_verb, method_name, flat_arguments).body
       end
       

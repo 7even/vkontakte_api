@@ -19,13 +19,18 @@ describe VkontakteApi::API do
   describe ".call" do
     before(:each) do
       create_connection
+
+      VkontakteApi.configure do |config|
+        config.api_version = api_version
+      end
     end
     
-    context "called with a token parameter" do
-      it "sends it to .connection" do
-        expect(subject).to receive(:connection).with(url: VkontakteApi::API::URL_PREFIX, token: 'token')
-        subject.call('apiMethod', { some: :params }, 'token')
-      end
+    let(:api_version) { double("API version") }
+    let(:response) { double("API response", body: @result) }
+
+    it "sends the token to .connection" do
+      expect(subject).to receive(:connection).with(url: VkontakteApi::API::URL_PREFIX, token: 'token')
+      subject.call('apiMethod', { some: :params }, 'token')
     end
     
     it "returns the response body" do
@@ -36,24 +41,21 @@ describe VkontakteApi::API do
       http_verb = double("HTTP verb")
       VkontakteApi.http_verb = http_verb
       
-      response = double("Response", body: double)
-      expect(@connection).to receive(:send).with(http_verb, 'apiMethod', {}).and_return(response)
+      expect(@connection).to receive(:send).with(http_verb, 'apiMethod', v: api_version).and_return(response)
       subject.call('apiMethod')
     end
     
-    context "when the api_version is set" do
-      let(:api_version) { double("API version") }
-      let(:response) { double("API response", body: @result) }
-      
+    context "when the api_version is not set" do
       before(:each) do
         VkontakteApi.configure do |config|
-          config.api_version = api_version
+          config.api_version = nil
         end
       end
       
-      it "adds it to request params" do
-        expect(@connection).to receive(:post).with('apiMethod', v: api_version).and_return(response)
-        subject.call('apiMethod')
+      it "raises an ArgumentError" do
+        expect {
+          subject.call('apiMethod')
+        }.to raise_error(ArgumentError)
       end
     end
     
