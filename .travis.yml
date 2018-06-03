@@ -1,12 +1,12 @@
 language: ruby
 
 rvm:
-  - 2.1
   - 2.2
   - 2.3
   - 2.4
+  - 2.5
   - ruby-head
-  - jruby-9.0.0.0
+  - jruby-9.2.0.0
   - jruby-head
 
 jdk:
