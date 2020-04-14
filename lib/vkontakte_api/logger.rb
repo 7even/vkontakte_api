@@ -24,13 +24,14 @@ module VkontakteApi
     # Logs the response (successful or not) if needed.
     # @param [Hash] env Response data.
     def on_complete(env)
-      puts env
-      puts env[:body]
-      # if env[:body].error?
-      #   @logger.warn env[:raw_body] if VkontakteApi.log_errors?
-      # else
-      #   @logger.debug env[:raw_body] if VkontakteApi.log_responses?
-      # end
+      if env[:status] == 414
+        puts "error: #{env[:reason_phrase]}".red
+        puts "status: #{env[:status]}".red
+      elsif env[:body].error?
+        @logger.warn env[:raw_body] if VkontakteApi.log_errors?
+      else
+        @logger.debug env[:raw_body] if VkontakteApi.log_responses?
+      end
     end
   end
 
